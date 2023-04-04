@@ -1,3 +1,4 @@
 Functions
 ================
-暂时没有
+
+.. doxygenfunction:: sin

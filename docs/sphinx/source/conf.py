@@ -66,6 +66,8 @@ html_static_path = ['_static']
 
 # mian body
 
+import os
+import sys
 import subprocess
 from pathlib import Path
 
@@ -75,8 +77,35 @@ source_folder = Path(__file__).resolve().parent
 sphinx_folder = source_folder.parent
 doxygen_folder = sphinx_folder.parent.joinpath("doxygen")
 
-subprocess.call(f"cd {sphinx_folder} && make clean", shell=True)
-subprocess.call(f"cd {doxygen_folder} && doxygen", shell=True)
+def run_doxygen(folder: Path):
+    """run doxygen in given folder
+
+    Args:
+        folder (Path): working directory of dixygen
+    """
+    try:
+        ret = subprocess.call(f"cd {folder} && doxygen Doxyfile", shell=True)
+        if ret < 0:
+            sys.stderr.write(f"doxygen terminated by signal {ret}")
+    except OSError as e:
+        sys.stderr.write(f"doxygen failed: {e}")
+
+def generate_doxygen_xml(app):
+    """run `doxygen Doxyfile` if running on ReadTheDocs building server
+    """
+    read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
+    if read_the_docs_build:
+        run_doxygen(doxygen_folder)
+
+
+
+
+if os.environ.get('READTHEDOCS', None) == 'True':
+    def setup(app):
+        app.connect("builder-inited")
+else:
+    subprocess.call(f"cd {sphinx_folder} && make clean", shell=True)
+    subprocess.call(f"cd {doxygen_folder} && doxygen", shell=True)
 
 breathe_projects = { "X2W-OS": f"{doxygen_folder}/build/xml/" }
 breathe_default_project = "X2W-OS"
