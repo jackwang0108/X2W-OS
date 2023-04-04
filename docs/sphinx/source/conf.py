@@ -102,7 +102,7 @@ def generate_doxygen_xml(app):
 
 if os.environ.get('READTHEDOCS', None) == 'True':
     def setup(app):
-        app.connect("builder-inited")
+        app.connect("builder-inited", generate_doxygen_xml)
 else:
     subprocess.call(f"cd {sphinx_folder} && make clean", shell=True)
     subprocess.call(f"cd {doxygen_folder} && doxygen", shell=True)
