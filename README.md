@@ -24,7 +24,7 @@ Coming soon....
 
 ### 网络文档
 
-`X2W-OS`的文档由 `Sphinx`构建，目前已经托管至 `ReadTheDocs`，访问链接即可在线阅读文档：https://x2w-os.readthedocs.io/en/latest/Git
+`X2W-OS`的文档由 `Sphinx`构建，目前已经托管至 `ReadTheDocs`，访问链接即可在线阅读文档：https://x2w-os.readthedocs.io/en/latest/
 
 ### 本地文档
 
