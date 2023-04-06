@@ -46,6 +46,7 @@
 
 对标准语法的学习，可以参考如下教程：
 
+- https://3vshej.cn/rstSyntax/index.html
 - https://www.megengine.org.cn/doc/stable/zh/development/docs/restructuredtext.html#
 - https://docutils.sourceforge.io/rst.html
 

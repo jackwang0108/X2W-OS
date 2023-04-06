@@ -12,7 +12,9 @@
 
 
 
-``X2W-OS`` 的文档中有两类文章：
+``X2W-OS`` 的文档中有三类文章：
+
+- **Tutorial**: 编译、运行、调试 ``X2W-OS`` 的教程
 
 - **Developer Notes**: 从开发者的角度出发对 ``X2W-OS`` 的各个模块进行介绍
 
@@ -23,6 +25,14 @@
 
 目录
 ===================
+
+
+.. toctree::
+   :glob:
+   :maxdepth: 1
+   :caption: Tutorial:
+
+   docs/*
 
 
 .. toctree::
