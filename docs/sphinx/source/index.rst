@@ -20,7 +20,13 @@
 
 - **API References**: 对 ``X2W-OS`` 的API进行介绍
 
-如果你想了解 ``X2W-OS`` 的设计，请阅读 **Developer Notes** 中的文章；如果你想查询 ``X2W-OS`` 的函数，请参考 **API References** 中的文章
+具体来说：
+
+- 如果你想开始使用 ``X2W-OS`` ，请阅读 **Tutorial** 中的文章
+
+- 了解 ``X2W-OS`` 的设计，请阅读 **Developer Notes** 中的文章
+
+- 如果你想查询 ``X2W-OS`` 的函数，请参考 **API References** 中的文章
 
 
 目录
