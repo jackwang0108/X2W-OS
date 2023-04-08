@@ -12,7 +12,7 @@
 
 #include "ustdio.h"
 
-size_t kprintf(const char* format, ...){
+size_t uprintf(const char* format, ...){
     va_list args;
     va_start(args, format);
     char buf[PRINTF_STRING_SIZE] = {0};

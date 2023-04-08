@@ -13,6 +13,7 @@
 
 #include "types.h"
 #include "stdarg.h"
+#include "string.h"
 #include "stdlib.h"
 
 
