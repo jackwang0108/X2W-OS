@@ -20,3 +20,6 @@ Functions
 .. doxygenfunction:: strrchr
 
 .. doxygenfunction:: strchrs
+
+.. doxygenfunction:: atoi
+
