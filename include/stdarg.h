@@ -15,6 +15,9 @@
  * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
  */
 
+#ifndef __INCLUDE_STRARG_H
+#define __INCLUDE_STRARG_H
+
 #include "types.h"
 
 /// 变参宏以字节形式处理在栈中的函数参数, 因此变参列表`va_list`的本质就是字节
@@ -45,3 +48,5 @@ typedef char* va_list;
  * @param ap 参数指针
  */
 #define va_end(ap) ap = NULL
+
+#endif
