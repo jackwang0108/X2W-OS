@@ -19,7 +19,7 @@
 #include "types.h"
 
 /**
- * @brief itoa (integer to ascii) 用于将`uint64_t`数字转换为`char*`数字, 并将其存入`*buf_ptr_addr`指向的内存中
+ * @brief `itoa` (integer to ascii) 用于将`uint64_t`数字转换为`char*`数字, 并将其存入`*buf_ptr_addr`指向的内存中
  * 
  * @param integer 需要转为字符串形式的整数
  * @param buf_ptr_addr **字符串指针/指向字符数组的指针**的地址
