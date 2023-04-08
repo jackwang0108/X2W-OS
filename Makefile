@@ -3,31 +3,58 @@
 # ----------------------------------------------------------
 
 # riscv-gcc 交叉编译器参数
-#		1. -notstdlib: 链接所有可重定位文件时不链接 LD_LIBRARY_PATH 包含的库, 只链接用户指定的库
-#		2. -fno_builtin: 不将与库函数同名的函数视为库函数, 即使用自己编写的库函数
-#		3. -march: 设置生成(指令所构成的)二进制文件所使用的指令集(指令所属于的指令集)
-#		4. -mabi: 设置C和汇编函数相互调用时候的参数传递(寄存器使用)约定
-#		5. -O0: 设置gcc编译时的优化等级, 0表示禁止优化
-#		6. -g: 编译时向生成的二进制文件中写入debug信息, 同时禁止gcc在编译时为了加速对一些诸如abs，strncpy等进行重定义的行为
-#		7. -I: 编译时候寻找头文件的路径
-# 	-W 表示和警告相关的设置
-#		8. -Wall: 编译的时候输出所有警告
-#		9. -Wmissing-prototypes: 对缺少函数原型的函数(非内联, 静态函数)进行警告
-#		10. -Werror=strict-prototypes: 调用函数的时候严格检测参数类型和函数原型中的类型, 如果不符则报错
-#		11. -Werror=incompatible-pointer-types: 禁止对指针类型进行默认转换, 必须显示进行类型转换, 否则报错
+#		1. 本地系统相关
+#			-notstdlib: 链接所有可重定位文件时不链接 LD_LIBRARY_PATH 包含的库, 只链接用户指定的库, 这里是链接-static-libgcc和-shared-libgcc参数指定
+#					    使用这个选项的原因是GCC编译得到的文件可能会调用memcpy, memset等函数调用, 这里是不使用系统自带的这些函数的实现, 而是使用X2W-OS的实现
+#			-notstdinc: 预处理时候搜索不在系统默认的头文件搜索路径中搜索头文件, 只搜索用户指定的库, 这里是搜索-I参数指定的文件夹
+#			-fno-builtin: 不将与库函数同名的函数视为库函数, 即使用自己编写的库函数
+#		2. 生成指令相关
+#			-march: 设置生成(指令所构成的)二进制文件所使用的指令集(指令所属于的指令集), 这里是包含IMAFD模块在内的64位指令
+#			-mabi: 设置数据模型. int/long/pointer等数据类型在32/64位系统上的长度是不一样的.
+#				   LP64是指: char是8bit, short是16bit, int是32bit, long是64bit, long long是64bit, pointer是64bit
+#				   参考: https://www.cnblogs.com/lsgxeva/p/7614856.html
+#			-fno-pie: 不生成位置无关(Position-Independent-Code)的可执行代码. 因为生成的是内核代码, 因此要给出绝对地址, 不能是可重定位的地址
+#					  -fPIC与-fpic都是在编译时加入的选项, 用于生成位置无关的代码. 这两个选项都是可以使代码在加载到内存时使用相对地址, 所有对固定地址的访问都通过全局偏移表(GOT)来实现. -fPIC和-fpic最大的区别在于是否对GOT的大小有限制. -fPIC对GOT表大小无限制, 所以如果在不确定的情况下，使用-fPIC是更好的选择
+#				      -fPIE与-fpie是等价的. 这个选项与-fPIC/-fpic大致相同, 不同点在于: -fPIC用于生成动态库，-fPIE用与生成可执行文件.
+#				  	  参考: https://www.cnblogs.com/20170722-kong/articles/12291904.html 
+#			-mcmodel=medany: 设置相对寻址范围. medany模式可以访问当前PC的后2GiB(PC ~ PC + 2GiB)的地址空间
+#					  编译的过程中, 编译器是不知道要操作的数据在哪里的, 计算数据的地址的工作是在链接阶段实现的. 
+#					  也就是说，编译器需要先把拿取数据的汇编指令定下来, 在编译结束之后, 链接器进行重定位计算时再填上指令的操作数是多少. 那么就有一个问题, 编译器如何选择一个合适的指令拿取数据?
+#					  mcmodel选项就是做这个事情的, 这个选项的本意是告诉编译器, 编译时候可以假定可以假设代码里面所有的符号的位置都在某个位宽(32bit)的范围之内, 而后生成对应的计算地址的指令.
+#					  例如-mcmodel=small, 就是假设所有符号都在4GB范围内, 32个bit的位宽就可以寻到符号的位置, 那我们就用AUIPC指令就可以了
+#					  参考1: https://bbs.huaweicloud.com/blogs/272527
+#					  参考2: https://blog.csdn.net/zoomdy/article/details/100699108 
+#					  参考3: https://www.francisz.cn/2020/04/14/riscv-code-models/ 
+#		3. 编译相关
+#			-I: 预处理时候寻找头文件的路径
+#			-save-temps -dumpdir xxx/: 保存编译过程中的中间文件到xxx目录下, 这里是保存到build/temps/目录下. 中间文件包括预处理之后的源码, 编译之后的汇编代码等等, 主要是为了展开宏方便debug
+#							 参考: https://blog.csdn.net/weixin_34384915/article/details/94730345
+#			-O0: 设置gcc编译时的优化等级, 0表示禁止优化
+#			-fomit-frame-pointer: 在不需要的时候忽略掉帧指针. 主要目的是在有些时候为函数提供一个额外的fp(frame pointer)寄存器作为通用寄存器用, 以实现一个微小的性能提升. 优化等级为O1, O2, O3的时候会自动打开
+#			-g: 编译时向生成的二进制文件中写入debug信息, 同时禁止gcc在编译时为了加速对一些诸如abs，strncpy等进行重定义的行为
+# 		4. 编译警告和错误相关
+#			-Wall: 编译的时候显示所有的警告, 包括一般的警告和编译器认为会出现错误的警告
+#			-Wmissing-prototypes: 如果没有预先声明函数原型就定义了全局函数, 编译器就发出警告. 这个选项的目的是强制所有函数在头文件中提供函数原型, 方便VSCode的intellsense分析, 补全
+#			-Werror=strict-prototypes: 将调用函数时候传入的参数类型和函数原型中的类型不匹配的警告视作为错误, 主要是为了规范代码习惯
+#			-Werror=incompatible-pointer-types: 同上, 将指针类型不兼容警告视为错误, 即禁止默认的指针类型转换, 必须显示进行类型转换, 也是为了规范代码习惯
 CFLAGS = \
 	-nostdlib \
+	-nostdinc \
 	-fno-builtin \
-	-march=rv32ima \
-	-mabi=ilp32 \
+	-fno-pie \
+	-mabi=lp64 \
+	-march=rv64imafd \
+	-mcmodel=medany \
 	-g \
 	-O0 \
+	-I include/ \
+	-fomit-frame-pointer \
 	-Wall \
 	-Wmissing-prototypes \
 	-Werror=strict-prototypes \
 	-Werror=incompatible-pointer-types \
-	-I include/
 
+#	-save-temps -dumpdir=${BDIR}temps/ \
 
 # QEMU 参数
 #		1. -nographic: 不显示图形界面
@@ -84,18 +111,13 @@ OBJDUMP = ${CROSS_COMPILE}objdump
 # 源文件设置
 # ----------------------------------------------------------
 
-# source files
-SRCS_ASM = \
-	start.S \
-	mem.S \
-	entry.S \
+# source dirs
+SRCS_DIR := lib lib/kernel lib/user kernel device
 
-SRCS_C = \
-	kernel.c \
-	uart.c \
-	page.c \
-	printf.c \
-	sched.c \
+# source files
+SRCS_ASM := $(foreach dir, $(SRCS_DIR), $(wildcard $(dir)/*.S))
+
+SRCS_C := $(foreach dir, $(SRCS_DIR), $(wildcard $(dir)/*.c))
 
 
 # ----------------------------------------------------------
@@ -130,6 +152,12 @@ ${BDIR}%.o: %.S
 	${CC} ${CFLAGS} -c -o $@ $<
 
 
+# echo 伪目标debug用
+.PHONY: echo
+echo:
+	@echo ${SRCS_ASM}
+	@echo ${SRCS_C}
+	@echo ${OBJS}
 
 # ----------------------------------------------------------
 # 编译目标
@@ -145,9 +173,13 @@ all: mkdir kernel disasm documentation
 
 # mkdir 伪目标将会:
 #		1. 创建 build 编译文件夹
-.PHONY : mkdir
+#		2. 创建 build/disasms 反汇编文件夹
+#		3. 创建和源代码目录对应的 build/${SRCS_DIR} 文件夹
+.PHONY: mkdir
 mkdir:
-	@mkdir -p ${BDIR}disasms
+	mkdir -p ${BDIR}disasms
+	mkdir -p ${BDIR}temps
+	mkdir -p $(foreach dir, $(SRCS_DIR), ${BDIR}$(dir))
 
 # kernel 目标依赖于 OBJ 目标, 具体来说会:
 #		1. 根据 os.ld 链接脚本链接所有的目标文件以生产二进制内核文件
@@ -160,7 +192,7 @@ kernel: ${OBJS}
 #		1. 反汇编得到内核的汇编代码
 #		2. 输出内核的二进制内容
 #		3. 输出内核的符号表
-disasm: kenel
+disasm: kernel
 	@echo "内核的反汇编代码可以在文件" ${BDIR}diasms/os.code "查看"
 	@${OBJDUMP} -S ${BDIR}${KNAME} > ${DIR}disasms/os.disasm
 	@echo "内核的二进制内容可以在文件" ${BDIR}diasms/os.machine "查看"
