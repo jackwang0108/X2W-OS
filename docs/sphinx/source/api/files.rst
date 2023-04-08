@@ -5,5 +5,5 @@ Files
     :glob:
     :maxdepth: 2
 
-    files/*
+    files/**
 
