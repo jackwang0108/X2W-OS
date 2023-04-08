@@ -11,6 +11,8 @@
 #ifndef __INCLUDE_TYPES_H
 #define __INCLUDE_TYPES_H
 
+#include "constrains.h"
+
 /// `NULL` 被定义为指向内存`0x0000000000000000`处的`void`指针, 由于在`QEMU`的`Memory Map`中该地址不在内存中, 因此访问该地址最终将会导致报错
 #define NULL ((void *)0)
 
