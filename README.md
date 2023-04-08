@@ -20,7 +20,7 @@ Coming soon....
 
 ## 文档
 
-`X2W-OS`提供两种方式的文档：`网络文档 `以及 `本地文档`
+`X2W-OS`提供两种方式的文档：`网络文档`以及 `本地文档`
 
 ### 网络文档
 
@@ -32,85 +32,46 @@ Coming soon....
 
 > 以下内容为如何在本地生成文档，开发人员维护 `X2W-OS`的文档则请参考 `doc`目录中的[README](docs/README.md "README")
 
-#### Step 1：安装Doxygen
+#### Step 1：安装依赖
 
-`Doxygen`是 `C/C++`以及类 `C/C++`语言的标准文档构建系统，`X2W-OS`使用 `C`语言进行开发，因此 `X2W-OS`天然的使用 `Doxygen`作为底层文档系统
+`X2W-OS`的文档系统依赖 `Doxygen`、`Sphinx`、`Breathe`等工具/库，因此首先安装这些依赖
 
 ```shell
 sudo apt-get install doxygen
-```
-
-#### Step 2：安装Sphinx
-
-`Sphinx`是 `Python`的官方文档构建工具，因为其所构建的文档具有良好的显示效果，所以 `X2W-OS`使用 `Sphinx`构建最终显示的文档
-
-```shell
 python -m pip install sphinx sphinx_intl recommonmark pydata-sphinx-theme myst-parser -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
-#### Step 3：安装Breathe
+#### Step 2：编译文档
 
-为了将 `Doxygen`生成的文档导出到 `Sphinx`中，我们还需要安装 `Breathe`
-
-```shell
-python -m pip install breathe -i https://pypi.tuna.tsinghua.edu.cn/simple
-```
-
-#### Step 4：生成文档
-
-安装完所有依赖后，你就可以在本地构建 `X2W-OS`的文档了
+编译文档的相关命令已经集成进 `Makefile`，运行下述命令即可编译 `X2W-OS`的文档
 
 ```shell
-cd <path-to-X2W-OS>/docs/sphinx
-make html
+make documentation
 ```
 
-编译后，在本地你就可以看到在 `<docs/sphinx>`目录下存在 `html`文件夹，文件夹内即为 `X2W-OS`的文档，`index.html`为入口
+> 注意，编译过程中产生的下述警告是正常现象，忽略即可
+>
+> ```shell
+> Declaration is '.. cpp:function:: char * strcpy (char *dst, const char *src)'.
+> /Users/jack/project/OSKernel2023-X2W/docs/sphinx/source/api/functions.rst:12: WARNING: Duplicate C++ declaration, also defined at api/files/include/string:3.
+> ```
+
+#### Step 3：阅读文档
+
+阅读文档的相关命令已经集成进 `Makefile`，运行下述命令即可阅读 `X2W-OS`的文档
 
 ```shell
-cd <path-to-X2W-OS>/docs
-tree -d -L 3 sphinx
+make read
 ```
 
-上述命令的输出如下：
+而后访问链接即可开始阅读文档
 
 ```shell
-sphinx
-├── build
-│   ├── doctrees
-│   └── html
-│       ├── _sources
-│       └── _static
-└── source
-    ├── _static
-    └── _templates
-
-9 directories
+正在启动 HttpServer ...
+本地文档链接: http://127.0.0.1:45308
+在线文档链接: https://x2w-os.readthedocs.io/en/latest/
+HttpServer日志将会打印在下方, 按下 Ctrl+C 或运行 `make kill` 以终止本地 HttpServer
+-------------------------------------------------------------------------------
 ```
 
-#### Step5：阅读文档
-
-你可以使用 `Python`或者 `Node.js`在本地快速启动一个 `HTTP`服务器，然后在浏览器中阅读文档
-
-```shell
-
-# Python3
-cd <path-X2W-OS>/docs/sphinx/build/html && python -m http.server || exit 1
-# Python2
-cd <path-X2W-OS>/docs/sphinx/build/html && python -m SimpleHTTPServer|| exit 1
-# Node.js
-cd <path-X2W-OS>/docs/sphinx/build/html && http-server
-```
-
-上述命令将在本地启动一个 `HTTP`服务器，并绑定到对应的端口，访问 `localhost:<port`>即可看到文档
-
-如果你更喜欢 `Doxygen`生成的文档，也可以使用下述命令查看 `Doxygen`生成的文档
-
-```shell
-# Python3
-cd <path-X2W-OS>/docs/doxygen/build/html && python -m http.server || exit 1
-# Python2
-cd <path-X2W-OS>/docs/doxygen/build/html && python -m SimpleHTTPServer|| exit 1
-# Node.js
-cd <path-X2W-OS>/docs/doxygen/build/html && http-server
-```
+> 注意，`HttpServer`在本地暴露的端口在每次运行 `make read`命令时会随机指定
