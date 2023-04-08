@@ -1,12 +1,9 @@
 /**
  * @file string.c
  * @author Shihong Wang  (jack4shihong@gmail.com)
- * @brief `string.c`是`string`库的实现函数, 实现了一系列内存和字符串操作函数
+ * @brief `string.c`是`string`库的实现, 实现了一系列内存和字符串操作函数
  * @version 0.1
  * @date 2023-04-08
- * 
- * @todo 需要进行测试, 以测试函数正确性
- * @todo 实现debug.h后需要给每个指针添加 NULL 检查
  * 
  * @warning 为了避免编译时编译器使用系统的`string.h`库, 编译时需要为`GCC`指定`-nostdinc`选项, 详见根目录下的`Makefile`
  * 

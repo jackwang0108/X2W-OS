@@ -5,6 +5,10 @@
  * @version 0.1
  * @date 2023-04-08
  * 
+ * @todo 
+ *  1. 需要进行测试, 以测试函数正确性
+ *  2. 实现debug.h后需要给每个指针添加 NULL 检查
+ * 
  * @warning 为了避免编译时编译器使用系统的`string.h`库, 编译时需要为`GCC`指定`-nostdinc`选项, 详见根目录下的`Makefile`
  * 
  * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
