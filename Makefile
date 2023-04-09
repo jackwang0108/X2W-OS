@@ -76,10 +76,12 @@ CFLAGS = \
 #		   具体测试点的数量, 内容以及编译方式将在赛题公布时同步发布.
 #		3. 当您的操作系统执行完所有测试点后, 应该主动调用关机命令, 评测机会在检测到QEMU进程退出后进行打分.
 # qemu-system-riscv64 -machine virt -kernel kernel-qemu -m 128M -nographic -smp 2 -bios sbi-qemu -drive file=sdcard.img,if=none,format=raw,id=x0  -device virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0 -initrd initrd.img
-QFLAGS = -nographic \
+Q_FLAG = -nographic \
 	-smp 1 \
 	-machine virt \
 	-m 128M 
+
+Q_BIOS = -bios none -device loader,file=${BDIR}/os.bin,addr=0x80200000
 
 
 
@@ -346,7 +348,7 @@ run: kernel sbi
 	@echo '你可以运行 `make debug-gdb` 以使用 GDB 调试内核'
 	@echo '或者运行 `make debug-vscode` 以使用 VSCode 链接 QEMU 调试内核'
 	@echo "----------------------------------------------------------------------------"
-	@${QEMU} ${QFLAGS} -bios ${RDIR}/${SNAME} -kernel ${RDIR}/${KNAME}
+	@${QEMU} ${Q_FLAG} ${Q_BIOS} -kernel ${RDIR}/${KNAME}
 
 # debug-gdb 目标依赖于 kernel sbi 目标, 将会使用 gdb 调试内核:
 #		1. qemu -kernel: 指定要调试的ELF格式二进制内核文件
@@ -362,8 +364,8 @@ debug-gdb: kernel sbi
 	@echo '你可以运行 `make run` 以使用 QEMU 直接运行内核'
 	@echo '或者运行 `make debug-vscode` 以使用 VSCode 链接 QEMU 调试内核'
 	@echo "------------------------------------------------------------------"
-	@${QEMU} ${QFLAGS} -bios ${RDIR}/${SNAME} -kernel ${RDIR}/${KNAME} -gdb tcp::1234 -S &
-	@${GDB} ${BDIR}/${KNAME} -q -x ./gdbinit
+	@${QEMU} ${Q_FLAG} ${Q_BIOS} -kernel ${RDIR}/${KNAME} -gdb tcp::1234 -S &
+	@${GDB} ${RDIR}/${KNAME} -q -x ${RDIR}/gdbinit
 
 # debug-server 目标依赖于 kernel sbi 目标, 将会使用 vs-code 调试内核:
 .PHONY : debug-vscode
@@ -373,5 +375,5 @@ debug-vscode: kernel sbi
 	@echo '你可以运行 `make run` 以使用 QEMU 直接运行内核'
 	@echo '你可以运行 `make debug-gdb` 以使用 GDB 调试内核'
 	@echo "------------------------------------------------------------------"
-	@${QEMU} ${QFLAGS} -bios ${RDIR}/${SNAME} -kernel ${RDIR}/${KNAME} -gdb tcp::1234 -S
+	@${QEMU} ${Q_FLAG} ${Q_BIOS} -kernel ${RDIR}/${KNAME} -gdb tcp::1234 -S
 

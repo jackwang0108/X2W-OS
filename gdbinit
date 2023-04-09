@@ -1,4 +1,4 @@
 set disassemble-next-line on
-b _start
+b kernel_start
 target remote : 1234
 c
