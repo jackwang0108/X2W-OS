@@ -91,7 +91,16 @@ QFLAGS = -nographic \
 QEMU = qemu-system-riscv64
 
 # GDB
-GDB = gdb-multiarch
+GDB = $(shell \
+	if gdb-multiarch -v 2>&1 | grep 'GNU' >/dev/null 2>&1; then\
+		echo 'gdb-multiarch'; \
+	elif riscv64-unknown-elf-gdb -v 2>&1 | grep 'GNU' >/dev/null 2>&1; then \
+		echo 'riscv64-unknown-elf-gdb'; \
+	else \
+		echo "Error: Cannot find GDB!" 1>&2; \
+		exit 1; \
+	fi \
+)
 
 # cross-compiler prefix
 CROSS_COMPILE = riscv64-unknown-elf-
@@ -174,6 +183,7 @@ ${BDIR}/%.o: %.S
 .PHONY: echo
 echo:
 	@echo ""
+	@echo ${GDB}
 	@echo "Kernel 宏:"
 	@echo ${K_SRCS_ASM}
 	@echo ${K_SRCS_C}
@@ -327,10 +337,10 @@ kill:
 	@echo "正在终止所有 Python.HttpServer 进程..."
 	ps aux | grep -e 'http.server' | grep -v 'grep' | awk '{print $$2}' | xargs --no-run-if-empty kill -9
 
-# run 目标依赖于 all 目标, 将会:
+# run 目标依赖于 kernel sbi 目标, 将会:
 #		1. 使用 QEMU 运行内核
 .PHONY: run
-run: all
+run: kernel sbi
 	@echo '运行内核: ${KNAME}, 所有输出将在下方显示'
 	@echo "按下 Ctrl+A, 然后按下 X 键以退出 QEMU"
 	@echo '你可以运行 `make debug-gdb` 以使用 GDB 调试内核'
@@ -338,7 +348,7 @@ run: all
 	@echo "----------------------------------------------------------------------------"
 	@${QEMU} ${QFLAGS} -bios ${RDIR}/${SNAME} -kernel ${RDIR}/${KNAME}
 
-# debug-gdb 目标依赖于 all 目标, 将会使用 gdb 调试内核:
+# debug-gdb 目标依赖于 kernel sbi 目标, 将会使用 gdb 调试内核:
 #		1. qemu -kernel: 指定要调试的ELF格式二进制内核文件
 #		2. qemu -s: 使用 QEMU 的 GDB Server 调试内核, 默认端口是 1234
 #		3. qemu -S: 启动 QEMU 后停止 CPU 运行, 直到 GDB 客户端连接到 QEMU GDB Server
@@ -346,7 +356,7 @@ run: all
 #		5. GDB -q: 取消 GDB 链接时的一些输出信息
 #		6. GDB -x: 设置 GDB 启动后运行的命令, 这里包含: 链接到 GDB Server, 在 _start 处设置断点
 .PHONY : debug-gdb
-debug-gdb: all
+debug-gdb: kernel sbi
 	@echo "使用 GDB 调试内核, 所有输出将在下方显示"
 	@echo "按下 Ctrl+C 以终止QEMU, 然后输入 quit 退出 GDB"
 	@echo '你可以运行 `make run` 以使用 QEMU 直接运行内核'
@@ -355,9 +365,9 @@ debug-gdb: all
 	@${QEMU} ${QFLAGS} -bios ${RDIR}/${SNAME} -kernel ${RDIR}/${KNAME} -gdb tcp::1234 -S &
 	@${GDB} ${BDIR}/${KNAME} -q -x ./gdbinit
 
-# debug-server 目标依赖于 all 目标, 将会使用 vs-code 调试内核:
+# debug-server 目标依赖于 kernel sbi 目标, 将会使用 vs-code 调试内核:
 .PHONY : debug-vscode
-debug-vscode:
+debug-vscode: kernel sbi
 	@echo "使用 VSCode 调试内核, 正在等待 VSCode 链接..."
 	@echo "VSCode 终止调试后 QEMU 将自动停止运行"
 	@echo '你可以运行 `make run` 以使用 QEMU 直接运行内核'
