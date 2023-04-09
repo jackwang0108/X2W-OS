@@ -25,15 +25,15 @@ void uart_init(void){
     write_8_bits(UART_IER, 0b00000000);
 
     // 打开DLAB位以设置波特率
-    write_8_bits(0b10000000, UART_LCR);
-    write_8_bits((uint8_t)(divisor & 0x0011), UART_DL_LSB);         // 设置低八位
-    write_8_bits((uint8_t)((divisor & 0x1100) >> 8), UART_DL_MSB);  // 设置高八位
+    write_8_bits(UART_LCR, 0b10000000);
+    write_8_bits(UART_DL_LSB, (uint8_t)(divisor & 0x0011));         // 设置低八位
+    write_8_bits(UART_DL_MSB, (uint8_t)((divisor & 0x1100) >> 8));  // 设置高八位
 
     // 设置传输方式, 数据位长为8位, 不进行奇偶校验, 停止位长1位
-    write_8_bits(0b00000011, UART_LCR);
+    write_8_bits(UART_LCR, 0b00000011);
 
     // 设置FIFO工作模式, FIFO队列长度设置为14字节, 每次发送/接受数据均清空FIFO
-    write_8_bits(0b11000111, UART_FCR);
+    write_8_bits(UART_FCR, 0b11000111);
 }
 
 

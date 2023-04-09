@@ -16,6 +16,9 @@
 #ifndef __INCLUDE_ASM_UART_H
 #define __INCLUDE_ASM_UART_H
 
+/// `AXI UART 16550`芯片的时钟频率, 设置波特率时将根据时钟频率计算除数
+#define UART16550_CLOCK 1843200
+
 /* ------------------------------ UART 寄存器 ------------------------------ */
 /*
  * 1. RISC-V中采用MMIO方式访问设备寄存器

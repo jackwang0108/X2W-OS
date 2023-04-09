@@ -24,8 +24,6 @@
 #include "constrains.h"
 
 
-/// `AXI UART 16550`芯片的时钟频率, 设置波特率时将根据时钟频率计算除数
-static uint32_t UART16550_CLOCK = 1843200;
 
 /**
  * @brief `uart_init`初始化`UART`设备.
