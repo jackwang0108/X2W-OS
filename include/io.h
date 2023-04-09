@@ -151,7 +151,7 @@ static inline uint##width##_t mkname(read, width)(uint64_t addr){ \
 static inline void mkname(write, width)(uint64_t addr, uint##width##_t value){ \
     uint##width##_t __v = value; \
     __iowmb(); \
-    *(volatile uint##width##_t*)addr = value; \
+    *(volatile uint##width##_t*)addr = __v; \
 }
 
 
