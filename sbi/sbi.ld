@@ -2,7 +2,7 @@
 OUTPUT_ARCH(riscv)
 
 /* 设置入口地址 */
-ENTRY(_start)
+ENTRY(sbi_start)
 
 SECTIONS {
     /* SBI的加载入口地址设置为0x8000_0000 */

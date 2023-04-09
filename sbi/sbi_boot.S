@@ -1,7 +1,7 @@
 .section ".text.boot"
 
-.global _start
-_start:
+.global sbi_start
+sbi_start:
     // 设置SBI栈, 目前是4KB大小
     la sp, stacks_start
     li t0, 4096

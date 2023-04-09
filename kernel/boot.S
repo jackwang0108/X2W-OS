@@ -1,7 +1,7 @@
 .section ".text.boot"
 
-.global _start
-_start:
+.global kernel_start
+kernel_start:
     # 关闭中断
     csrw sie, zero
 
