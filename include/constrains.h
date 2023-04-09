@@ -12,11 +12,14 @@
 #ifndef __INCLUDE_CONSTRAINS_H
 #define __INCLUDE_CONSTRAINS_H
 
-/// kprintf和uprintf可以输出的字符串最大长度
+
+/// 内核的跳转地址, 在`kernel.ld`中定义
+#define KERNEL_JUMP_ADDR 0x80200000
+
+/// `kprintf`和`uprintf`可以输出的字符串最大长度
 #define PRINTF_STRING_SIZE          1024
 
-
-/// UART设备的波特率
+/// `UART`设备的波特率
 #define UART_BAUD_RATE              115200
 
 
