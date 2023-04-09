@@ -1,3 +1,3 @@
 uart.h
 ===========
-.. doxygenfile:: uart.h
+.. doxygenfile:: include/uart.h
