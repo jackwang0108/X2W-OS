@@ -286,7 +286,7 @@ disasm: kernel
 #		1. 构建文档
 documentation: ${RDIR}/docs/sphinx/Makefile
 	@echo "正在构建文件系统...."
-	make -C ${RDIR}/docs/sphinx html
+	@make -C ${RDIR}/docs/sphinx html && echo "构建成功, 构建过程中产生的警告为正常现象, 忽略即可" || echo "ERROR: 构建失败"
 
 
 # clean 伪目标将会:
