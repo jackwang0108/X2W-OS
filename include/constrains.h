@@ -13,7 +13,11 @@
 #define __INCLUDE_CONSTRAINS_H
 
 /// kprintf和uprintf可以输出的字符串最大长度
-#define PRINTF_STRING_SIZE 1024
+#define PRINTF_STRING_SIZE          1024
+
+
+/// UART设备的波特率
+#define UART_BAUD_RATE              115200
 
 
 #endif
