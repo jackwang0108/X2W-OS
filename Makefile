@@ -112,7 +112,7 @@ OBJDUMP = ${CROSS_COMPILE}objdump
 # ----------------------------------------------------------
 
 # source dirs
-SRCS_DIR := lib lib/kernel lib/user kernel device
+SRCS_DIR := lib lib/kernel lib/user kernel device sbi
 
 # source files
 SRCS_ASM := $(foreach dir, $(SRCS_DIR), $(wildcard $(dir)/*.S))
