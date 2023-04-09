@@ -54,7 +54,7 @@ CFLAGS = \
 	-Werror=strict-prototypes \
 	-Werror=incompatible-pointer-types \
 
-#	-save-temps -dumpdir=${BDIR}temps/ \
+#	-save-temps -dumpdir=${BDIR}/temps/ \
 
 # QEMU 参数
 #		1. -nographic: 不显示图形界面
@@ -79,7 +79,6 @@ CFLAGS = \
 QFLAGS = -nographic \
 	-smp 1 \
 	-machine virt \
-	-bios none \
 	-m 128M 
 
 
@@ -100,6 +99,12 @@ CROSS_COMPILE = riscv64-unknown-elf-
 # GCC
 CC = ${CROSS_COMPILE}gcc
 
+# LD
+LD = ${CROSS_COMPILE}ld
+
+# NM
+NM = ${CROSS_COMPILE}nm
+
 # OBJCOPY
 OBJCOPY = ${CROSS_COMPILE}objcopy
 
@@ -111,13 +116,19 @@ OBJDUMP = ${CROSS_COMPILE}objdump
 # 源文件设置
 # ----------------------------------------------------------
 
-# source dirs
-SRCS_DIR := lib lib/kernel lib/user kernel device sbi
+# kernel source dirs
+K_SRCS_DIR := lib lib/kernel lib/user kernel device
+# kernel assembly source files
+K_SRCS_ASM := $(foreach dir, $(K_SRCS_DIR), $(wildcard $(dir)/*.S))
+# kernel c source files
+K_SRCS_C := $(foreach dir, $(K_SRCS_DIR), $(wildcard $(dir)/*.c))
 
-# source files
-SRCS_ASM := $(foreach dir, $(SRCS_DIR), $(wildcard $(dir)/*.S))
-
-SRCS_C := $(foreach dir, $(SRCS_DIR), $(wildcard $(dir)/*.c))
+# sbi source dirs
+S_SRCS_DIR := sbi
+# sbi assembly source files
+S_SRCS_ASM := $(foreach dir, $(S_SRCS_DIR), $(wildcard $(dir)/*.S))
+# sbi c source files
+S_SRCS_C := $(foreach dir, $(S_SRCS_DIR), $(wildcard $(dir)/*.c))
 
 
 # ----------------------------------------------------------
@@ -125,39 +136,54 @@ SRCS_C := $(foreach dir, $(SRCS_DIR), $(wildcard $(dir)/*.c))
 # ----------------------------------------------------------
 
 # 编译生成的内核的名字
-KNAME := os.elf
+KNAME := kernel.elf
+# 编译生成的SBI的名字
+SNAME := sbi.elf
+
 # 获取当前正在执行的makefile的绝对路径
 MKP := $(abspath $(lastword $(MAKEFILE_LIST)))
 # 根文件夹
 RDIR=$(shell dirname ${MKP})
 # 编译文件夹
-BDIR=$(shell dirname ${MKP})/build/
+BDIR=$(shell dirname ${MKP})/build
 
-# 目标文件
-OBJS = $(SRCS_ASM:.S=.o)	# 将 SRC_ASM 中的所有.S结尾的文件转换为.o结尾的文件, 并赋值给 OBJS 变量
-OBJS += $(SRCS_C:.c=.o)		# 将 SRC_ASM 中的所有.c结尾的文件转换为.o结尾的文件, 并添加给 OBJS 变量
-OBJS := $(addprefix ${BDIR}, ${OBJS})	# OBJS 变量中的所有值添加 DIR 前缀
+# 内核目标文件
+K_OBJS = $(K_SRCS_ASM:.S=.o)	# 将 K_SRCS_ASM 中的所有.S结尾的文件转换为.o结尾的文件, 并赋值给 K_OBJS 变量
+K_OBJS += $(K_SRCS_C:.c=.o)		# 将 K_SRC_C 中的所有.c结尾的文件转换为.o结尾的文件, 并添加给 K_OBJS 变量
+K_OBJS := $(addprefix ${BDIR}/, ${K_OBJS})	# 为 K_OBJS 变量中的所有值添加 BDIR 前缀
 
+# SBI目标文件
+S_OBJS = $(S_SRCS_ASM:.S=.o)	# 将 S_SRCS_ASM 中的所有.S结尾的文件替换为.o结尾的文件, 并赋值给 S_OBJS 变量
+S_OBJS += $(S_SRCS_C:.c=.o)		# 将 S_SRC_C 中的所有.c结尾的文件转换为.o结尾的文件, 并添加给 S_OBJS 变量
+S_OBJS := $(addprefix ${BDIR}/, ${S_OBJS})	# 为 S_OBJS 变量中的所有值添加 BDIR 前缀
 
 # ----------------------------------------------------------
 # 隐式目标
 # ----------------------------------------------------------
 
 # compile all .c file into .o
-${BDIR}%.o: %.c
+${BDIR}/%.o: %.c
 	${CC} ${CFLAGS} -c -o $@ $<
 
 # compile all .S file into .o
-${BDIR}%.o: %.S
+${BDIR}/%.o: %.S
 	${CC} ${CFLAGS} -c -o $@ $<
 
 
 # echo 伪目标debug用
 .PHONY: echo
 echo:
-	@echo ${SRCS_ASM}
-	@echo ${SRCS_C}
-	@echo ${OBJS}
+	@echo ""
+	@echo "Kernel 宏:"
+	@echo ${K_SRCS_ASM}
+	@echo ${K_SRCS_C}
+	@echo ${K_OBJS}
+	@echo "--------------------------------------------------------------------------------"
+	@echo "SBI 宏:"
+	@echo ${S_SRCS_ASM}
+	@echo ${S_SRCS_C}
+	@echo ${S_OBJS}
+	@echo "--------------------------------------------------------------------------------"
 
 # ----------------------------------------------------------
 # 编译目标
@@ -165,54 +191,99 @@ echo:
 
 # all 是默认目标, 将会:
 #		1. 创建 build 编译文件夹
-#		2. 编译得到内核 os.elf
+#		2. 编译得到内核
 #		3. 反汇编内核, 得到内核的汇编代码和内核的符号表
 #		4. 生成文档
 .DEFAULT_GOAL := all
-all: mkdir kernel disasm documentation 
+all: mkdir kernel sbi disasm documentation 
 
 # mkdir 伪目标将会:
 #		1. 创建 build 编译文件夹
 #		2. 创建 build/disasms 反汇编文件夹
-#		3. 创建和源代码目录对应的 build/${SRCS_DIR} 文件夹
+#		3. 创建和源代码目录对应的 build/${K_SRCS_DIR} 文件夹
 .PHONY: mkdir
 mkdir:
-	mkdir -p ${BDIR}disasms
-	mkdir -p ${BDIR}temps
-	mkdir -p $(foreach dir, $(SRCS_DIR), ${BDIR}$(dir))
+	mkdir -p ${BDIR}/disasms
+	mkdir -p ${BDIR}/temps
+	mkdir -p $(foreach dir, $(K_SRCS_DIR), ${BDIR}/$(dir))
+	mkdir -p $(foreach dir, $(S_SRCS_DIR), ${BDIR}/$(dir))
+
+# obj 目标将会:
+#		1. 更新所有的目标文件
+#		2. 输出内核所有的目标文件
+#		3. 输出SBI所有的目标文件
+obj: mkdir ${K_OBJS} ${S_OBJS}
+	@echo "编译所有目标文件"
+	@echo "当前内核目标文件:"
+	@for x in ${K_OBJS}; do \
+		echo $$x; \
+	done
+	@echo "----------------------------------------------------------"
+	@echo "当前SBI目标文件:"
+	@for x in ${S_OBJS}; do \
+		echo $$x; \
+	done
+	@echo "----------------------------------------------------------"
 
 # kernel 目标依赖于 OBJ 目标, 具体来说会:
-#		1. 根据 os.ld 链接脚本链接所有的目标文件以生产二进制内核文件
+#		1. 根据 kernel.ld 链接脚本链接所有的目标文件以生产二进制内核文件
 #		2. 将二进制内核文件转换为裸二进制文件 os.bin 以删除ELF文件中没有用到的段, 为后续的反汇编进行准备
-kernel: ${OBJS}
-	@${CC} ${CFLAGS} ${SRC} -T os.ld -o ${BDIR}${KNAME} $^
-	@${OBJCOPY} -O binary ${BDIR}${KNAME} ${DIR}os.bin
+kernel: mkdir ${K_OBJS}
+	@${LD} ${K_OBJS} -T ${RDIR}/kernel/kernel.ld -o ${BDIR}/os.elf
+	@${OBJCOPY} -O binary ${BDIR}/os.elf ${BDIR}/os.bin
+	@cp ${BDIR}/os.elf ${RDIR}/${KNAME}
+# @${CC} ${CFLAGS} ${SRC} -T ${RDIR}/kernel/kernel.ld -o ${BDIR}/${KNAME} $^
+
+
+sbi: mkdir ${S_OBJS}
+	@${LD} ${S_OBJS} -T ${RDIR}/sbi/sbi.ld -o ${BDIR}/sbi.elf
+	@${OBJCOPY} -O binary ${BDIR}/sbi.elf ${BDIR}/sbi.bin
+	@cp ${BDIR}/sbi.elf ${RDIR}/${SNAME}
 
 # disasm 目标依赖于 kernel 目标, 具体来说会:
 #		1. 反汇编得到内核的汇编代码
 #		2. 输出内核的二进制内容
 #		3. 输出内核的符号表
+#		4. 反汇编得到SBI的汇编代码
+#		5. 输出SBI的二进制内容
+#		6. 输出SBI的符号表
 disasm: kernel
-	@echo "内核的反汇编代码可以在文件" ${BDIR}diasms/os.code "查看"
-	@${OBJDUMP} -S ${BDIR}${KNAME} > ${DIR}disasms/os.disasm
-	@echo "内核的二进制内容可以在文件" ${BDIR}diasms/os.machine "查看"
-	@hexdump -C ${BDIR}os.bin > ${DIR}disasms/os.machine
-	@echo "内核的符号表可以在文件" ${BDIR}disasms/os.symbol "查看"
-	@echo '内核文件: 符号地址 (符号长度) 符号类型 符号名 符号定义处' > ${BDIR}disasms/os.symbol
-	@echo -e '常见符号类型 (更多符号类型请参考 man nm):' >> ${BDIR}disasms/os.symbol
-	@echo -e '\tA:\t该符号的值在今后的链接中将不再改变' >> ${BDIR}disasms/os.symbol
-	@echo -e '\tB:\t该符号位与BSS段中, 通常是未初始化的全局变量' >> ${BDIR}disasms/os.symbol
-	@echo -e '\tb:\t该符号位与BSS段中, 通常是未初始化的静态全局变量, 例如: static int test' >> ${BDIR}disasms/os.symbol
-	@echo -e '\tD:\t该符号位与普通的数据段中, 通常是已经初始化的全局变量' >> ${BDIR}disasms/os.symbol
-	@echo -e '\tt/T:\t该符号位与代码段中, 通常是全局非静态函数' >> ${BDIR}disasms/os.symbol
-	@echo -e '\tR:\t该符号位与只读数据区' >> ${BDIR}disasms/os.symbol
-	@echo -e '\tU:\t该符号未在当前文件中定义过, 需要自其他对象文件中链接进来' >> ${BDIR}disasms/os.symbol
-	@echo -e '\tW:\t未明确指定的弱链接符号, 若链接的其他对象文件中有它的定义就链接, 否则就用一个系统指定的默认值, 通常是动态链接库' >> ${BDIR}disasms/os.symbol
-	@nm -l -n -S -A --print-armap ${BDIR}${KNAME} >> ${DIR}disasms/os.symbol
+	@echo "内核的反汇编代码可以在文件" build/disasms/os.code "查看"
+	@${OBJDUMP} -S ${BDIR}/os.elf > ${BDIR}/disasms/os.disasm
+	@echo "内核的二进制内容可以在文件" build/disasms/os.machine "查看"
+	@hexdump -C ${BDIR}/os.bin > ${BDIR}/disasms/os.machine
+	@echo "内核的符号表可以在文件" build/disasms/os.symbol "查看"
+	@echo '内核文件: 符号地址 (符号长度) 符号类型 符号名 符号定义处' > ${BDIR}/disasms/os.symbol
+	@echo -e '常见符号类型 (更多符号类型请参考 man nm):' >> ${BDIR}/disasms/os.symbol
+	@echo -e '\tA:\t该符号的值在今后的链接中将不再改变' >> ${BDIR}/disasms/os.symbol
+	@echo -e '\tB:\t该符号位与BSS段中, 通常是未初始化的全局变量' >> ${BDIR}/disasms/os.symbol
+	@echo -e '\tb:\t该符号位与BSS段中, 通常是未初始化的静态全局变量, 例如: static int test' >> ${BDIR}/disasms/os.symbol
+	@echo -e '\tD:\t该符号位与普通的数据段中, 通常是已经初始化的全局变量' >> ${BDIR}/disasms/os.symbol
+	@echo -e '\tt/T:\t该符号位与代码段中, 通常是全局非静态函数' >> ${BDIR}/disasms/os.symbol
+	@echo -e '\tR:\t该符号位与只读数据区' >> ${BDIR}/disasms/os.symbol
+	@echo -e '\tU:\t该符号未在当前文件中定义过, 需要自其他对象文件中链接进来' >> ${BDIR}/disasms/os.symbol
+	@echo -e '\tW:\t未明确指定的弱链接符号, 若链接的其他对象文件中有它的定义就链接, 否则就用一个系统指定的默认值, 通常是动态链接库' >> ${BDIR}/disasms/os.symbol
+	@${NM} -l -n -S -A --print-armap ${BDIR}/os.elf >> ${BDIR}/disasms/os.symbol
+	@echo "SBI的反汇编代码可以在文件" build/disasms/sbi.code "查看"
+	@${OBJDUMP} -S ${BDIR}/sbi.elf > ${BDIR}/disasms/sbi.disasm
+	@echo "内核的二进制内容可以在文件" build/disasms/sbi.machine "查看"
+	@hexdump -C ${BDIR}/sbi.bin > ${BDIR}/disasms/sbi.machine
+	@echo "内核的符号表可以在文件" build/disasms/sbi.symbol "查看"
+	@echo 'SBI文件: 符号地址 (符号长度) 符号类型 符号名 符号定义处' > ${BDIR}/disasms/sbi.symbol
+	@echo -e '常见符号类型 (更多符号类型请参考 man nm):' >> ${BDIR}/disasms/sbi.symbol
+	@echo -e '\tA:\t该符号的值在今后的链接中将不再改变' >> ${BDIR}/disasms/sbi.symbol
+	@echo -e '\tB:\t该符号位与BSS段中, 通常是未初始化的全局变量' >> ${BDIR}/disasms/sbi.symbol
+	@echo -e '\tb:\t该符号位与BSS段中, 通常是未初始化的静态全局变量, 例如: static int test' >> ${BDIR}/disasms/sbi.symbol
+	@echo -e '\tD:\t该符号位与普通的数据段中, 通常是已经初始化的全局变量' >> ${BDIR}/disasms/sbi.symbol
+	@echo -e '\tt/T:\t该符号位与代码段中, 通常是全局非静态函数' >> ${BDIR}/disasms/sbi.symbol
+	@echo -e '\tR:\t该符号位与只读数据区' >> ${BDIR}/disasms/sbi.symbol
+	@echo -e '\tU:\t该符号未在当前文件中定义过, 需要自其他对象文件中链接进来' >> ${BDIR}/disasms/sbi.symbol
+	@echo -e '\tW:\t未明确指定的弱链接符号, 若链接的其他对象文件中有它的定义就链接, 否则就用一个系统指定的默认值, 通常是动态链接库' >> ${BDIR}/disasms/sbi.symbol
+	@${NM} -l -n -S -A --print-armap ${BDIR}/sbi.elf >> ${BDIR}/disasms/sbi.symbol
 
 
 # documentation 目标将会:
-#		1. 构建文件系统
+#		1. 构建文档
 documentation: ${RDIR}/docs/sphinx/Makefile
 	@echo "正在构建文件系统...."
 	make -C ${RDIR}/docs/sphinx html
@@ -222,7 +293,7 @@ documentation: ${RDIR}/docs/sphinx/Makefile
 #		1. 清除中间文件
 .PHONY: clean
 clean:
-	rm -rf ${BDIR}*
+	rm -rf ${BDIR}/*
 	rm -rf ${RDIR}/docs/doxygen/build/*
 	rm -rf ${RDIR}/docs/sphinx/build/*
 
@@ -234,6 +305,7 @@ clean:
 
 # read 伪目标将会:
 #		1. 在本地启动HttpServer以阅读文档
+#		2. 将HttpServer日志输出到命令行
 PORT := $(shell python -c "from random import randint; print(randint(8000, 65536))")
 .PHONY: read
 read:
@@ -264,7 +336,7 @@ run: all
 	@echo '你可以运行 `make debug-gdb` 以使用 GDB 调试内核'
 	@echo '或者运行 `make debug-vscode` 以使用 VSCode 链接 QEMU 调试内核'
 	@echo "----------------------------------------------------------------------------"
-	@${QEMU} ${QFLAGS} -kernel ${BDIR}${KNAME}
+	@${QEMU} ${QFLAGS} -bios ${RDIR}/${SNAME} -kernel ${RDIR}/${KNAME}
 
 # debug-gdb 目标依赖于 all 目标, 将会使用 gdb 调试内核:
 #		1. qemu -kernel: 指定要调试的ELF格式二进制内核文件
@@ -280,8 +352,8 @@ debug-gdb: all
 	@echo '你可以运行 `make run` 以使用 QEMU 直接运行内核'
 	@echo '或者运行 `make debug-vscode` 以使用 VSCode 链接 QEMU 调试内核'
 	@echo "------------------------------------------------------------------"
-	@${QEMU} ${QFLAGS} -kernel ${BDIR}${KNAME} -gdb tcp::1234 -S &
-	@${GDB} ${BDIR}${KNAME} -q -x ./gdbinit
+	@${QEMU} ${QFLAGS} -bios ${RDIR}/${SNAME} -kernel ${RDIR}/${KNAME} -gdb tcp::1234 -S &
+	@${GDB} ${BDIR}/${KNAME} -q -x ./gdbinit
 
 # debug-server 目标依赖于 all 目标, 将会使用 vs-code 调试内核:
 .PHONY : debug-vscode
@@ -291,5 +363,5 @@ debug-vscode:
 	@echo '你可以运行 `make run` 以使用 QEMU 直接运行内核'
 	@echo '你可以运行 `make debug-gdb` 以使用 GDB 调试内核'
 	@echo "------------------------------------------------------------------"
-	@${QEMU} ${QFLAGS} -kernel ${BDIR}os.elf -gdb tcp::1234 -S
+	@${QEMU} ${QFLAGS} -bios ${RDIR}/${SNAME} -kernel ${RDIR}/${KNAME} -gdb tcp::1234 -S
 
