@@ -204,10 +204,15 @@ echo:
 # all 是默认目标, 将会:
 #		1. 创建 build 编译文件夹
 #		2. 编译得到内核
+#		3. 编译得到SBI
+.DEFAULT_GOAL := all
+all: mkdir kernel sbi
+
+# full 目标, 将会:
+#		1. 完成 all 目标
 #		3. 反汇编内核, 得到内核的汇编代码和内核的符号表
 #		4. 生成文档
-.DEFAULT_GOAL := all
-all: mkdir kernel sbi disasm documentation 
+full: all disasm documentation
 
 # mkdir 伪目标将会:
 #		1. 创建 build 编译文件夹
@@ -266,15 +271,15 @@ disasm: kernel
 	@hexdump -C ${BDIR}/os.bin > ${BDIR}/disasms/os.machine
 	@echo "内核的符号表可以在文件" build/disasms/os.symbol "查看"
 	@echo '内核文件: 符号地址 (符号长度) 符号类型 符号名 符号定义处' > ${BDIR}/disasms/os.symbol
-	@echo -e '常见符号类型 (更多符号类型请参考 man nm):' >> ${BDIR}/disasms/os.symbol
-	@echo -e '\tA:\t该符号的值在今后的链接中将不再改变' >> ${BDIR}/disasms/os.symbol
-	@echo -e '\tB:\t该符号位与BSS段中, 通常是未初始化的全局变量' >> ${BDIR}/disasms/os.symbol
-	@echo -e '\tb:\t该符号位与BSS段中, 通常是未初始化的静态全局变量, 例如: static int test' >> ${BDIR}/disasms/os.symbol
-	@echo -e '\tD:\t该符号位与普通的数据段中, 通常是已经初始化的全局变量' >> ${BDIR}/disasms/os.symbol
-	@echo -e '\tt/T:\t该符号位与代码段中, 通常是全局非静态函数' >> ${BDIR}/disasms/os.symbol
-	@echo -e '\tR:\t该符号位与只读数据区' >> ${BDIR}/disasms/os.symbol
-	@echo -e '\tU:\t该符号未在当前文件中定义过, 需要自其他对象文件中链接进来' >> ${BDIR}/disasms/os.symbol
-	@echo -e '\tW:\t未明确指定的弱链接符号, 若链接的其他对象文件中有它的定义就链接, 否则就用一个系统指定的默认值, 通常是动态链接库' >> ${BDIR}/disasms/os.symbol
+	@echo '常见符号类型 (更多符号类型请参考 man nm):' >> ${BDIR}/disasms/os.symbol
+	@echo '\tA:\t\t该符号的值在今后的链接中将不再改变' >> ${BDIR}/disasms/os.symbol
+	@echo '\tB:\t\t该符号位与BSS段中, 通常是未初始化的全局变量' >> ${BDIR}/disasms/os.symbol
+	@echo '\tb:\t\t该符号位与BSS段中, 通常是未初始化的静态全局变量, 例如: static int test' >> ${BDIR}/disasms/os.symbol
+	@echo '\tD:\t\t该符号位与普通的数据段中, 通常是已经初始化的全局变量' >> ${BDIR}/disasms/os.symbol
+	@echo '\tt/T:\t该符号位与代码段中, 通常是全局非静态函数' >> ${BDIR}/disasms/os.symbol
+	@echo '\tR:\t\t该符号位与只读数据区' >> ${BDIR}/disasms/os.symbol
+	@echo '\tU:\t\t该符号未在当前文件中定义过, 需要自其他对象文件中链接进来' >> ${BDIR}/disasms/os.symbol
+	@echo '\tW:\t\t未明确指定的弱链接符号, 若链接的其他对象文件中有它的定义就链接, 否则就用一个系统指定的默认值, 通常是动态链接库' >> ${BDIR}/disasms/os.symbol
 	@${NM} -l -n -S -A --print-armap ${BDIR}/os.elf >> ${BDIR}/disasms/os.symbol
 	@echo "SBI的反汇编代码可以在文件" build/disasms/sbi.code "查看"
 	@${OBJDUMP} -S ${BDIR}/sbi.elf > ${BDIR}/disasms/sbi.disasm
@@ -282,15 +287,15 @@ disasm: kernel
 	@hexdump -C ${BDIR}/sbi.bin > ${BDIR}/disasms/sbi.machine
 	@echo "内核的符号表可以在文件" build/disasms/sbi.symbol "查看"
 	@echo 'SBI文件: 符号地址 (符号长度) 符号类型 符号名 符号定义处' > ${BDIR}/disasms/sbi.symbol
-	@echo -e '常见符号类型 (更多符号类型请参考 man nm):' >> ${BDIR}/disasms/sbi.symbol
-	@echo -e '\tA:\t该符号的值在今后的链接中将不再改变' >> ${BDIR}/disasms/sbi.symbol
-	@echo -e '\tB:\t该符号位与BSS段中, 通常是未初始化的全局变量' >> ${BDIR}/disasms/sbi.symbol
-	@echo -e '\tb:\t该符号位与BSS段中, 通常是未初始化的静态全局变量, 例如: static int test' >> ${BDIR}/disasms/sbi.symbol
-	@echo -e '\tD:\t该符号位与普通的数据段中, 通常是已经初始化的全局变量' >> ${BDIR}/disasms/sbi.symbol
-	@echo -e '\tt/T:\t该符号位与代码段中, 通常是全局非静态函数' >> ${BDIR}/disasms/sbi.symbol
-	@echo -e '\tR:\t该符号位与只读数据区' >> ${BDIR}/disasms/sbi.symbol
-	@echo -e '\tU:\t该符号未在当前文件中定义过, 需要自其他对象文件中链接进来' >> ${BDIR}/disasms/sbi.symbol
-	@echo -e '\tW:\t未明确指定的弱链接符号, 若链接的其他对象文件中有它的定义就链接, 否则就用一个系统指定的默认值, 通常是动态链接库' >> ${BDIR}/disasms/sbi.symbol
+	@echo '常见符号类型 (更多符号类型请参考 man nm):' >> ${BDIR}/disasms/sbi.symbol
+	@echo '\tA:\t\t该符号的值在今后的链接中将不再改变' >> ${BDIR}/disasms/sbi.symbol
+	@echo '\tB:\t\t该符号位与BSS段中, 通常是未初始化的全局变量' >> ${BDIR}/disasms/sbi.symbol
+	@echo '\tb:\t\t该符号位与BSS段中, 通常是未初始化的静态全局变量, 例如: static int test' >> ${BDIR}/disasms/sbi.symbol
+	@echo '\tD:\t\t该符号位与普通的数据段中, 通常是已经初始化的全局变量' >> ${BDIR}/disasms/sbi.symbol
+	@echo '\tt/T:\t该符号位与代码段中, 通常是全局非静态函数' >> ${BDIR}/disasms/sbi.symbol
+	@echo '\tR:\t\t该符号位与只读数据区' >> ${BDIR}/disasms/sbi.symbol
+	@echo '\tU:\t\t该符号未在当前文件中定义过, 需要自其他对象文件中链接进来' >> ${BDIR}/disasms/sbi.symbol
+	@echo '\tW:\t\t未明确指定的弱链接符号, 若链接的其他对象文件中有它的定义就链接, 否则就用一个系统指定的默认值, 通常是动态链接库' >> ${BDIR}/disasms/sbi.symbol
 	@${NM} -l -n -S -A --print-armap ${BDIR}/sbi.elf >> ${BDIR}/disasms/sbi.symbol
 
 
