@@ -301,10 +301,10 @@ full: all disasm documentation
 #		3. 创建和源代码目录对应的 build/${K_SRCS_DIR} 文件夹
 .PHONY: mkdir
 mkdir:
-	mkdir -p ${BDIR}/disasms
-	mkdir -p ${BDIR}/temps
-	mkdir -p $(foreach dir, $(K_SRCS_DIR), ${BDIR}/$(dir))
-	mkdir -p $(foreach dir, $(S_SRCS_DIR), ${BDIR}/$(dir))
+	@mkdir -p ${BDIR}/disasms
+	@mkdir -p ${BDIR}/temps
+	@mkdir -p $(foreach dir, $(K_SRCS_DIR), ${BDIR}/$(dir))
+	@mkdir -p $(foreach dir, $(S_SRCS_DIR), ${BDIR}/$(dir))
 
 # obj 目标将会:
 #		1. 更新所有的目标文件
