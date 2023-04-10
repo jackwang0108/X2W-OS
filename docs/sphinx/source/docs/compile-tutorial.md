@@ -277,7 +277,7 @@ make read
 
 
 
-此外，`make read`默认会阻塞终端，你也可以使用如下命令来避免终端被阻塞。
+q此外，`make read`默认会阻塞终端，你也可以使用如下命令来避免终端被阻塞。
 
 ```shell
 make read &
