@@ -99,7 +99,7 @@ GDB = $(shell \
 	elif riscv64-unknown-elf-gdb -v 2>&1 | grep 'GNU' >/dev/null 2>&1; then \
 		echo 'riscv64-unknown-elf-gdb'; \
 	else \
-		echo "Error: Cannot find GDB!" 1>&2; \
+		echo "Error: Cannot find gdb-multiarch or riscv64-unknown-elf-gdb!" 1>&2; \
 		exit 1; \
 	fi \
 )
@@ -108,19 +108,80 @@ GDB = $(shell \
 CROSS_COMPILE = riscv64-unknown-elf-
 
 # GCC
-CC = ${CROSS_COMPILE}gcc
+CC = $(shell \
+	if ${CROSS_COMPILE}gcc --version 2>&1 | grep 'Free' >/dev/null; then\
+		echo '${CROSS_COMPILE}gcc'; \
+	else \
+		echo "Error: Cannot find ${CROSS_COMPILE}gcc!" 1>&2; \
+		exit 1; \
+	fi \
+)
 
 # LD
-LD = ${CROSS_COMPILE}ld
+LD = $(shell \
+	if ${CROSS_COMPILE}ld --version 2>&1 | grep 'GNU' >/dev/null; then\
+		echo '${CROSS_COMPILE}ld'; \
+	else \
+		echo "Error: Cannot find ${CROSS_COMPILE}ld!" 1>&2; \
+		exit 1; \
+	fi \
+)
 
 # NM
-NM = ${CROSS_COMPILE}nm
+NM = $(shell \
+	if ${CROSS_COMPILE}nm --version 2>&1 | grep 'GNU' >/dev/null; then\
+		echo '${CROSS_COMPILE}nm'; \
+	else \
+		echo "Error: Cannot find ${CROSS_COMPILE}nm!" 1>&2; \
+		exit 1; \
+	fi \
+)
 
 # OBJCOPY
-OBJCOPY = ${CROSS_COMPILE}objcopy
+OBJCOPY = $(shell \
+	if ${CROSS_COMPILE}objcopy --version 2>&1 | grep 'GNU' >/dev/null; then\
+		echo '${CROSS_COMPILE}objcopy'; \
+	else \
+		echo "Error: Cannot find ${CROSS_COMPILE}objcopy!" 1>&2; \
+		exit 1; \
+	fi \
+)
 
 # OBJDUMP
-OBJDUMP = ${CROSS_COMPILE}objdump
+OBJDUMP = $(shell \
+	if ${CROSS_COMPILE}objdump --version 2>&1 | grep 'GNU' >/dev/null; then\
+		echo '${CROSS_COMPILE}objdump'; \
+	else \
+		echo "Error: Cannot find ${CROSS_COMPILE}objdump!" 1>&2; \
+		exit 1; \
+	fi \
+)
+
+# REALPATH
+REALPATH = $(shell \
+	if uname -a | grep 'Darwin' >/dev/null 2>&1; then\
+		echo 'grealpath'; \
+	else \
+		echo 'realpath'; \
+	fi \
+)
+
+
+# PYTHON
+PYTHON_HTTP_SERVER := $(shell \
+	if python3 --version >/dev/null 2>&1; then\
+		echo 'python3 -m http.server'; \
+	elif python2 --version >/dev/null 2>&1; then\
+		echo 'python2 -m SimpleHTTPServer'; \
+	elif python --version | grep '\b3.' >/dev 2>&1; then\
+		echo 'python -m http.server'; \
+	elif python --version | grep '\b2.' >/dev 2>&1; then\
+		echo 'python -m SimpleHTTPServer'; \
+	else\
+		echo "Error: Cannot find python2 or python3!" 1>&2; \
+		exit 1; \
+	fi \
+)
 
 
 # ----------------------------------------------------------
@@ -154,9 +215,14 @@ SNAME := sbi.elf
 # 获取当前正在执行的makefile的绝对路径
 MKP := $(abspath $(lastword $(MAKEFILE_LIST)))
 # 根文件夹
-RDIR=$(shell dirname ${MKP})
+RDIR := $(shell dirname ${MKP})
 # 编译文件夹
-BDIR=$(shell dirname ${MKP})/build
+BDIR := $(shell dirname ${MKP})/build
+
+# 内核相关文件
+KFILE := ${RDIR}/${KNAME} ${BDIR}/os.elf ${BDIR}/os.bin
+# SBI相关文件
+SFILE := ${RDIR}/${SNAME} ${BDIR}/sbi.elf ${BDIR}/sbi.bin
 
 # 内核目标文件
 K_OBJS = $(K_SRCS_ASM:.S=.o)	# 将 K_SRCS_ASM 中的所有.S结尾的文件转换为.o结尾的文件, 并赋值给 K_OBJS 变量
@@ -196,6 +262,7 @@ echo:
 	@echo ${S_SRCS_C}
 	@echo ${S_OBJS}
 	@echo "--------------------------------------------------------------------------------"
+	@echo ${PYTHON_HTTP_SERVER}
 
 # ----------------------------------------------------------
 # 编译目标
@@ -207,6 +274,20 @@ echo:
 #		3. 编译得到SBI
 .DEFAULT_GOAL := all
 all: mkdir kernel sbi
+	@echo "/* -------------------------- 内核和SBI文件 -------------------------- */"
+	@echo "内核文件:"
+	@for x in ${KFILE}; do \
+		printf "\t"; \
+		${REALPATH} --relative-to ${RDIR} $$x; \
+	done
+	@echo "-----------------------------------------------------------------------"
+	@echo "SBI文件:"
+	@for x in ${SFILE}; do \
+		printf "\t"; \
+		${REALPATH} --relative-to ${RDIR} $$x; \
+	done
+	@echo "-----------------------------------------------------------------------"
+
 
 # full 目标, 将会:
 #		1. 完成 all 目标
@@ -230,17 +311,19 @@ mkdir:
 #		2. 输出内核所有的目标文件
 #		3. 输出SBI所有的目标文件
 obj: mkdir ${K_OBJS} ${S_OBJS}
-	@echo "编译所有目标文件"
+	@echo "/* -------------------------- 编译内核和SBI源文件 -------------------------- */"
 	@echo "当前内核目标文件:"
 	@for x in ${K_OBJS}; do \
-		echo $$x; \
+		printf "\t"; \
+		${REALPATH} --relative-to ${RDIR} $$x; \
 	done
-	@echo "----------------------------------------------------------"
+	@echo "-----------------------------------------------------------------------"
 	@echo "当前SBI目标文件:"
 	@for x in ${S_OBJS}; do \
-		echo $$x; \
+		printf "\t"; \
+		${REALPATH} --relative-to ${RDIR} $$x; \
 	done
-	@echo "----------------------------------------------------------"
+	@echo "-----------------------------------------------------------------------"
 
 # kernel 目标依赖于 OBJ 目标, 具体来说会:
 #		1. 根据 kernel.ld 链接脚本链接所有的目标文件以生产二进制内核文件
@@ -264,7 +347,7 @@ sbi: mkdir ${S_OBJS}
 #		4. 反汇编得到SBI的汇编代码
 #		5. 输出SBI的二进制内容
 #		6. 输出SBI的符号表
-disasm: kernel
+disasm: kernel sbi
 	@echo "内核的反汇编代码可以在文件" build/disasms/os.code "查看"
 	@${OBJDUMP} -S ${BDIR}/os.elf > ${BDIR}/disasms/os.disasm
 	@echo "内核的二进制内容可以在文件" build/disasms/os.machine "查看"
@@ -283,9 +366,9 @@ disasm: kernel
 	@${NM} -l -n -S -A --print-armap ${BDIR}/os.elf >> ${BDIR}/disasms/os.symbol
 	@echo "SBI的反汇编代码可以在文件" build/disasms/sbi.code "查看"
 	@${OBJDUMP} -S ${BDIR}/sbi.elf > ${BDIR}/disasms/sbi.disasm
-	@echo "内核的二进制内容可以在文件" build/disasms/sbi.machine "查看"
+	@echo "SBI的二进制内容可以在文件" build/disasms/sbi.machine "查看"
 	@hexdump -C ${BDIR}/sbi.bin > ${BDIR}/disasms/sbi.machine
-	@echo "内核的符号表可以在文件" build/disasms/sbi.symbol "查看"
+	@echo "SBI的符号表可以在文件" build/disasms/sbi.symbol "查看"
 	@echo 'SBI文件: 符号地址 (符号长度) 符号类型 符号名 符号定义处' > ${BDIR}/disasms/sbi.symbol
 	@echo '常见符号类型 (更多符号类型请参考 man nm):' >> ${BDIR}/disasms/sbi.symbol
 	@echo '\tA:\t\t该符号的值在今后的链接中将不再改变' >> ${BDIR}/disasms/sbi.symbol
@@ -303,7 +386,17 @@ disasm: kernel
 #		1. 构建文档
 documentation: ${RDIR}/docs/sphinx/Makefile
 	@echo "正在构建文件系统...."
-	@make -C ${RDIR}/docs/sphinx html && echo "构建成功, 构建过程中产生的警告为正常现象, 忽略即可" || echo "ERROR: 构建失败"
+	@make -C ${RDIR}/docs/sphinx html && echo '构建成功, 构建过程中产生的警告为正常现象, 忽略即可\n运行`make read`命令以开始阅读文档' || echo "ERROR: 构建失败"
+	@echo "-----------------------------------------------------------------------"
+	@echo "Doxygen 文档格式:"
+	@for x in ${RDIR}/docs/doxygen/build/*; do\
+		printf "\t"; \
+		${REALPATH} --relative-to ${RDIR}/docs/doxygen/build $$x; \
+	done;
+	@echo "-----------------------------------------------------------------------"
+	@echo "sphinx 文档路径:"
+	@printf "\t"; ${REALPATH} --relative-to ${RDIR} ${RDIR}/docs/sphinx/build/html;
+	@echo "-----------------------------------------------------------------------"
 
 
 # clean 伪目标将会:
@@ -331,18 +424,24 @@ read:
 	@echo "在线文档链接: https://x2w-os.readthedocs.io/en/latest/"
 	@echo 'HttpServer日志将会打印在下方, 按下 Ctrl+C 或运行 `make kill` 以终止本地 HttpServer'
 	@echo "-------------------------------------------------------------------------------"
-	@cd ${RDIR}/docs/sphinx/build/html && (python -m http.server ${PORT} 2>&1 >/dev/null ) && cd ${RDIR}
+	@cd ${RDIR}/docs/sphinx/build/html && (${PYTHON_HTTP_SERVER} ${PORT} 2>&1 >/dev/null ) && cd ${RDIR}
 
 
 # kill 伪目标将会:
 #		1. 终止所有QEMU进程
 #		2. 终止所有Python.HttpServer进程
+#		3. BSD的xargs和Linux的xargs不一致
 .PHONY: kill
 kill:
 	@echo "正在终止所有 QEMU 进程..."
-	ps aux | grep -e 'qemu' | grep -v 'grep' | awk '{print $$2}' | xargs --no-run-if-empty kill -9
+	@qemu_process=`ps aux | grep -e 'qemu' | grep -v 'grep' | grep $$USER | awk '{print $$2}'`; \
+		test $$qemu_process && (kill -9 $$qemu_process && echo "\t已杀死 QEMU 进程: $$qemu_process") || echo "\t未检测到遗留的 QEMU 进程"
 	@echo "正在终止所有 Python.HttpServer 进程..."
-	ps aux | grep -e 'http.server' | grep -v 'grep' | awk '{print $$2}' | xargs --no-run-if-empty kill -9
+	@pysv_process=`ps aux | grep -e 'http.server' -e 'SimpleHTTPServer' | grep -v 'grep' | grep $$USER | awk '{print $$2}'`; \
+		test $$pysv_process && (kill -9 $$pysv_process && echo "\t已杀死 Python HttpServer 进程: $$pysv_process") || echo "\t未检测到遗留的 Python HttpServer 进程"
+	@echo "正在终止所有 GDB 进程..."
+	@gdb_process=`ps aux | grep -e 'gdb' | grep -v 'grep' | grep $$USER | awk '{print $$2}'`; \
+		test $$gdb_process && (kill -9 $$gdb_process && echo "\t已杀死 GDB 进程: $$gdb_process") || echo "\t未检测到遗留的 GDB 进程"
 
 # run 目标依赖于 kernel sbi 目标, 将会:
 #		1. 使用 QEMU 运行内核
