@@ -12,6 +12,12 @@
 #ifndef __INCLUDE_CONSTRAINS_H
 #define __INCLUDE_CONSTRAINS_H
 
+/**
+ * @brief 内核是否处于DEBUG模式, 若:
+ * - DEBUG = 0, 不会运行测试函数
+ * - DEBUG = 1, 运行测试函数
+ */
+#define DEBUG 1
 
 /// 内核的跳转地址, 在`kernel.ld`中定义
 #define KERNEL_JUMP_ADDR 0x80200000
@@ -21,6 +27,10 @@
 
 /// `UART`设备的波特率
 #define UART_BAUD_RATE              115200
+
+/// 最大测试函数的数量
+#define MAX_TEST_FUNCTION_NUM       20
+
 
 
 #endif

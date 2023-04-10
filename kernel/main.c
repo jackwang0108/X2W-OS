@@ -9,16 +9,16 @@
  */
 
 #include "uart.h"
+#include "init.h"
+#include "test.h"
 
-/**
- * @brief `kernel_main`是内核的入口函数
- * 
- */
-void kernel_main(void);
+/// `kernel_main`是内核的入口函数
+void kernel_main(void);         // make gcc happy :)
 
 void kernel_main(void){
-    uart_init();
-    uart_puts("Hello X2W-OS!\n");
+    init_all();
+
+    test_all();
 
     while (1);
 }
