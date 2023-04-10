@@ -81,7 +81,7 @@ Q_FLAG = -nographic \
 	-machine virt \
 	-m 128M 
 
-Q_BIOS = -bios none -device loader,file=${BDIR}/os.bin,addr=0x80200000
+Q_BIOS = -bios ${BDIR}/sbi.bin -device loader,file=${BDIR}/os.bin,addr=0x80200000
 
 
 
