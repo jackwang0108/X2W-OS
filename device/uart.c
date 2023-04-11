@@ -35,8 +35,6 @@ void uart_init(void){
 
     // 设置FIFO工作模式, FIFO队列长度设置为14字节, 每次发送/接受数据均清空FIFO
     write_8_bits(UART_FCR, 0b11000111);
-
-    register_test_func(test_uart);
 }
 
 
@@ -46,7 +44,7 @@ void uart_put(char chr){
     write_8_bits(UART_DAT, chr);
 }
 
-void uart_puts(char* str){
+void uart_puts(const char* str){
     for (int i = 0; str[i] != '\0'; i++)
         uart_put((char) str[i]);
 }
@@ -58,6 +56,7 @@ void uart_get(void){
 
 int test_uart(void){
     // 测试 uart_put
+    uart_puts("---> test_uart:\n");
     char charset[] = "01234567890ABCDEFGHI./?\"'";
     for (int i = 0; i < sizeof(charset)/sizeof(char); i++)
         uart_put(charset[i]);

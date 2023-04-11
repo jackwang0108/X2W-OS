@@ -22,7 +22,7 @@
  * @brief `itoa` (integer to ascii) 用于将`uint64_t`数字转换为`char*`数字, 并将其存入`*buf_ptr_addr`指向的内存中
  * 
  * @param integer 需要转为字符串形式的整数
- * @param buf_ptr_addr 指向接受输出的字符串的二级指针
+ * @param buf_ptr_addr 指向接受输出的字符串的指针, 即字符数组名的地址
  * @param base 转换进制, 可以任意指定. 例如:
  * - `base = 2`: 将`integer`转换为二进制形式的字符串数字, 例如 `6 = "110"`
  * - `base = 8`: 将`integer`转换为二进制形式的字符串数字, 例如 `23 = "27"`
@@ -31,5 +31,13 @@
  * @note 因为是使用递归完成的转换, 因此多次递归需要共享字符数组, 因此需要字符数组的二级指针
  */
 void itoa(uint64_t integer, char** buf_ptr_addr, uint8_t base);
+
+#if DEBUG == 1
+/**
+ * @brief `test_stdlib`是`stdlib`库的测试函数
+ * @return int 测试正常则返回0
+ */
+int test_stdlib(void);
+#endif
 
 #endif

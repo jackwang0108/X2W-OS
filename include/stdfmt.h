@@ -44,4 +44,12 @@ size_t vsprintf(char* str, const char* format, va_list ap);
  */
 size_t sprintf(char* buf, const char* format, ...);
 
+#if DEBUG == 1
+/**
+ * @brief `test_stdfmt`是`stdfmt`库的测试函数
+ * @return int 测试正常则返回0
+ */
+int test_stdfmt(void);
+#endif
+
 #endif

@@ -33,7 +33,7 @@ size_t memset(void *dst, uint8_t value, size_t size);
 
 
 /**
- * @brief `memcpy`将`src`起始的`siz`个内存单元的值(以字节计算)复制到`dst`起始的`size`个内存单元中
+ * @brief `memcpy`将`src`起始的`size`个内存单元的值(以字节计算)复制到`dst`起始的`size`个内存单元中
  * 
  * @param dst 被复制的内存区域的起始地址
  * @param src 复制到的内存区域的起始地址

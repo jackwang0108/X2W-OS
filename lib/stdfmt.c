@@ -89,3 +89,37 @@ size_t sprintf(char* buf, const char* format, ...){
     va_end(args);
     return retval;
 }
+
+#if DEBUG == 1
+// 声明外部符号, 避免include
+extern void uart_puts(const char*);
+int test_stdfmt(void){
+    uart_puts("---> "), uart_puts(__func__), uart_puts(": \n");
+    // test vsprintf
+    char vsprintf_buffer[100] = {0};
+    struct {
+        char ch;
+        char name[10];
+        int num;
+    } func_param = {
+        .ch = 's',
+        .name = "Jack Wang",
+        .num = 8
+    };
+    va_list args = (va_list)&func_param;
+    vsprintf(vsprintf_buffer, "%% - %c - %s - %b - %o - %d - %x\n", args);
+    uart_puts(vsprintf_buffer);
+    
+    
+    // test sprintf
+    char sprintf_buffer[100] = {0};
+    sprintf(
+        sprintf_buffer,
+        "%% - %c - %s - %b - %o - %d - %x\n",
+        'J', "Shihong Wang", 0b1111, 0100, 20, 0x1234
+    );
+    uart_puts(sprintf_buffer);
+
+    return 0;
+}
+#endif

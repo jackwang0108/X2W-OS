@@ -29,9 +29,21 @@ void register_test_func(test_func_pointer_t func){
     #endif
 }
 
+#include "uart.h"
+#include "stdlib.h"
+#include "stdfmt.h"
+#include "kstdio.h"
+#include "string.h"
 
 void test_all(void){
     #if DEBUG == 1
+
+    register_test_func(test_uart);
+    register_test_func(test_stdlib);
+    register_test_func(test_stdfmt);
+    register_test_func(test_kstdio);
+
+
     for (int i = 0; i < _Test.regiter_idx; i++)
         (*_Test.test_functions[i])();
     #endif
