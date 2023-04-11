@@ -90,10 +90,10 @@ Q_BIOS = -bios ${BDIR}/sbi.bin -device loader,file=${BDIR}/os.bin,addr=0x8020000
 # ----------------------------------------------------------
 
 # QEMU
-QEMU = qemu-system-riscv64
+QEMU := qemu-system-riscv64
 
 # GDB
-GDB = $(shell \
+GDB := $(shell \
 	if gdb-multiarch -v 2>&1 | grep 'GNU' >/dev/null 2>&1; then\
 		echo 'gdb-multiarch'; \
 	elif riscv64-unknown-elf-gdb -v 2>&1 | grep 'GNU' >/dev/null 2>&1; then \
@@ -105,10 +105,10 @@ GDB = $(shell \
 )
 
 # cross-compiler prefix
-CROSS_COMPILE = riscv64-unknown-elf-
+CROSS_COMPILE := riscv64-unknown-elf-
 
 # GCC
-CC = $(shell \
+CC := $(shell \
 	if ${CROSS_COMPILE}gcc --version 2>&1 | grep 'Free' >/dev/null; then\
 		echo '${CROSS_COMPILE}gcc'; \
 	else \
@@ -118,7 +118,7 @@ CC = $(shell \
 )
 
 # LD
-LD = $(shell \
+LD := $(shell \
 	if ${CROSS_COMPILE}ld --version 2>&1 | grep 'GNU' >/dev/null; then\
 		echo '${CROSS_COMPILE}ld'; \
 	else \
@@ -128,7 +128,7 @@ LD = $(shell \
 )
 
 # NM
-NM = $(shell \
+NM := $(shell \
 	if ${CROSS_COMPILE}nm --version 2>&1 | grep 'GNU' >/dev/null; then\
 		echo '${CROSS_COMPILE}nm'; \
 	else \
@@ -138,7 +138,7 @@ NM = $(shell \
 )
 
 # OBJCOPY
-OBJCOPY = $(shell \
+OBJCOPY := $(shell \
 	if ${CROSS_COMPILE}objcopy --version 2>&1 | grep 'GNU' >/dev/null; then\
 		echo '${CROSS_COMPILE}objcopy'; \
 	else \
@@ -148,7 +148,7 @@ OBJCOPY = $(shell \
 )
 
 # OBJDUMP
-OBJDUMP = $(shell \
+OBJDUMP := $(shell \
 	if ${CROSS_COMPILE}objdump --version 2>&1 | grep 'GNU' >/dev/null; then\
 		echo '${CROSS_COMPILE}objdump'; \
 	else \
@@ -157,15 +157,24 @@ OBJDUMP = $(shell \
 	fi \
 )
 
+# STRIP
+STRIP := $(shell \
+	if ${CROSS_COMPILE}strip --version 2>&1 | grep 'GNU' >/dev/null; then\
+		echo '${CROSS_COMPILE}strip'; \
+	else \
+		echo "Error: Cannot find ${CROSS_COMPILE}strip!" 1>&2; \
+		exit 1; \
+	fi \
+)
+
 # REALPATH
-REALPATH = $(shell \
+REALPATH := $(shell \
 	if uname -a | grep 'Darwin' >/dev/null 2>&1; then\
 		echo 'grealpath'; \
 	else \
 		echo 'realpath'; \
 	fi \
 )
-
 
 # PYTHON
 PYTHON_HTTP_SERVER := $(shell \
@@ -220,9 +229,18 @@ RDIR := $(shell dirname ${MKP})
 BDIR := $(shell dirname ${MKP})/build
 
 # 内核相关文件
-KFILE := ${RDIR}/${KNAME} ${BDIR}/os.elf ${BDIR}/os.bin
+KFILE := \
+	${RDIR}/${KNAME} \
+	${BDIR}/os.elf \
+	${BDIR}/os.bin \
+	${BDIR}/os.debug
+
 # SBI相关文件
-SFILE := ${RDIR}/${SNAME} ${BDIR}/sbi.elf ${BDIR}/sbi.bin
+SFILE := \
+	${RDIR}/${SNAME} \
+	${BDIR}/sbi.elf \
+	${BDIR}/sbi.bin \
+	${BDIR}/sbi.debug
 
 # 内核目标文件
 K_OBJS = $(K_SRCS_ASM:.S=.o)	# 将 K_SRCS_ASM 中的所有.S结尾的文件转换为.o结尾的文件, 并赋值给 K_OBJS 变量
@@ -273,21 +291,8 @@ echo:
 #		2. 编译得到内核
 #		3. 编译得到SBI
 .DEFAULT_GOAL := all
-all: mkdir kernel sbi
-	@echo "/* -------------------------- 内核和SBI文件 -------------------------- */"
-	@echo "内核文件:"
-	@for x in ${KFILE}; do \
-		printf "\t"; \
-		${REALPATH} --relative-to ${RDIR} $$x; \
-	done
-	@echo "-----------------------------------------------------------------------"
-	@echo "SBI文件:"
-	@for x in ${SFILE}; do \
-		printf "\t"; \
-		${REALPATH} --relative-to ${RDIR} $$x; \
-	done
-	@echo "-----------------------------------------------------------------------"
-
+all: mkdir kernel sbi $(KFILE) $(SFILE)
+	@echo '运行 `make info`查看内核和SBI文件'
 
 # full 目标, 将会:
 #		1. 完成 all 目标
@@ -306,10 +311,27 @@ mkdir:
 	@mkdir -p $(foreach dir, $(K_SRCS_DIR), ${BDIR}/$(dir))
 	@mkdir -p $(foreach dir, $(S_SRCS_DIR), ${BDIR}/$(dir))
 
+.PHONY: info
+info: kernel sbi
+	@echo "/* -------------------------- 内核和SBI文件 -------------------------- */"
+	@echo "内核文件:"
+	@for x in $(KFILE); do \
+		printf "\t"; \
+		${REALPATH} --relative-to ${RDIR} $$x; \
+	done
+	@echo "-----------------------------------------------------------------------"
+	@echo "SBI文件:"
+	@for x in $(SFILE); do \
+		printf "\t"; \
+		${REALPATH} --relative-to ${RDIR} $$x; \
+	done
+	@echo "-----------------------------------------------------------------------"
+
 # obj 目标将会:
 #		1. 更新所有的目标文件
 #		2. 输出内核所有的目标文件
 #		3. 输出SBI所有的目标文件
+# 需要注意的是, 如果不把 K_OBJS 和 S_OBJS 显示声明为依赖, 那么 VSCode 的 makefile-tools 解析时候就会卡死
 obj: mkdir ${K_OBJS} ${S_OBJS}
 	@echo "/* -------------------------- 编译内核和SBI源文件 -------------------------- */"
 	@echo "当前内核目标文件:"
@@ -325,20 +347,28 @@ obj: mkdir ${K_OBJS} ${S_OBJS}
 	done
 	@echo "-----------------------------------------------------------------------"
 
-# kernel 目标依赖于 OBJ 目标, 具体来说会:
-#		1. 根据 kernel.ld 链接脚本链接所有的目标文件以生产二进制内核文件
+# kernel 目标依赖于 K_OBJ 目标, 具体来说会:
+#		1. 根据 kernel.ld 链接脚本链接所有的目标文件以生产ELF格式内核文件
 #		2. 将二进制内核文件转换为裸二进制文件 os.bin 以删除ELF文件中没有用到的段, 为后续的反汇编进行准备
+# 		3. 将 build 文件下的 os.elf 文件去除符号表后输出为根目录下的 ${KNAME} 文件
+#		4. 生成内核的符号文件并输出为 build/os.debug 文件, 方便 GDB debug用
 kernel: mkdir ${K_OBJS}
 	@${LD} ${K_OBJS} -T ${RDIR}/kernel/kernel.ld -o ${BDIR}/os.elf
 	@${OBJCOPY} -O binary ${BDIR}/os.elf ${BDIR}/os.bin
-	@cp ${BDIR}/os.elf ${RDIR}/${KNAME}
-# @${CC} ${CFLAGS} ${SRC} -T ${RDIR}/kernel/kernel.ld -o ${BDIR}/${KNAME} $^
+	@${STRIP} ${BDIR}/os.elf -o ${RDIR}/${KNAME}
+	@${OBJCOPY} --only-keep-debug ${BDIR}/os.elf ${BDIR}/os.debug
 
 
+# sbi 目标依赖于 S_OBJ 目标, 具体来说会:
+#		1. 根据 sbi.ld 链接脚本链接所有的目标文件以生产ELF格式的SBI文件
+#		2. 将二进制SBI文件转换为裸二进制文件 sbi.bin 以删除ELF文件中没有用到的段, 为后续的反汇编进行准备
+# 		3. 将 build 文件下的 sbi.elf 文件去除符号表后输出为根目录下的 ${SNAME} 文件
+#		4. 生成 SBI 的符号文件并输出为 build/sbi.debug 文件, 方便 GDB debug用
 sbi: mkdir ${S_OBJS}
 	@${LD} ${S_OBJS} -T ${RDIR}/sbi/sbi.ld -o ${BDIR}/sbi.elf
 	@${OBJCOPY} -O binary ${BDIR}/sbi.elf ${BDIR}/sbi.bin
-	@cp ${BDIR}/sbi.elf ${RDIR}/${SNAME}
+	@${STRIP} ${BDIR}/sbi.elf -o ${RDIR}/${SNAME}
+	@${OBJCOPY} --only-keep-debug ${BDIR}/sbi.elf ${BDIR}/sbi.debug
 
 # disasm 目标依赖于 kernel 目标, 具体来说会:
 #		1. 反汇编得到内核的汇编代码
@@ -383,7 +413,8 @@ disasm: kernel sbi
 
 
 # documentation 目标将会:
-#		1. 构建文档
+#		1. 构建 Doxygen 文档
+#		2. 构建 Sphinx 文档
 documentation: ${RDIR}/docs/sphinx/Makefile
 	@echo "正在构建文件系统...."
 	@make -C ${RDIR}/docs/sphinx html && echo '构建成功, 构建过程中产生的警告为正常现象, 忽略即可\n运行`make read`命令以开始阅读文档' || echo "ERROR: 构建失败"
@@ -400,7 +431,9 @@ documentation: ${RDIR}/docs/sphinx/Makefile
 
 
 # clean 伪目标将会:
-#		1. 清除中间文件
+#		1. 清除 build 目录下的中间文件
+#		2. 删除 Doxygen 文档
+#		3. 删除 Sphinx 文档
 .PHONY: clean
 clean:
 	rm -rf ${BDIR}/*
@@ -430,7 +463,8 @@ read:
 # kill 伪目标将会:
 #		1. 终止所有QEMU进程
 #		2. 终止所有Python.HttpServer进程
-#		3. BSD的xargs和Linux的xargs不一致
+#		3. 终止所有的GDB进程
+# BSD的xargs和Linux的xargs不一致, 所以需要使用test屏蔽
 .PHONY: kill
 kill:
 	@echo "正在终止所有 QEMU 进程..."
@@ -442,6 +476,7 @@ kill:
 	@echo "正在终止所有 GDB 进程..."
 	@gdb_process=`ps aux | grep -e 'gdb' | grep -v 'grep' | grep $$USER | awk '{print $$2}'`; \
 		test $$gdb_process && (kill -9 $$gdb_process && echo "\t已杀死 GDB 进程: $$gdb_process") || echo "\t未检测到遗留的 GDB 进程"
+
 
 # run 目标依赖于 kernel sbi 目标, 将会:
 #		1. 使用 QEMU 运行内核
@@ -462,14 +497,14 @@ run: kernel sbi
 #		5. GDB -q: 取消 GDB 链接时的一些输出信息
 #		6. GDB -x: 设置 GDB 启动后运行的命令, 这里包含: 链接到 GDB Server, 在 _start 处设置断点
 .PHONY : debug-gdb
-debug-gdb: kernel sbi
+debug-gdb: kernel sbi ${BDIR}/os.debug ${BDIR}/sbi.debug
 	@echo "使用 GDB 调试内核, 所有输出将在下方显示"
 	@echo "按下 Ctrl+C 以终止QEMU, 然后输入 quit 退出 GDB"
 	@echo '你可以运行 `make run` 以使用 QEMU 直接运行内核'
 	@echo '或者运行 `make debug-vscode` 以使用 VSCode 链接 QEMU 调试内核'
 	@echo "------------------------------------------------------------------"
 	@${QEMU} ${Q_FLAG} ${Q_BIOS} -kernel ${RDIR}/${KNAME} -gdb tcp::1234 -S &
-	@${GDB} ${RDIR}/${KNAME} -q -x ${RDIR}/gdbinit
+	@cd ${RDIR} && ${GDB} ${RDIR}/${KNAME} -q -x ${RDIR}/gdbinit
 
 # debug-server 目标依赖于 kernel sbi 目标, 将会使用 vs-code 调试内核:
 .PHONY : debug-vscode
