@@ -1,0 +1,13 @@
+{
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+    "files.associations": {
+        "types.h": "c",
+        "string.h": "c",
+        "stdlib.h": "c",
+        "uart.h": "c",
+        "stdfmt.h": "c",
+        "kstdio.h": "c",
+        "constrains.h": "c",
+        "csr.h": "c"
+    },
+}

@@ -1,0 +1,30 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "GDB Debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "externalConsole": false,
+            "stopAtConnect": true,
+            "MIMode": "gdb",
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/build/os.elf",
+            "osx": {
+                "name": "GDB Debug: MacOS",
+                "miDebuggerArgs": "/opt/homebrew/bin/riscv64-unknown-elf-gdb",
+                "miDebuggerPath": "/opt/homebrew/bin/riscv64-unknown-elf-gdb",
+                "miDebuggerServerAddress": "192.168.0.101:1234",
+            },
+            "linux": {
+                "name": "GDB Debug: Linux",
+                "miDebuggerArgs": "/usr/bin/gdb-multiarch",
+                "miDebuggerPath": "/usr/bin/gdb-multiarch",
+                "miDebuggerServerAddress": "192.168.0.106:1234",
+            }
+        }
+    ]
+}
