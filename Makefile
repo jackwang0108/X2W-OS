@@ -483,7 +483,7 @@ kill:
 .PHONY: run
 run: kernel sbi
 	@echo '运行内核: ${KNAME}, 所有输出将在下方显示'
-	@echo "按下 Ctrl+A, 然后按下 X 键以退出 QEMU"
+	@echo "首先按下 Ctrl+A, 然后按下 X 键以退出 QEMU"
 	@echo '你可以运行 `make debug-gdb` 以使用 GDB 调试内核'
 	@echo '或者运行 `make debug-vscode` 以使用 VSCode 链接 QEMU 调试内核'
 	@echo "----------------------------------------------------------------------------"
@@ -511,6 +511,7 @@ debug-gdb: kernel sbi ${BDIR}/os.debug ${BDIR}/sbi.debug
 debug-vscode: kernel sbi
 	@echo "使用 VSCode 调试内核, 正在等待 VSCode 链接..."
 	@echo "VSCode 终止调试后 QEMU 将自动停止运行"
+	@echo "如果你想直接停止运行, 则首先按下 Ctrl+A, 然后按下 X 键以退出 QEMU"
 	@echo '你可以运行 `make run` 以使用 QEMU 直接运行内核'
 	@echo '你可以运行 `make debug-gdb` 以使用 GDB 调试内核'
 	@echo "------------------------------------------------------------------"

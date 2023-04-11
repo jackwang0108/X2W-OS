@@ -26,7 +26,6 @@ void itoa(uint64_t integer, char** buf_ptr_addr, uint8_t base){
         *((*buf_ptr_addr)++) = remain - 10 + 'A';
 }
 
-#if DEBUG == 1
 extern void uart_puts(const char *);
 int test_stdlib(void){
     uart_puts("---> "), uart_puts(__func__), uart_puts(": \n");
@@ -38,4 +37,3 @@ int test_stdlib(void){
     }
     return 0;
 }
-#endif
