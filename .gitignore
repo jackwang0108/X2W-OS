@@ -3,6 +3,9 @@ attaches
 **/*.o
 **/build
 
+.vscode
+.idea
+
 # Prerequisites
 *.d
 
