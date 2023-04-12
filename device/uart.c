@@ -56,7 +56,7 @@ void uart_get(void){
 
 int test_uart(void){
     // 测试 uart_put
-    uart_puts("---> test_uart:\n");
+    uart_puts("=> test_uart:\n");
     char charset[] = "01234567890ABCDEFGHI./?\"'";
     for (int i = 0; i < sizeof(charset)/sizeof(char); i++)
         uart_put(charset[i]);
