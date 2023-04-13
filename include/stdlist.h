@@ -20,7 +20,7 @@
 /**
  * @brief `list_elem_t`是链表节点结构体
  * 
- * @note `list_elem_t`需要作为结构体的成员, 而后通过`elem2struct`宏获得指向结构体的指针
+ * @note `list_elem_t`需要作为结构体的成员, 而后通过`member2struct`宏获得指向结构体的指针
  */
 typedef struct __list_elem_t {
     /// @brief 指向上一个链表节点的指针
@@ -33,9 +33,9 @@ typedef struct __list_elem_t {
  * @brief `list_t`是链表结构体
  */
 typedef struct __list_t {
-    /// @brief 链表头结点
+    /// @brief 链表头结点, 仅标记用, 第一个节点是head->next
     list_elem_t head;
-    /// @brief 链表尾结点
+    /// @brief 链表尾结点, 仅标记用, 最后一个节点是tail->prev
     list_elem_t tail;
 } list_t;
 
@@ -45,7 +45,7 @@ typedef struct __list_t {
  * @param elem 链表节点指针
  * @param arg 参数
  */
-typedef bool (list_walking_func_t)(list_elem_t *elem_ptr, int arg);
+typedef Bool (list_walking_func_t)(list_elem_t *elem_ptr, int arg);
 
 
 /**
@@ -105,7 +105,7 @@ list_elem_t* list_pop(list_t *list_ptr);
  * @return true 链表为空
  * @return false 链表不为空
  */
-bool list_empty(list_t *list_ptr);
+Bool list_empty(list_t *list_ptr);
 
 /**
  * @brief `list_size`用于计算`list_ptr`指向的链表的长度(元素个数)
@@ -124,7 +124,7 @@ size_t list_size(list_t *list_ptr);
  * @return true `elem_ptr`指向的节点在`list_ptr`指向的链表中
  * @return false `elem_ptr`指向的节点不在`list_ptr`指向的链表中
  */
-bool list_search(list_elem_t *elem_ptr, list_t *list_ptr);
+Bool list_search(list_elem_t *elem_ptr, list_t *list_ptr);
 
 /**
  * @brief `list_walking`用于遍历`list_ptr`指向的链表, 并对每一个节点调用`func`判断是否继续遍历
@@ -132,7 +132,7 @@ bool list_search(list_elem_t *elem_ptr, list_t *list_ptr);
  * @param list_ptr 指向要遍历的链表的指针
  * @param func 将应用在每一个节点上的函数
  * @param arg 传给`func`的参数
- * @return list_elem_t* 若将`func`应用在当前节点后返回值为true, 则停止遍历, 便返回指向当前节点的指针, 否则继续遍历
+ * @return list_elem_t* 若将`func`应用在当前节点后返回值为true, 则停止遍历, 且返回指向当前节点的指针, 否则继续遍历; 若将func应用于链表中所有元素后, 没有一个节点返回true, 则返回NULL
  */
 list_elem_t* list_walking(list_t *list_ptr, list_walking_func_t func, int arg);
 

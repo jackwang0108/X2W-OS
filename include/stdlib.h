@@ -17,37 +17,53 @@
 
 
 /**
- * @brief `offset`宏用于获得结构体`struct_type`中名为`member_name`成员的偏移量
+ * @brief `offset`宏用于获得结构体`struct_type`中名为`member_name`成员的偏移量(以字节计算)
  * 
  * @param struct_type 结构体名
  * @param member_name 结构体中的成员名
  * 
- * @return size_t 以字节计算的偏移量 
  * 
- * @example
+ * 举例:
  * ```c
  * struct person_t {
  *      uint8_t age;
  *      uint32_t id;
  *      char name[10];
  * };
- * offset(person_t, age)        # return 0
- * offset(person_t, id)         # return 1
- * offset(person_t, name)       # return 5
+ * offset(person_t, age);        # return 0
+ * offset(person_t, id);         # return 1
+ * offset(person_t, name);       # return 5
  * ```
  * 
  */
-#define offset(struct_type, member_name) (size_t) (&((struct_type*)0)->member_name)
+#define offset(struct_type, member_name) \
+    (size_t) (&((struct_type*)0)->member_name)
 
 /**
- * @brief `elem2struct`宏用于将指向结构体`struct_type`中的名为`member_name`的成员的指针转为指向`struct_type`的指针
+ * @brief `member2struct`宏用于将指向结构体`struct_type`中的名为`member_name`的成员的指针转为指向`struct_type`的指针
  * 
  * @param struct_type 结构体名
  * @param member_name 结构体中的成员名
  * @param elem_ptr 指向结构体中`member_name`成员的指针
  * 
+ * @return struct_type* 指向成员所在的结构体的指针
+ * 
+ * 举例:
+ * ```c
+ * struct person_t {
+ *      uint8_t age;
+ *      uint32_t id;
+ *      char name[10];
+ * };
+ * 
+ * person_t jack = {22, 2196113760, "Shihong Wang"};
+ * uint32_t *id_ptr = &jack.id;
+ * # 将指向成员的指针转换为指向结构体的指针
+ * person_t *person_ptr = member2struct(person_t, id, id_ptr);
+ * &jack == person_ptr ? true : false;          # return true
+ * ```
  */
-#define elem2struct(struct_type, member_name, elem_ptr) \
+#define member2struct(struct_type, member_name, elem_ptr) \
     (struct_type*)((uint64_t)elem_ptr - offset(struct_type, member_name))
 
 
