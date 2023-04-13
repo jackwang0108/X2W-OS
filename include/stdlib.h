@@ -5,9 +5,6 @@
  * @version 0.1
  * @date 2023-04-09
  * 
- * @todo
- * 1. 需要测试itoa函数
- * 
  * @warning 为了避免编译时编译器使用系统的`stdlib.h`库, 编译时需要为`GCC`指定`-nostdinc`选项, 详见根目录下的`Makefile`
  * 
  * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
@@ -17,6 +14,42 @@
 #define __INCLUDE_STDLIB_H
 
 #include "types.h"
+
+
+/**
+ * @brief `offset`宏用于获得结构体`struct_type`中名为`member_name`成员的偏移量
+ * 
+ * @param struct_type 结构体名
+ * @param member_name 结构体中的成员名
+ * 
+ * @return size_t 以字节计算的偏移量 
+ * 
+ * @example
+ * ```c
+ * struct person_t {
+ *      uint8_t age;
+ *      uint32_t id;
+ *      char name[10];
+ * };
+ * offset(person_t, age)        # return 0
+ * offset(person_t, id)         # return 1
+ * offset(person_t, name)       # return 5
+ * ```
+ * 
+ */
+#define offset(struct_type, member_name) (size_t) (&((struct_type*)0)->member_name)
+
+/**
+ * @brief `elem2struct`宏用于将指向结构体`struct_type`中的名为`member_name`的成员的指针转为指向`struct_type`的指针
+ * 
+ * @param struct_type 结构体名
+ * @param member_name 结构体中的成员名
+ * @param elem_ptr 指向结构体中`member_name`成员的指针
+ * 
+ */
+#define elem2struct(struct_type, member_name, elem_ptr) \
+    (struct_type*)((uint64_t)elem_ptr - offset(struct_type, member_name))
+
 
 /**
  * @brief `itoa` (integer to ascii) 用于将`uint64_t`数字转换为`char*`数字, 并将其存入`*buf_ptr_addr`指向的内存中
