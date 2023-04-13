@@ -8,7 +8,10 @@
         "stdfmt.h": "c",
         "kstdio.h": "c",
         "constrains.h": "c",
-        "csr.h": "c"
+        "csr.h": "c",
+        "assert.h": "c",
+        "kdebug.h": "c",
+        "udebug.h": "c",
     },
     "C_Cpp.errorSquiggles": "enabled",
 }

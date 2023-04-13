@@ -353,7 +353,7 @@ obj: mkdir ${K_OBJS} ${S_OBJS}
 # 		3. 将 build 文件下的 os.elf 文件去除符号表后输出为根目录下的 ${KNAME} 文件
 #		4. 生成内核的符号文件并输出为 build/os.debug 文件, 方便 GDB debug用
 kernel: mkdir ${K_OBJS}
-	@${LD} ${K_OBJS} -T ${RDIR}/kernel/kernel.ld -o ${BDIR}/os.elf
+	${LD} ${K_OBJS} -T ${RDIR}/kernel/kernel.ld -o ${BDIR}/os.elf
 	@${OBJCOPY} -O binary ${BDIR}/os.elf ${BDIR}/os.bin
 	@${STRIP} ${BDIR}/os.elf -o ${RDIR}/${KNAME}
 	@${OBJCOPY} --only-keep-debug ${BDIR}/os.elf ${BDIR}/os.debug
@@ -365,7 +365,7 @@ kernel: mkdir ${K_OBJS}
 # 		3. 将 build 文件下的 sbi.elf 文件去除符号表后输出为根目录下的 ${SNAME} 文件
 #		4. 生成 SBI 的符号文件并输出为 build/sbi.debug 文件, 方便 GDB debug用
 sbi: mkdir ${S_OBJS}
-	@${LD} ${S_OBJS} -T ${RDIR}/sbi/sbi.ld -o ${BDIR}/sbi.elf
+	${LD} ${S_OBJS} -T ${RDIR}/sbi/sbi.ld -o ${BDIR}/sbi.elf
 	@${OBJCOPY} -O binary ${BDIR}/sbi.elf ${BDIR}/sbi.bin
 	@${STRIP} ${BDIR}/sbi.elf -o ${RDIR}/${SNAME}
 	@${OBJCOPY} --only-keep-debug ${BDIR}/sbi.elf ${BDIR}/sbi.debug
