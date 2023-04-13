@@ -29,10 +29,10 @@ typedef int        int32_t;           ///< `LP64`中一个 `int`  宽度为 `32 
 typedef long       int64_t;           ///< `LP64`中一个 `long` 宽度为 `64    bit`
 
 /// 布尔常量定义
-typedef unsigned char Bool;
+typedef unsigned char bool;
 enum {
-    False   = 0,            ///< 等价于`unsigned int False = 0`
-    True    = 1             ///< 等价于`unsigned int True = 1`
+    false   = 0,            ///< 等价于`unsigned int false = 0`
+    true    = 1             ///< 等价于`unsigned int true = 1`
 };
 
 /// 计数常量定义
