@@ -29,7 +29,7 @@
  * 
  * @return size_t 成功设置的字节数
  */
-size_t memset(void *dst, uint8_t value, size_t size);
+size_t memset(void *dst, byte value, size_t size);
 
 
 /**

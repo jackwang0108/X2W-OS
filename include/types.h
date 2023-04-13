@@ -29,14 +29,20 @@ typedef int        int32_t;           ///< `LP64`中一个 `int`  宽度为 `32 
 typedef long       int64_t;           ///< `LP64`中一个 `long` 宽度为 `64    bit`
 
 /// 布尔常量定义
-typedef unsigned char bool;
+typedef unsigned char Bool;
 enum {
-    false   = 0,            ///< 等价于`unsigned int false = 0`
-    true    = 1             ///< 等价于`unsigned int true = 1`
+    False   = 0,            ///< 等价于`unsigned int false = 0`
+    True    = 1             ///< 等价于`unsigned int true = 1`
 };
 
-/// 计数常量定义
-typedef unsigned long size_t;
+/// 计数类型定义
+typedef uint64_t size_t;
+
+/// 字节类型定义
+typedef uint8_t byte;
+
+/// 偏移类型定义
+typedef uint64_t offset_t;
 
 /// `ARRAY_SIZE`宏函数用于计算数组`array`中的元素个数, 返回值类型为`size_t`
 #define ARRAY_SIZE(array)  ((size_t)(sizeof(array) / sizeof((array)[0])))

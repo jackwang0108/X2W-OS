@@ -12,7 +12,7 @@
 
 #include "string.h"
 
-size_t memset(void* dst, uint8_t value, size_t size){
+size_t memset(void* dst, byte value, size_t size){
     size_t num = 0;
     uint8_t* dst_ = (uint8_t *)dst;
     while(size-- > 0)
