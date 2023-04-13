@@ -10,4 +10,5 @@
         "constrains.h": "c",
         "csr.h": "c"
     },
+    "C_Cpp.errorSquiggles": "enabled",
 }
