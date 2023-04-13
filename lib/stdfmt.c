@@ -94,7 +94,7 @@ size_t sprintf(char* buf, const char* format, ...){
 // 声明外部符号, 避免include
 extern void uart_puts(const char*);
 int test_stdfmt(void){
-    uart_puts("---> "), uart_puts(__func__), uart_puts(": \n");
+    uart_puts("=> "), uart_puts(__func__), uart_puts(": \n");
     // test vsprintf
     char vsprintf_buffer[100] = {0};
     struct {
