@@ -102,8 +102,8 @@ list_elem_t* list_pop(list_t *list_ptr);
  * @brief `list_empty`用于判断`list_ptr`指向的链表是否为空
  * 
  * @param list_ptr 指向被判断的链表的指针
- * @return true 链表为空
- * @return false 链表不为空
+ * @return True 链表为空
+ * @return False 链表不为空
  */
 Bool list_empty(list_t *list_ptr);
 
@@ -121,8 +121,8 @@ size_t list_size(list_t *list_ptr);
  * @param elem_ptr 指向被查找的节点的指针
  * @param list_ptr 指向被查找的链表的指针
  * 
- * @return true `elem_ptr`指向的节点在`list_ptr`指向的链表中
- * @return false `elem_ptr`指向的节点不在`list_ptr`指向的链表中
+ * @return True `elem_ptr`指向的节点在`list_ptr`指向的链表中
+ * @return False `elem_ptr`指向的节点不在`list_ptr`指向的链表中
  */
 Bool list_search(list_elem_t *elem_ptr, list_t *list_ptr);
 
@@ -132,7 +132,7 @@ Bool list_search(list_elem_t *elem_ptr, list_t *list_ptr);
  * @param list_ptr 指向要遍历的链表的指针
  * @param func 将应用在每一个节点上的函数
  * @param arg 传给`func`的参数
- * @return list_elem_t* 若将`func`应用在当前节点后返回值为true, 则停止遍历, 且返回指向当前节点的指针, 否则继续遍历; 若将func应用于链表中所有元素后, 没有一个节点返回true, 则返回NULL
+ * @return list_elem_t* 若将`func`应用在当前节点后返回值为True, 则停止遍历, 且返回指向当前节点的指针, 否则继续遍历; 若将func应用于链表中所有元素后, 没有一个节点返回True, 则返回NULL
  */
 list_elem_t* list_walking(list_t *list_ptr, list_walking_func_t func, int arg);
 
