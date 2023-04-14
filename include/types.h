@@ -47,4 +47,22 @@ typedef int64_t offset_t;
 /// `ARRAY_SIZE`宏函数用于计算数组`array`中的元素个数, 返回值类型为`size_t`
 #define ARRAY_SIZE(array)  ((size_t)(sizeof(array) / sizeof((array)[0])))
 
+/**
+ * @brief `NO_RETURN`宏用于通知`GCC`/`Clang`编译器被修饰的函数不会返回, 帮助编译器静态分析用
+ * 
+ * @note `NO_RETURN`宏本质上是借助了`GCC`/`Clang`的`__attribute__`关键词实现的, 使用的标记(annotation)是: `noreturn`
+ * 
+ * @note 参考: https://stackoverflow.com/questions/25408795/tell-gcc-that-a-function-call-will-not-return
+ */
+#define NO_RETURN __attribute__((noreturn))
+
+/**
+ * @brief `UNREACHABLE`宏用于通知`GCC`/`Clang`编译器不会运行到此处, 帮助编译器静态分析用
+ * 
+ * @note `NO_RETURN`宏本质上是借助了`GCC`/`Clang`内建的`__builtin_unreachable()`函数实现的
+ * 
+ * @note 参考: https://stackoverflow.com/questions/25408795/tell-gcc-that-a-function-call-will-not-return
+ */
+#define UNREACHABLE __builtin_unreachable()
+
 #endif
