@@ -11,11 +11,12 @@
 #include "types.h"
 #include "constrains.h"
 #include "asm/csr.h"
-#include "sbi/sbi_main.h"
+#include "sbi/smain.h"
 
 
 NO_RETURN void sbi_main(void){
-    
+    jump_to_kernel();
+    UNREACHABLE;
 }
 
 
@@ -38,4 +39,5 @@ NO_RETURN void jump_to_kernel(){
 
     // 伪装中断返回, 返回到S模式
     asm volatile("mret");
+    UNREACHABLE;
 }
