@@ -16,7 +16,7 @@
 void kernel_main(void);         // make gcc happy :)
 
 void kernel_main(void){
-    init_all();
+    kinit_all();
 
     test_all();
 
