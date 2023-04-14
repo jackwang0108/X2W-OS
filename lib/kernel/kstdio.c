@@ -10,7 +10,7 @@
  * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
  */
 
-#include "kstdio.h"
+#include "kernel/kstdio.h"
 
 size_t kprintf(const char* format, ...){
     va_list args;

@@ -32,8 +32,8 @@ void register_test_func(test_func_pointer_t func){
 #include "uart.h"
 #include "stdlib.h"
 #include "stdfmt.h"
-#include "kstdio.h"
 #include "string.h"
+#include "kernel/kstdio.h"
 
 void test_all(void){
     #if DEBUG == 1
