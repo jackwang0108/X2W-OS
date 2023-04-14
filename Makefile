@@ -205,7 +205,7 @@ K_SRCS_ASM := $(foreach dir, $(K_SRCS_DIR), $(wildcard $(dir)/*.S))
 K_SRCS_C := $(foreach dir, $(K_SRCS_DIR), $(wildcard $(dir)/*.c))
 
 # sbi source dirs
-S_SRCS_DIR := sbi
+S_SRCS_DIR := sbi device
 # sbi assembly source files
 S_SRCS_ASM := $(foreach dir, $(S_SRCS_DIR), $(wildcard $(dir)/*.S))
 # sbi c source files
