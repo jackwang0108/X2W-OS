@@ -16,6 +16,7 @@
 
 
 NO_RETURN void sbi_main(void){
+    uart_puts(X2WSBI_BANNER);
     sinit_all();
     jump_to_kernel();
     UNREACHABLE;
