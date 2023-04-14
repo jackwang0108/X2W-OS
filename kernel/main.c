@@ -9,8 +9,8 @@
  */
 
 #include "uart.h"
-#include "init.h"
 #include "test.h"
+#include "kernel/kinit.h"
 
 /// `kernel_main`是内核的入口函数
 void kernel_main(void);         // make gcc happy :)

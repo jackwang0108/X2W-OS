@@ -1,7 +1,7 @@
 /**
  * @file init.h
  * @author Shihong Wang (jack4shihong@gamil.com)
- * @brief `init.h`是内核的初始化模块, 对系统的各个模块进行了初始化
+ * @brief `kinit.h`是内核的初始化模块, 对内核的各个模块进行了初始化
  * @version 0.1
  * @date 2023-04-10
  * 
@@ -17,12 +17,12 @@
 
 
 /**
- * @brief `init_all`函数对内核的各个模块进行初始化
+ * @brief `kinit_all`函数对内核的各个模块进行初始化
  * 
  * @note `init_all`的初始化顺序:
- *  1. `uart_init`: 初始化`uart`设备
+ *  1. `uart_init`: 初始化`uart`设备. 已经交给`SBI`来初始化了
  */
-void init_all(void);
+void kinit_all(void);
 
 
 #endif
