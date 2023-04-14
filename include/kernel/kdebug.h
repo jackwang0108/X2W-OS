@@ -7,8 +7,8 @@
  * 
  * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
  */
-#ifndef __INCLUDE_KDEBUG_H
-#define __INCLUDE_KDEBUG_H
+#ifndef __INCLUDE_KERNEL_KDEBUG_H
+#define __INCLUDE_KERNEL_KDEBUG_H
 
 // 设置使用内核态的输出函数
 #undef USER_LIB

@@ -10,8 +10,8 @@
  * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
  */
 
-#ifndef __INCLUDE_KSTDIO_H
-#define __INCLUDE_KSTDIO_H
+#ifndef __INCLUDE_KERNEL_KSTDIO_H
+#define __INCLUDE_KERNEL_KSTDIO_H
 
 #include "uart.h"
 #include "stdfmt.h"
