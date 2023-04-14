@@ -11,10 +11,12 @@
 #include "types.h"
 #include "constrains.h"
 #include "asm/csr.h"
+#include "sbi/sinit.h"
 #include "sbi/smain.h"
 
 
 NO_RETURN void sbi_main(void){
+    sinit_all();
     jump_to_kernel();
     UNREACHABLE;
 }
