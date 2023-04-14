@@ -436,6 +436,7 @@ documentation: ${RDIR}/docs/sphinx/Makefile
 #		3. 删除 Sphinx 文档
 .PHONY: clean
 clean:
+	rm -f ${RDIR}/sbi.elf ${RDIR}/kernel.elf
 	rm -rf ${BDIR}/*
 	rm -rf ${RDIR}/docs/doxygen/build/*
 	rm -rf ${RDIR}/docs/sphinx/build/*
