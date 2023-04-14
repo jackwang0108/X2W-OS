@@ -8,6 +8,9 @@
  * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
  */
 
+#ifndef __INCLUDE_SBI_SMAIN_H
+#define __INCLUDE_SBI_SMAIN_H
+
 #include "types.h"
 
 /// `X2WSBI_BANNER`将在`SBI`启动的的时候输出字符串
@@ -47,3 +50,5 @@ NO_RETURN void sbi_main(void);
  * 5. 关闭S模式的页表转换
  */
 NO_RETURN void jump_to_kernel(void);
+
+#endif
