@@ -25,6 +25,6 @@ void kernel_main(void){
     test_all();
 
     kprintf(DELIMITER);
-    kprintf("Kernel Haning Here!\n");
+    kprintf("Kernel Hanging Here!\n");
     while (1);
 }
