@@ -16,8 +16,8 @@
 #include "constrains.h"
 #include "stdarg.h"
 #include "stdfmt.h"
-#include "kstdio.h"
-#include "ustdio.h"
+#include "kernel/kstdio.h"
+#include "user/ustdio.h"
 
 #ifdef DEBUG
     #define ASSERT(CONDITION, MSG) if (CONDITION) {} else {PANIC(#CONDITION, #MSG)}

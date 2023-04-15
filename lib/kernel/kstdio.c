@@ -10,7 +10,7 @@
  * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
  */
 
-#include "kstdio.h"
+#include "kernel/kstdio.h"
 
 size_t kprintf(const char* format, ...){
     va_list args;
@@ -24,7 +24,7 @@ size_t kprintf(const char* format, ...){
 
 #if DEBUG == 1
 int test_kstdio(void){
-    kprintf("---> %s:\n", __func__);
+    kprintf("=> %s:\n", __func__);
     for (int i = -2; i < 2; i++)
         kprintf("\tHello World: %d\n", i);
     return 0;

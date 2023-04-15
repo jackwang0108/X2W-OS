@@ -9,16 +9,22 @@
  */
 
 #include "uart.h"
-#include "init.h"
 #include "test.h"
-
-/// `kernel_main`是内核的入口函数
-void kernel_main(void);         // make gcc happy :)
+#include "kernel/kstdio.h"
+#include "kernel/kmain.h"
+#include "kernel/kinit.h"
 
 void kernel_main(void){
-    init_all();
+    uart_puts("Jump into kernel!\n");
+    kprintf(DELIMITER);
+    kprintf("Start kinit_all!\n");
+    kinit_all();
 
+    kprintf(DELIMITER);
+    kprintf("Start testing!\n");
     test_all();
 
+    kprintf(DELIMITER);
+    kprintf("Kernel Haning Here!\n");
     while (1);
 }

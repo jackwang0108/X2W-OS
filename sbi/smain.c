@@ -1,5 +1,5 @@
 /**
- * @file sbi_main.c
+ * @file smain.c
  * @author Shihong Wang (jack4shihong@gamil.com)
  * @brief `sbi_main.c`是`SBI`的主文件
  * @version 0.1
@@ -8,28 +8,22 @@
  * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
  */
 
-
 #include "types.h"
-#include "asm/csr.h"
 #include "constrains.h"
+#include "asm/csr.h"
+#include "sbi/sinit.h"
+#include "sbi/smain.h"
 
-/**
- * @brief `sbi_main`是`sbi`的主函数, 运行在M模式
- * 
- * @note 
- * 1. 其通过伪装`S`模式中断返回的模式跳转到内核的主函数
- * 
- * @note `sbi_main`跳转到内核前准备工作
- * 1. 伪装从S模式中断进入M模式
- * 2. 设置M模式的中断返回地址
- * 3. 设置S模式中断向量表入口
- * 4. 关闭S模式的中断
- * 5. 关闭S模式的页表转换
- */
-void sbi_main(void);
 
-void sbi_main(void){
+NO_RETURN void sbi_main(void){
+    uart_puts(X2WSBI_BANNER);
+    sinit_all();
+    jump_to_kernel();
+    UNREACHABLE;
+}
 
+
+NO_RETURN void jump_to_kernel(){
     // 设置中断前模式
     uint64_t mval;
     mval = read_csr(mstatus);
@@ -48,4 +42,5 @@ void sbi_main(void){
 
     // 伪装中断返回, 返回到S模式
     asm volatile("mret");
+    UNREACHABLE;
 }

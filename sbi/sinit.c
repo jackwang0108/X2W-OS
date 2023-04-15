@@ -1,16 +1,16 @@
 /**
- * @file init.c
+ * @file sinit.c
  * @author Shihong Wang (jack4shihong@gmail.com)
- * @brief `init.c`对系统进行初始化
+ * @brief `sinit.c`对`SBI`进行初始化
  * @version 0.1
- * @date 2023-04-10
+ * @date 2023-04-14
  * 
  * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
  */
 
-#include "init.h"
+#include "sbi/sinit.h"
 
 
-void init_all(void){
+void sinit_all(void){
     uart_init();
 }

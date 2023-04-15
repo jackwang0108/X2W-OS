@@ -16,6 +16,7 @@
 #include "string.h"
 #include "stdlib.h"
 
+#define DELIMITER "=============================================\n"
 
 /**
  * @brief `vsprintf`按照`format`中指定的格式将`ap`指向的可变参数列表的值复制到`str`中
