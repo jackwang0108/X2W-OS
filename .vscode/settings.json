@@ -12,6 +12,7 @@
         "assert.h": "c",
         "kdebug.h": "c",
         "udebug.h": "c",
+        "stdarg.h": "c"
     },
     "C_Cpp.errorSquiggles": "enabled",
 }
