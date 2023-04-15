@@ -1,7 +1,7 @@
 /**
- * @file sbi_main.h
+ * @file smain.h
  * @author Shihong Wang (jack4shihong@gmail.com)
- * @brief `sbi_main.h`中提供了`sbi_main.c`中的宏定义、函数原型定义
+ * @brief `smain.h`中提供了`smain.c`中的宏定义、函数原型定义
  * @version 0.1
  * @date 2023-04-14
  * 

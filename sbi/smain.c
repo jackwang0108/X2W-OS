@@ -1,5 +1,5 @@
 /**
- * @file sbi_main.c
+ * @file smain.c
  * @author Shihong Wang (jack4shihong@gamil.com)
  * @brief `sbi_main.c`是`SBI`的主文件
  * @version 0.1
