@@ -12,6 +12,7 @@
 #ifndef __INCLUDE_KERNEL_KMAIN_H
 #define __INCLUDE_KERNEL_KMAIN_H
 
+/// `X2WSBI_BANNER`是在内核启动时输出字符串
 #define OS_BANNER \
     "`YMM'   `MP'      `7MMF'     A     `7MF'               .g8\"\"8q.    .M\"\"\"bgd\n" \
     "  VMb.  ,P          `MA     ,MA     ,V               .dP'    `YM. ,MI    \"Y\n" \
@@ -24,10 +25,72 @@
     "Enjoy!\n"
 
 /**
- * @brief `kernel_main`是内核的入口函数
+ * @brief 内核的入口点
  * 
+ * @note 
+ *  1. 定义在`kernel.ld`中
+ *  2. char[] 转 addr_t 交给编译器完成
+ */
+extern char kernel_entry[];
+/**
+ * @brief 内核的起始地址和终止地址
+ * 
+ * @note 
+ *  1. 定义在`kernel.ld`中
+ *  2. char[] 转 addr_t 交给编译器完成
+ */
+extern char _s_kernel[],         _e_kernel[];
+/**
+ * @brief 内核的`.text.boot`段的起始地址和终止地址
+ * 
+ * @note 
+ *  1. 定义在`kernel.ld`中
+ *  2. char[] 转 addr_t 交给编译器完成
+ */
+extern char _s_text_boot[],      _e_text_boot[];
+/**
+ * @brief 内核的`.text`段的起始地址和终止地址
+ * 
+ * @note 
+ *  1. 定义在`kernel.ld`中
+ *  2. char[] 转 addr_t 交给编译器完成
+ */
+extern char _s_text[],           _e_text[];
+/**
+ * @brief 内核的`.rodata`段的起始地址和终止地址
+ * 
+ * @note 
+ *  1. 定义在`kernel.ld`中
+ *  2. char[] 转 addr_t 交给编译器完成
+ */
+extern char _s_rodata[],         _e_rodata[];
+/**
+ * @brief 内核的`.data`段的起始地址和终止地址
+ * 
+ * @note 
+ *  1. 定义在`kernel.ld`中
+ *  2. char[] 转 addr_t 交给编译器完成
+ */
+extern char _s_data[],           _e_data[];
+/**
+ * @brief 内核的`.bss`段的起始地址和终止地址
+ * 
+ * @note 
+ *  1. 定义在`kernel.ld`中
+ *  2. char[] 转 addr_t 交给编译器完成
+ */
+extern char _s_bss[],            _e_bss[];
+
+/**
+ * @brief `kernel_main`是内核的入口函数
  */
 void kernel_main(void);         // make gcc happy :)
 
+/**
+ * @brief `print_kmem`用于输出内核在内存中的地址信息
+ * 
+ * @note 需要和`kernel.ld`配合
+ */
+void print_kmem(void);
 
 #endif

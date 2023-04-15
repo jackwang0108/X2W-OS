@@ -47,6 +47,9 @@ typedef uint8_t byte;
 /// 偏移类型定义
 typedef int64_t offset_t;
 
+/// 地址类型
+typedef uint64_t addr_t;
+
 /// `ARRAY_SIZE`宏函数用于计算数组`array`中的元素个数, 返回值类型为`size_t`
 #define ARRAY_SIZE(array)  ((size_t)(sizeof(array) / sizeof((array)[0])))
 
