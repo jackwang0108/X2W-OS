@@ -19,7 +19,9 @@
     "     MMb     (O)   j8 MM.  M' MM.  M'    **********  MM        MM   `YMMNq.\n" \
     "   ,M'`Mb.       ,;j9 `MM A'  `MM A'                 MM.      ,MP .     `MM\n" \
     "  ,P   `MM.   ,-='     :MM;    :MM;                  `Mb.    ,dP' Mb     dM\n" \
-    ".MM:.  .:MMa.Ammmmmmm   VF      VF                     `\"bmmd\"'   P\"Ybmmd\" \n"
+    ".MM:.  .:MMa.Ammmmmmm   VF      VF                     `\"bmmd\"'   P\"Ybmmd\" \n" \
+    "Copyright Shihong Wang (c) 2023 with GNU Public License V3.0\n" \
+    "Enjoy!\n"
 
 /**
  * @brief `kernel_main`是内核的入口函数
