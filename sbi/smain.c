@@ -16,8 +16,10 @@
 
 
 NO_RETURN void sbi_main(void){
-    uart_puts(X2WSBI_BANNER);
     sinit_all();
+    uart_puts(X2WSBI_BANNER);
+    uart_puts(DELIMITER);
+    uart_puts("Enter SBI!\n");
     jump_to_kernel();
     UNREACHABLE;
 }
@@ -40,6 +42,7 @@ NO_RETURN void jump_to_kernel(){
     // 关闭S模式的页表转换
     write_csr(satp, 0);
 
+    uart_puts("Jump to kernel!\n");
     // 伪装中断返回, 返回到S模式
     asm volatile("mret");
     UNREACHABLE;
