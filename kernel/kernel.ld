@@ -1,37 +1,37 @@
 SECTIONS {
     . = 0x80200000,
     kernel_entry = .;
-    s_kernel = .;
+    _s_kernel = .;
 
-    s_text_boot = .;
+    _s_text_boot = .;
     .text.boot : {
         *(.text.boot)
     }
-    e_text_boot = .;
+    _e_text_boot = .;
 
-    s_text = .;
+    _s_text = .;
     .text : {
         *(.text)
     }
-    e_text = .;
+    _e_text = .;
 
-    s_rodata = .;
+    _s_rodata = .;
     .rodata : AT(ADDR(.rodata)) {
         *(.rodata)
     }
-    e_rodata = .;
+    _e_rodata = .;
 
-    s_data = .;
+    _s_data = .;
     .data : {
         *(.data)
     }
-    e_data = .;
+    _e_data = .;
 
     . = ALIGN(0x8);
-    s_bss = .;
+    _s_bss = .;
     .bss : {
         *(.bss*)
     }
-    e_bss = .;
-    e_kernel = .;
+    _e_bss = .;
+    _e_kernel = .;
 }

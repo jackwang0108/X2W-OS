@@ -40,16 +40,16 @@ void print_kmem(void){
     kprintf("  .text.boot: 0x%08lx - 0x%08lx (%6ld B)\n",
 			(addr_t)_s_text_boot, (addr_t)_e_text_boot,
 			(addr_t)(_e_text_boot - _s_text_boot));
-	printk("       .text: 0x%08lx - 0x%08lx (%6ld B)\n",
+	kprintf("       .text: 0x%08lx - 0x%08lx (%6ld B)\n",
 			(addr_t)_s_text, (addr_t)_e_text,
 			(addr_t)(_e_text - _s_text));
-	printk("     .rodata: 0x%08lx - 0x%08lx (%6ld B)\n",
+	kprintf("     .rodata: 0x%08lx - 0x%08lx (%6ld B)\n",
 			(addr_t)_s_rodata, (addr_t)_e_rodata,
 			(addr_t)(_e_rodata - _s_rodata));
-	printk("       .data: 0x%08lx - 0x%08lx (%6ld B)\n",
+	kprintf("       .data: 0x%08lx - 0x%08lx (%6ld B)\n",
 			(addr_t)_s_data, (addr_t)_e_data,
 			(addr_t)(_e_data - _s_data));
-	printk("        .bss: 0x%08lx - 0x%08lx (%6ld B)\n",
+	kprintf("        .bss: 0x%08lx - 0x%08lx (%6ld B)\n",
 			(addr_t)_s_bss, (addr_t)_e_bss,
 			(addr_t)(_e_bss - _s_bss));
     kprintf(DELIMITER);
