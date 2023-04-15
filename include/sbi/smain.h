@@ -15,13 +15,15 @@
 
 /// `X2WSBI_BANNER`将在`SBI`启动的的时候输出字符串
 #define X2WSBI_BANNER \
-    "`YMM'   `MP'      `7MMF'     A     `7MF'   .M\"\"\"bgd `7MM\"\"\"Yp, `7MMF'\n" \
-    "  VMb.  ,P          `MA     ,MA     ,V    ,MI    \"Y   MM    Yb   MM  \n" \
-    "   `MM.M'     pd*\"*b.VM:   ,VVM:   ,V     `MMb.       MM    dP   MM  \n" \
-    "     MMb     (O)   j8 MM.  M' MM.  M'       `YMMNq.   MM\"\"\"bg.   MM  \n" \
-    "   ,M'`Mb.       ,;j9 `MM A'  `MM A'      .     `MM   MM    `Y   MM  \n" \
-    "  ,P   `MM.   ,-='     :MM;    :MM;       Mb     dM   MM    ,9   MM  \n" \
-    ".MM:.  .:MMa.Ammmmmmm   VF      VF        P\"Ybmmd\"  .JMMmmmd9  .JMML.\n"
+    "`YMM'   `MP'      `7MMF'     A     `7MF'             .M\"\"\"bgd `7MM\"\"\"Yp, `7MMF'\n" \
+    "  VMb.  ,P          `MA     ,MA     ,V              ,MI    \"Y   MM    Yb   MM  \n" \
+    "   `MM.M'     pd*\"*b.VM:   ,VVM:   ,V               `MMb.       MM    dP   MM  \n" \
+    "     MMb     (O)   j8 MM.  M' MM.  M'   **********    `YMMNq.   MM\"\"\"bg.   MM  \n" \
+    "   ,M'`Mb.       ,;j9 `MM A'  `MM A'                .     `MM   MM    `Y   MM  \n" \
+    "  ,P   `MM.   ,-='     :MM;    :MM;                 Mb     dM   MM    ,9   MM  \n" \
+    ".MM:.  .:MMa.Ammmmmmm   VF      VF                  P\"Ybmmd\"  .JMMmmmd9  .JMML.\n\n" \
+    "Copyright Shihong Wang (c) 2023 with GNU Public License V3.0\n" \
+    "Enjoy!\n\n\n"
 
 /**
  * @brief `sbi_main`是`SBI`的主函数, 在进行一些准备后跳转到内核中运行
