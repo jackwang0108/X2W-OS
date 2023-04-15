@@ -17,7 +17,7 @@ size_t vsprintf(char* str, const char* format, va_list ap){
     const char* index_ptr = format;
     char index_char = *index_ptr;
 
-    int32_t arg_int;
+    int64_t arg_int;
     char *arg_str;
     while (index_char){
         // 不是%, 则将字符复制到str中, 而后继续扫描
@@ -39,7 +39,7 @@ size_t vsprintf(char* str, const char* format, va_list ap){
                 break;
             // 输出单个字符
             case 'c':
-                *(buf_ptr++) = va_arg(ap, char);
+                *(buf_ptr++) = (unsigned char)va_arg(ap, int);
                 index_char = *(++index_ptr);
                 break;
             // 输出二进制的整数
@@ -95,21 +95,6 @@ size_t sprintf(char* buf, const char* format, ...){
 extern void uart_puts(const char*);
 int test_stdfmt(void){
     uart_puts("=> "), uart_puts(__func__), uart_puts(": \n");
-    // test vsprintf
-    char vsprintf_buffer[100] = {0};
-    struct {
-        char ch;
-        char name[10];
-        int num;
-    } func_param = {
-        .ch = 's',
-        .name = "Jack Wang",
-        .num = 8
-    };
-    va_list args = (va_list)&func_param;
-    vsprintf(vsprintf_buffer, "%% - %c - %s - %b - %o - %d - %x\n", args);
-    uart_puts(vsprintf_buffer);
-    
     
     // test sprintf
     char sprintf_buffer[100] = {0};
