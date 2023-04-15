@@ -13,7 +13,7 @@
 
 #include "types.h"
 
-/// `X2WSBI_BANNER`将在`SBI`启动的的时候输出字符串
+/// `X2WSBI_BANNER`是在`SBI`启动时输出字符串
 #define X2WSBI_BANNER \
     "`YMM'   `MP'      `7MMF'     A     `7MF'             .M\"\"\"bgd `7MM\"\"\"Yp, `7MMF'\n" \
     "  VMb.  ,P          `MA     ,MA     ,V              ,MI    \"Y   MM    Yb   MM  \n" \
