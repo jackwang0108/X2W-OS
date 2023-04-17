@@ -14,7 +14,11 @@
         "udebug.h": "c",
         "stdarg.h": "c",
         "smain.h": "c",
-        "kmain.h": "c"
+        "kmain.h": "c",
+        "strap.h": "c",
+        "sbi.h": "c",
+        "sinit.h": "c",
+        "secall.h": "c"
     },
     "C_Cpp.errorSquiggles": "enabled",
 }
