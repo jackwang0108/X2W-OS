@@ -1,12 +1,11 @@
 /**
  * @file test_stdfmt.c
- * @author your name (you@domain.com)
- * @brief 
+ * @author Shihong Wang (jack4shihong@gmail.com)
+ * @brief `test_stdfmt.c`是`stdfmt`的测试文件
  * @version 0.1
  * @date 2023-04-17
  * 
- * @copyright Copyright (c) 2023
- * 
+ * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
  */
 
 #include "test/test_stdfmt.h"
