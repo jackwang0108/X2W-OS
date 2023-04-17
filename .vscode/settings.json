@@ -20,7 +20,8 @@
         "sinit.h": "c",
         "secall.h": "c",
         "test_stdlib.h": "c",
-        "test.h": "c"
+        "test.h": "c",
+        "test_kstdio.h": "c"
     },
     "C_Cpp.errorSquiggles": "enabled",
 }
