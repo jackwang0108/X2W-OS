@@ -198,14 +198,14 @@ PYTHON_HTTP_SERVER := $(shell \
 # ----------------------------------------------------------
 
 # kernel source dirs
-K_SRCS_DIR := lib lib/kernel lib/user kernel device
+K_SRCS_DIR := lib lib/kernel lib/user kernel device test
 # kernel assembly source files
 K_SRCS_ASM := $(foreach dir, $(K_SRCS_DIR), $(wildcard $(dir)/*.S))
 # kernel c source files
 K_SRCS_C := $(foreach dir, $(K_SRCS_DIR), $(wildcard $(dir)/*.c))
 
 # sbi source dirs
-S_SRCS_DIR := sbi device
+S_SRCS_DIR := sbi device lib
 # sbi assembly source files
 S_SRCS_ASM := $(foreach dir, $(S_SRCS_DIR), $(wildcard $(dir)/*.S))
 # sbi c source files
