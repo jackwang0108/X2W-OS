@@ -42,6 +42,10 @@ NO_RETURN void jump_to_kernel(){
     // 关闭S模式的页表转换
     write_csr(satp, 0);
 
+    // 设置物理地址保护(Physical Memory Protection)
+    write_csr(pmpaddr0, (ireg_t)0x3FFFFFFFFFFFFF);
+    write_csr(pmpcfg0, 0xF);
+
     uart_puts("Jump to kernel!\n");
     // 伪装中断返回, 返回到S模式
     asm volatile("mret");
