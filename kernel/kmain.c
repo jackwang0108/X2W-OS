@@ -9,8 +9,8 @@
  */
 
 #include "uart.h"
-#include "test.h"
 #include "types.h"
+#include "test/test.h"
 #include "kernel/kstdio.h"
 #include "kernel/kmain.h"
 #include "kernel/kinit.h"
