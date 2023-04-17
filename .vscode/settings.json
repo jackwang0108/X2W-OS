@@ -18,7 +18,9 @@
         "strap.h": "c",
         "sbi.h": "c",
         "sinit.h": "c",
-        "secall.h": "c"
+        "secall.h": "c",
+        "test_stdlib.h": "c",
+        "test.h": "c"
     },
     "C_Cpp.errorSquiggles": "enabled",
 }
