@@ -5,6 +5,8 @@ attaches
 
 .idea
 
+**/*.DS_Store
+
 # Prerequisites
 *.d
 
