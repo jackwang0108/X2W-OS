@@ -15,7 +15,6 @@
  */
 
 #include "uart.h"
-#include "test.h"
 
 void uart_init(void){
     // 参考: https://wenku.baidu.com/view/6f7a176048d7c1c708a14521.html?_wkts_=1681021571718
@@ -51,20 +50,4 @@ void uart_puts(const char* str){
 
 void uart_get(void){
     uart_puts("ERROR: Not Implemented Yet!\n");
-}
-
-
-int test_uart(void){
-    // 测试 uart_put
-    uart_puts("=> test_uart:\n");
-    char charset[] = "01234567890ABCDEFGHI./?\"'";
-    for (int i = 0; i < sizeof(charset)/sizeof(char); i++)
-        uart_put(charset[i]);
-    uart_put('\n');
-
-    // 测试 uart_puts
-    char *str = "Hello UART!\n";
-    uart_puts(str);
-
-    return 0;
 }

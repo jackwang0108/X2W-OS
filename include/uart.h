@@ -60,10 +60,4 @@ void uart_put(char chr);
 void uart_puts(const char *string);
 
 
-/**
- * @brief `test_uart`是`uart`模块的测试函数
- * @return int 测试正常则返回0
- */
-int test_uart(void);
-
 #endif
