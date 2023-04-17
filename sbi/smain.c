@@ -8,6 +8,7 @@
  * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
  */
 
+#include "uart.h"
 #include "types.h"
 #include "constrains.h"
 #include "asm/csr.h"
@@ -16,13 +17,20 @@
 
 
 NO_RETURN void sbi_main(void){
-    sinit_all();
+    // 初始化 UART 设备
+    uart_init();
+    // 输出 SBI Banner
     uart_puts(X2WSBI_BANNER);
     uart_puts(DELIMITER);
+    // 输出 SBI 提示信息
     uart_puts("Enter SBI!\n");
+    // 初始化 SBI 其余各个组件
+    sinit_all();
+    // 跳转至内核
     jump_to_kernel();
     UNREACHABLE;
 }
+
 
 
 NO_RETURN void jump_to_kernel(){
