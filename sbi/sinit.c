@@ -9,8 +9,13 @@
  */
 
 #include "sbi/sinit.h"
+#include "sbi/strap.h"
+#include "sbi/secall.h"
 
 
 void sinit_all(void){
-    uart_init();
+    // 初始化 SBI 异常/中断处理模块
+    strap_init();
+    // 初始化 SBI Ecall 异常处理模块
+    ecall_init();
 }

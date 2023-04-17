@@ -11,7 +11,6 @@
 #ifndef __INCLUDE_SBI_SINIT_H
 #define __INCLUDE_SBI_SINIT_H
 
-#include "uart.h"
 #include "types.h"
 #include "constrains.h"
 
@@ -19,7 +18,8 @@
  * @brief `sinit_all`函数对`SBI`的各个模块进行初始化
  * 
  * @note `sinit_all`的初始化顺序:
- *  1. `uart_init`: 初始化`uart`设备. 
+ *  1. 初始化 SBI 异常/中断处理模块
+ *  2. 初始化 SBI Ecall 异常处理模块
  */
 void sinit_all(void);
 
