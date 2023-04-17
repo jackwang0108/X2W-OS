@@ -11,6 +11,10 @@
 #include "test/test_uart.h"
 
 
+// 声明外部符号, 避免include
+extern void uart_put(char);
+extern void uart_puts(const char*);
+
 int test_uart(void){
     // 测试 uart_put
     uart_puts("=> test_uart:\n");

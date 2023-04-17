@@ -11,8 +11,6 @@
 #ifndef __INCLUDE_TEST_TEST_UART_H
 #define __INCLUDE_TEST_TEST_UART_H
 
-#include "uart.h"
-
 /**
  * @brief `test_uart`是`uart`模块的测试函数
  * @return int 测试正常则返回0

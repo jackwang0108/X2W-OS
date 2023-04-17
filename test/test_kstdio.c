@@ -11,6 +11,9 @@
 #include "test/test_kstdio.h"
 
 
+// 声明外部符号, 避免include
+extern size_t kprintf(const char* format, ...);
+
 int test_kstdio(void){
     kprintf("=> %s:\n", __func__);
     for (int i = -2; i < 2; i++)

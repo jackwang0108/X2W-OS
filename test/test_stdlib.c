@@ -11,6 +11,7 @@
 #include "test/test_stdlib.h"
 
 
+// 声明外部符号, 避免include
 extern void uart_puts(const char *);
 
 int test_stdlib(void){

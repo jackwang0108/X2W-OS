@@ -11,6 +11,7 @@
 #ifndef __INCLUDE_TEST_TEST_KSTDIO_H
 #define __INCLUDE_TEST_TEST_KSTDIO_H
 
+#include "types.h"
 
 /**
  * @brief `test_kstdio`是`kstdio`库的测试函数
