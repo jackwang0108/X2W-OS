@@ -25,16 +25,3 @@ void itoa(uint64_t integer, char** buf_ptr_addr, uint8_t base){
     else
         *((*buf_ptr_addr)++) = remain - 10 + 'A';
 }
-
-extern void uart_puts(const char *);
-int test_stdlib(void){
-    uart_puts("=> "), uart_puts(__func__), uart_puts(": \n");
-    // test itoa
-    char itoa_buf[64] = {0};
-    for (int base = 2; base <= 128; base *= 2){
-        char *str = itoa_buf;
-        itoa(base, &str, 2);
-        uart_puts(itoa_buf), uart_puts("\n");
-    }
-    return 0;
-}

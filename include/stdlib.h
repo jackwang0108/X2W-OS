@@ -81,12 +81,5 @@
  */
 void itoa(uint64_t integer, char** buf_ptr_addr, uint8_t base);
 
-#if DEBUG == 1
-/**
- * @brief `test_stdlib`是`stdlib`库的测试函数
- * @return int 测试正常则返回0
- */
-int test_stdlib(void);
-#endif
 
 #endif
