@@ -19,6 +19,13 @@
  */
 #define DEBUG 1
 
+/**
+ * @brief CPU是否具有浮点寄存器, 若
+ * - WITH_FP_REG = 0, CPU 不具有浮点寄存器
+ * - WITH_FP_REG = 1, CPU 具有浮点寄存器
+ */
+#define WITH_FP_REG 0
+
 /// 内核的跳转地址, 在`kernel.ld`中定义
 #define KERNEL_JUMP_ADDR 0x80200000
 
@@ -31,6 +38,7 @@
 /// 最大测试函数的数量
 #define MAX_TEST_FUNCTION_NUM       20
 
-
+/// 中断/异常处理函数信息最大数量
+#define MAX_INTR_EXCP_INFO_NUM      64
 
 #endif

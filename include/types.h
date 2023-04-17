@@ -50,8 +50,24 @@ typedef int64_t offset_t;
 /// 地址类型
 typedef uint64_t addr_t;
 
+/// 整形寄存器类型
+typedef uint64_t ireg_t;
+
+/// 浮点寄存器类型
+typedef uint32_t freg_t;
+
 /// `ARRAY_SIZE`宏函数用于计算数组`array`中的元素个数, 返回值类型为`size_t`
 #define ARRAY_SIZE(array)  ((size_t)(sizeof(array) / sizeof((array)[0])))
+
+
+/**
+ * @brief `UNUSED`宏用于通知`GCC`/`Clang`寄存器被修饰的变量可能没有被使用, 从而在编译的时候静默警告
+ * 
+ * @note `UNUSED`宏本质上是借助了`GCC`/`Clang`的`__attribute__`关键词实现的, 使用的标记(annotation)是: `unused`
+ * 
+ * @note 参考: https://gcc.gnu.org/onlinedocs/gcc-3.4.6/gcc/Variable-Attributes.html
+ */
+#define UNUSED __attribute__((unused))
 
 /**
  * @brief `NO_RETURN`宏用于通知`GCC`/`Clang`编译器被修饰的函数不会返回, 帮助编译器静态分析用
