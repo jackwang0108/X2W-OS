@@ -21,12 +21,3 @@ size_t kprintf(const char* format, ...){
     uart_puts((const char*)buf);
     return strlen(buf);
 }
-
-#if DEBUG == 1
-int test_kstdio(void){
-    kprintf("=> %s:\n", __func__);
-    for (int i = -2; i < 2; i++)
-        kprintf("\tHello World: %d\n", i);
-    return 0;
-}
-#endif

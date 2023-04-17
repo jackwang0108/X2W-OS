@@ -31,12 +31,5 @@
  */
 size_t kprintf(const char* format, ...);
 
-#if DEBUG == 1
-/**
- * @brief `test_kstdio`是`kstdio`库的测试函数
- * @return int 测试正常则返回0
- */
-int test_kstdio(void);
-#endif
 
 #endif
