@@ -172,6 +172,13 @@ size_t strchrs(const char* str, const uint8_t ch);
  */
 size_t strslice(const char* src, char* dst, int64_t start, int64_t len);
 
-
+/**
+ * @brief ‘encrypt_decrypt’函数通过使用一个异或操作对字符串进行加密，由于异或具有自反的性质没所以该函数同样可以用于解密！
+ * @param str 要被加密的字符串
+ * @param len 需要被加密的长度
+ * @param key 加密KEY
+ * @return void return
+*/
+void encrypt_decrypt(char *str, int len, char key);
 
 #endif

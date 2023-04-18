@@ -54,5 +54,14 @@ int test_string(void){
     kprintf("\ttest strslice within bound:%s:return val=%d;\n",t3,lm);
     lm=strslice(t1,t3,3,200000);
     kprintf("\ttest strslice within bound:%s:return val=%d;\n",t3,lm);
+
+    encrypt_decrypt(t2,strlen(t2)-3,'T');
+    kprintf("\ttest encrypt_decrypt in coding thr string : after coding:%s\n",t2);
+    encrypt_decrypt(t2,strlen(t2)-3,'T');
+    kprintf("\ttest encrypt_decrypt in break-coding thr string : after break-coding:%s\n",t2);
+
+
+
+
     return -1;
 }

@@ -132,3 +132,11 @@ size_t strslice(const char* src, char* dst, int64_t start, int64_t len){
     return num;
 }
 
+void encrypt_decrypt(char *str, int len, char key)
+{
+    int i;
+    for (i = 0; i < len; i++) {
+        str[i] ^= key;
+    }
+}
+
