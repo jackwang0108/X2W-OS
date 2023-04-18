@@ -31,6 +31,17 @@
  */
 size_t memset(void *dst, byte value, size_t size);
 
+/**
+ * @brief `strmset是针对字符串复制的安全实现，避免了字符串复制时可能存在的缓存区溢出，`将`det_`起始的`size`个字节的内存单元的值设置为`value`
+ * 
+ * @param dst 起始地址
+ * @param value 设置的值
+ * @param size 要设置多少个字节
+ * 
+ * @return size_t 成功设置的字节数
+ */
+size_t strmset(void *dst, char value, size_t size);
+
 
 /**
  * @brief `memcpy`将`src`起始的`size`个内存单元的值(以字节计算)复制到`dst`起始的`size`个内存单元中
@@ -149,6 +160,8 @@ char* strrchr(const char* str, const uint8_t ch);
  * @return size_t 字符`ch`在字符串`str`中出现的次数 
  */
 size_t strchrs(const char* str, const uint8_t ch);
+
+
 
 
 

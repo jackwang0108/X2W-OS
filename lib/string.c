@@ -20,6 +20,14 @@ size_t memset(void* dst, byte value, size_t size){
     return num;
 }
 
+size_t strmset(void *dst, char value, size_t size){
+    size_t num = 0;
+    size_t maxl=strlen((char*)dst);
+    char* dst_ = (char *)dst;
+    while(size-- > 0&& maxl-->0)
+        *dst_++ = value, num++;
+    return num;
+}
 
 size_t memcpy(void* dst, const void* src, size_t size){
     size_t num = 0;
@@ -110,4 +118,6 @@ size_t strchrs(const char* str, uint8_t ch){
     }
     return ch_cnt;
 }
+
+
 

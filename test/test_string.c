@@ -41,5 +41,10 @@ int test_string(void){
     size_t test6 = strchrs("abbbbc",'b');
     kprintf("\ttest strchrs:%d\n",test6);
 
+
+    char *t1="############################################\0";
+    char *t2="@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\0";
+    lm=strmset(t1,'$',10000);
+    kprintf("\ttest strmset out of bound:%s:return val=%d;\n",t1,lm);
     return -1;
 }
