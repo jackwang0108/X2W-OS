@@ -181,4 +181,18 @@ size_t strslice(const char* src, char* dst, int64_t start, int64_t len);
 */
 void encrypt_decrypt(char *str, int len, char key);
 
+int regu_match(const char *str, const char *pattern, int match_pos[]);
+
+
+/**
+ * @brief ‘regu_replac’函数通过使用正则表达式对字符串中特定字符串进行一个替换；
+ * @param str 需要被操作的字符串
+ * @param pattern 正则匹配模式
+ * @param replacement 替换为的字符
+ * @param max_len 最大处理长度
+ * @return void return
+*/
+void regu_replace(char *str, const char *pattern, const char *replacement, int max_len);
+
+
 #endif

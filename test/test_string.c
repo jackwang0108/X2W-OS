@@ -60,7 +60,11 @@ int test_string(void){
     encrypt_decrypt(t2,strlen(t2)-3,'T');
     kprintf("\ttest encrypt_decrypt in break-coding thr string : after break-coding:%s\n",t2);
 
-
+   
+    char str[2048] = "Hello X2W-OS! Hello our operating system!";
+    kprintf("\tTesting Regular Expression Matching and Replacement:\n\tOriginal string: %s\n", str);
+    regu_replace(str, "Hello", "Hi", 2048);
+    kprintf("\tTesting Regular Expression Matching and Replacement:\n\tReplaced string: %s\n", str);
 
 
     return -1;
