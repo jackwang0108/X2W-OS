@@ -12,6 +12,7 @@
 #include "string.h"
 #include "asm/csr.h"
 #include "sbi/strap.h"
+#include "sbi/sstdio.h"
 
 // 中断的提示信息
 const char *intr_msg[MAX_INTR_EXCP_INFO_NUM] = {
@@ -83,17 +84,33 @@ NO_RETURN int64_t general_trap_handler(strapframe_t *stf_ptr){
     uint64_t trap_code = mcause & ~(MCAUSE_INTERRUPT_FLAG);
     const char **msg_source = (is_interrupt ? intr_msg : excp_msg);
     const char *msg = msg_source[trap_code];
-    uart_puts(is_interrupt ? "Interrupt Happened!\n" : "Exception Happened!\n");
-    uart_puts("Message: "), uart_puts(msg);
+    bprintf("%s Happened!\n", is_interrupt ? "Interrupt" : "Exception");
+    bprintf("Message: %s\n", msg);
+    print_trapframe(stf_ptr);
     while (1);
     UNREACHABLE;
 }
-
-
 
 
 void regitser_trap_handler(uint64_t trap_code, Bool interrupt, const char* msg, trap_handler_t trap_func){
     if (msg != NULL)
         strcpy((char*) (interrupt ? intr_msg : excp_msg)[trap_code], msg);
     (interrupt ? intr_handlers : excp_handlers)[trap_code] = trap_func;
+}
+
+
+void print_trapframe(strapframe_t *stf_ptr){
+    bprintf("Print Trap Frame at: %016p\n", (void*)stf_ptr);
+    bprintf("mepc: %016lx mstatus : %016lx\n", stf_ptr->mepc, stf_ptr->mstatus);
+	bprintf(" gp : %016lx tp : %016lx t0 : %016lx\n", stf_ptr->gp, stf_ptr->tp, stf_ptr->t0);
+	bprintf(" t1 : %016lx t2 : %016lx t3 : %016lx\n", stf_ptr->t1, stf_ptr->t2, stf_ptr->s0);
+	bprintf(" s1 : %016lx a0 : %016lx a1 : %016lx\n", stf_ptr->s1, stf_ptr->a0, stf_ptr->a1);
+	bprintf(" a2 : %016lx a3 : %016lx a4 : %016lx\n", stf_ptr->a2, stf_ptr->a3, stf_ptr->a4);
+	bprintf(" a5 : %016lx a6 : %016lx a7 : %016lx\n", stf_ptr->a5, stf_ptr->a6, stf_ptr->a7);
+	bprintf(" s2 : %016lx s3 : %016lx s4 : %016lx\n", stf_ptr->s2, stf_ptr->s3, stf_ptr->s4);
+	bprintf(" s5 : %016lx s6 : %016lx s7 : %016lx\n", stf_ptr->s5, stf_ptr->s6, stf_ptr->s7);
+	bprintf(" s8 : %016lx s9 : %016lx s10: %016lx\n", stf_ptr->s8, stf_ptr->s9, stf_ptr->s10);
+	bprintf(" s11: %016lx t3 : %016lx t4: %016lx\n", stf_ptr->s11, stf_ptr->t3, stf_ptr->t4);
+	bprintf(" t5 : %016lx t6 : %016lx sp: %016lx\n", stf_ptr->t5, stf_ptr->t6, stf_ptr->sp);
+	bprintf(" ra: %016lx\n", stf_ptr->ra);
 }

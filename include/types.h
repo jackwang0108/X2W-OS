@@ -50,11 +50,11 @@ typedef int64_t offset_t;
 /// 地址类型
 typedef uint64_t addr_t;
 
-/// 整形寄存器类型
+/// 整型寄存器类型
 typedef uint64_t ireg_t;
 
 /// 浮点寄存器类型
-typedef uint32_t freg_t;
+typedef uint64_t freg_t;
 
 /// `ARRAY_SIZE`宏函数用于计算数组`array`中的元素个数, 返回值类型为`size_t`
 #define ARRAY_SIZE(array)  ((size_t)(sizeof(array) / sizeof((array)[0])))

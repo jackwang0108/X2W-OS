@@ -152,12 +152,21 @@ void strap_dispatcher(strapframe_t *stf_ptr);
 void regitser_trap_handler(uint64_t trap_code, Bool interrupt, const char* msg, trap_handler_t trap_func);
 
 /**
- * @brief `general_trap_handler`是所有中断/异常的缺省处理函数, 将会在屏幕上输出中断/异常信息, 而后挂起内核
+ * @brief `general_trap_handler`是所有中断/异常的缺省处理函数, 将会在屏幕上输出中断/异常信息, 打印陷入帧, 而后挂起内核
  * 
  * @param mcause mcasue寄存器的值
  * @return NO_RETURN 该函数将挂起内核, 不会返回至内核继续运行
  */
 NO_RETURN int64_t general_trap_handler(strapframe_t *stf_ptr);
+
+
+/**
+ * @brief `print_trapframe`用于输出陷入帧`stf_ptr`
+ * 
+ * @param stf_ptr 要输出的陷入帧
+ */
+void print_trapframe(strapframe_t *stf_ptr);
+
 
 /**
  * @brief `strap_enter`是`SBI`的陷入入口函数, 由汇编实现, 定义在 `strap_enter.S`中
