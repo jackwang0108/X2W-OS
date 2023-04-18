@@ -119,5 +119,16 @@ size_t strchrs(const char* str, uint8_t ch){
     return ch_cnt;
 }
 
-
+size_t strslice(const char* src, char* dst, int64_t start, int64_t len){
+    char* sour=(char*)src+start;
+    int64_t maxl=strlen(sour);
+    size_t num=0;
+    if(len>maxl)len=maxl;
+    while(len-->0){
+        num++;
+        *(dst++)=*(sour++);
+    }
+    *dst='\0';
+    return num;
+}
 

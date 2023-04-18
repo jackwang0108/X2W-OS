@@ -161,7 +161,16 @@ char* strrchr(const char* str, const uint8_t ch);
  */
 size_t strchrs(const char* str, const uint8_t ch);
 
-
+/**
+ * @brief 'strslice'从src字符串中截取从start的len个字节写入start中；同时检查是否越界，避免缓存区溢出；
+ * 
+ * @param str 要被截取的字符串
+ * @param dst 要被写入的字符串
+ * @param start 开始的下标
+ * @param len 要截取的长度
+ * @return size_t 成功截取的长度
+ */
+size_t strslice(const char* src, char* dst, int64_t start, int64_t len);
 
 
 

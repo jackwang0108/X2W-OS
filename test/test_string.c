@@ -42,9 +42,17 @@ int test_string(void){
     kprintf("\ttest strchrs:%d\n",test6);
 
 
-    char *t1="############################################\0";
+    char *t1="#############################3333333########\0";
     char *t2="@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\0";
-    lm=strmset(t1,'$',10000);
+    char *t3="\0";
+    lm=strmset(t1,'$',10);
+    kprintf("\ttest strmset within bound:%s:return val=%d;\n",t1,lm);
+    lm=strmset(t2,'$',10000);
     kprintf("\ttest strmset out of bound:%s:return val=%d;\n",t1,lm);
+    lm=strmset(t1,'@',10);
+    lm=strslice(t1,t3,3,20);
+    kprintf("\ttest strslice within bound:%s:return val=%d;\n",t3,lm);
+    lm=strslice(t1,t3,3,200000);
+    kprintf("\ttest strslice within bound:%s:return val=%d;\n",t3,lm);
     return -1;
 }
