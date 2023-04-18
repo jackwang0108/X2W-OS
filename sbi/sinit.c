@@ -11,11 +11,14 @@
 #include "sbi/sinit.h"
 #include "sbi/strap.h"
 #include "sbi/secall.h"
+#include "sbi/sstdio.h"
 
 
 void sinit_all(void){
     // 初始化 SBI 异常/中断处理模块
+    bprintf("=> strap_init\n");
     strap_init();
     // 初始化 SBI Ecall 异常处理模块
+    bprintf("=> ecall_init\n");
     ecall_init();
 }

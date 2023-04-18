@@ -14,19 +14,22 @@
 #include "asm/csr.h"
 #include "sbi/sinit.h"
 #include "sbi/smain.h"
+#include "sbi/sstdio.h"
 
 
 NO_RETURN void sbi_main(void){
     // 初始化 UART 设备
     uart_init();
     // 输出 SBI Banner
-    uart_puts(X2WSBI_BANNER);
-    uart_puts(DELIMITER);
+    bprintf(X2WSBI_BANNER);
+    bprintf(DELIMITER);
     // 输出 SBI 提示信息
-    uart_puts("Enter SBI!\n");
+    bprintf("Enter SBI!\n");
     // 初始化 SBI 其余各个组件
+    bprintf("SBI init!\n");
     sinit_all();
     // 跳转至内核
+    bprintf("Jump to kernel!\n");
     jump_to_kernel();
     UNREACHABLE;
 }
@@ -54,7 +57,6 @@ NO_RETURN void jump_to_kernel(){
     write_csr(pmpaddr0, (ireg_t)0x3FFFFFFFFFFFFF);
     write_csr(pmpcfg0, 0xF);
 
-    uart_puts("Jump to kernel!\n");
     // 伪装中断返回, 返回到S模式
     asm volatile("mret");
     UNREACHABLE;
