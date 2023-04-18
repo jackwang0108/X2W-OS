@@ -6,7 +6,7 @@ kernel_start:
     csrw sie, zero
 
     # 设置栈
-    la sp, stacks_start
+    la sp, kstacks_start
     li t0, 4096
     add sp, sp, t0
 
@@ -15,6 +15,6 @@ kernel_start:
 
 .section .data
 .align 12
-.global stacks_start
-stacks_start:
+.global kstacks_start
+kstacks_start:
     .skip 4096

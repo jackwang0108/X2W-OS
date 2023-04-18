@@ -3,7 +3,7 @@
 .global sbi_start
 sbi_start:
     // 设置SBI栈, 目前是4KB大小
-    la sp, stacks_start
+    la sp, sstacks_start
     li t0, 4096
     add sp, sp, t0
 
@@ -12,6 +12,6 @@ sbi_start:
 
 .section .data
 .align 12
-.global stacks_start
-stacks_start:
+.global sstacks_start
+sstacks_start:
     .skip 4096
