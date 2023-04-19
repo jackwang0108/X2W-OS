@@ -56,6 +56,20 @@ size_t strmset(void *dst, char value, size_t size);
  */
 size_t memcpy(void *dst, const void* src, size_t size);
 
+/**
+ * @brief memmove - Copy a block of memory, handling overlaps
+ * 
+ * @param dst Destination buffer
+ * @param src Source buffer
+ * @param size Size of buffer
+ * @return size_t return the copied char num
+ * @note Unlike memcpy(), memmove() copes with overlapping buffers.
+ * Copying takes place as though the bytes in src are first copied into
+ * a temporary buffer that does not overlap src or dest, and the bytes
+ * are then copied from the temporary buffer to dest.
+ * @note This function is used instead of memcpy() for copying between potentially overlapping memory blocks.
+ */
+size_t memmove(void* dst, const void *src, size_t size);
 
 /**
  * @brief `memcmp`用于比较两个分别以`a`和`b`为起始地址的的`size`个字节的内存区域的值
@@ -193,6 +207,8 @@ int regu_match(const char *str, const char *pattern, int match_pos[]);
  * @return void return
 */
 void regu_replace(char *str, const char *pattern, const char *replacement, int max_len);
+
+
 
 
 #endif

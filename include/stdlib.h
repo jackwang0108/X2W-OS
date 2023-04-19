@@ -81,5 +81,11 @@
  */
 void itoa(uint64_t integer, char** buf_ptr_addr, uint8_t base);
 
+/**
+ * @brief 'atoi函数实现字符串转整形数字
+ * @param  str 需要转换的字符串
+ * @return int64_t 转换得到的整形数字
+ */
+int64_t atoi(char* str);
 
 #endif
