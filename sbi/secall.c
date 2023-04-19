@@ -9,6 +9,7 @@
  */
 
 
+#include "sbi/sstdio.h"
 #include "sbi/secall.h"
 
 
@@ -26,14 +27,16 @@ int64_t sup_ecall_handler(strapframe_t *stf_ptr){
     int64_t ret = -1;
     switch (ecall_id) {
         case SBICALL_CONSOLE_PUTCHAR:
-            uart_put((char)arg0);
+            bprintf("%c", (char)arg0);
             ret = 0;
             break;
         case SBICALL_CONSOLE_PUTSTR:
-            uart_puts((char*)arg0);
+            bprintf("%s", (char*)arg0);
             break;
         default:
-            uart_puts("Ecall Error: Non-supported ecall id!\n");
+            bprintf("Ecall Error: Non-supported ecall ID: %#X!\n", ecall_id);
+            bprintf("Add Support for Ecall with ID: %#X to remove haning!\n", ecall_id);
+            bprintf("Hanging HART Here\n");
             while(1);
     }
 
