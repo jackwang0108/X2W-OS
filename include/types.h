@@ -79,6 +79,15 @@ typedef uint64_t freg_t;
 #define NO_RETURN __attribute__((noreturn))
 
 /**
+ * @brief `DEPRECATED`宏用于通知`GCC`/`Clang`编译器被修饰的对象已经弃用, 帮助编译器静态分析用
+ * 
+ * @note `NO_RETURN`宏本质上是借助了`GCC`/`Clang`的`__attribute__`关键词实现的, 使用的标记(annotation)是: `deprecated`
+ * 
+ * @note 参考: https://renenyffenegger.ch/notes/development/languages/C-C-plus-plus/GCC/__attribute__/deprecated/index
+ */
+#define DEPRECATED __attribute__((deprecated))
+
+/**
  * @brief `UNREACHABLE`宏用于通知`GCC`/`Clang`编译器不会运行到此处, 帮助编译器静态分析用
  * 
  * @note `NO_RETURN`宏本质上是借助了`GCC`/`Clang`内建的`__builtin_unreachable()`函数实现的
