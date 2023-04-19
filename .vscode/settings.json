@@ -21,7 +21,8 @@
                 "secall.h": "c",
                 "test_stdlib.h": "c",
                 "test.h": "c",
-                "test_kstdio.h": "c"
+                "test_kstdio.h": "c",
+                "test_strap.h": "c"
         },
         "C_Cpp.errorSquiggles": "enabled"
 }
