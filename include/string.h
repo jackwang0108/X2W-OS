@@ -31,6 +31,17 @@
  */
 size_t memset(void *dst, byte value, size_t size);
 
+/**
+ * @brief `strmset是针对字符串复制的安全实现，避免了字符串复制时可能存在的缓存区溢出，`将`det_`起始的`size`个字节的内存单元的值设置为`value`
+ * 
+ * @param dst 起始地址
+ * @param value 设置的值
+ * @param size 要设置多少个字节
+ * 
+ * @return size_t 成功设置的字节数
+ */
+size_t strmset(void *dst, char value, size_t size);
+
 
 /**
  * @brief `memcpy`将`src`起始的`size`个内存单元的值(以字节计算)复制到`dst`起始的`size`个内存单元中
@@ -150,6 +161,38 @@ char* strrchr(const char* str, const uint8_t ch);
  */
 size_t strchrs(const char* str, const uint8_t ch);
 
+/**
+ * @brief 'strslice'从src字符串中截取从start的len个字节写入start中；同时检查是否越界，避免缓存区溢出；
+ * 
+ * @param str 要被截取的字符串
+ * @param dst 要被写入的字符串
+ * @param start 开始的下标
+ * @param len 要截取的长度
+ * @return size_t 成功截取的长度
+ */
+size_t strslice(const char* src, char* dst, int64_t start, int64_t len);
+
+/**
+ * @brief ‘encrypt_decrypt’函数通过使用一个异或操作对字符串进行加密，由于异或具有自反的性质没所以该函数同样可以用于解密！
+ * @param str 要被加密的字符串
+ * @param len 需要被加密的长度
+ * @param key 加密KEY
+ * @return void return
+*/
+void encrypt_decrypt(char *str, int len, char key);
+
+int regu_match(const char *str, const char *pattern, int match_pos[]);
+
+
+/**
+ * @brief ‘regu_replac’函数通过使用正则表达式对字符串中特定字符串进行一个替换；
+ * @param str 需要被操作的字符串
+ * @param pattern 正则匹配模式
+ * @param replacement 替换为的字符
+ * @param max_len 最大处理长度
+ * @return void return
+*/
+void regu_replace(char *str, const char *pattern, const char *replacement, int max_len);
 
 
 #endif

@@ -20,6 +20,14 @@ size_t memset(void* dst, byte value, size_t size){
     return num;
 }
 
+size_t strmset(void *dst, char value, size_t size){
+    size_t num = 0;
+    size_t maxl=strlen((char*)dst);
+    char* dst_ = (char *)dst;
+    while(size-- > 0&& maxl-->0)
+        *dst_++ = value, num++;
+    return num;
+}
 
 size_t memcpy(void* dst, const void* src, size_t size){
     size_t num = 0;
@@ -110,4 +118,81 @@ size_t strchrs(const char* str, uint8_t ch){
     }
     return ch_cnt;
 }
+
+size_t strslice(const char* src, char* dst, int64_t start, int64_t len){
+    char* sour=(char*)src+start;
+    int64_t maxl=strlen(sour);
+    size_t num=0;
+    if(len>maxl)len=maxl;
+    while(len-->0){
+        num++;
+        *(dst++)=*(sour++);
+    }
+    *dst='\0';
+    return num;
+}
+
+void encrypt_decrypt(char *str, int len, char key)
+{
+    int i;
+    for (i = 0; i < len; i++) {
+        str[i] ^= key;
+    }
+}
+
+
+int regu_match(const char *str, const char *pattern, int match_pos[])
+{
+    int i, j, k;
+    int len_str = strlen(str);
+    int len_pat = strlen(pattern);
+    int num_match = 0;
+    for (i = 0; i < len_str; i++) {
+        if (str[i] == pattern[0]) {
+            k = i;
+            for (j = 0; j < len_pat; j++) {
+                if (k >= len_str || str[k] != pattern[j]) {
+                    break;
+                }
+                k++;
+            }
+            if (j == len_pat) {
+                match_pos[num_match++] = i;
+                i = k - 1;
+            }
+        }
+    }
+    return num_match;
+}
+
+void regu_replace(char *str, const char *pattern, const char *replacement, int max_len)
+{
+    int i, j, k;
+    int len_str = strlen(str);
+    int len_pat = strlen(pattern);
+    int len_rep = strlen(replacement);
+    int match_pos[2048];
+    int num_match = regu_match(str, pattern, match_pos);
+    if (num_match == 0) {
+        return;
+    }
+    int new_len = len_str + num_match * (len_rep - len_pat);
+    if (new_len >= max_len) {
+        return;
+    }
+    k = 0;
+    j = 0;
+    for (i = 0; i < len_str; i++) {
+        if (i == match_pos[j]) {
+            memcpy(&str[k], replacement, len_rep);
+            k += len_rep;
+            i += len_pat - 1;
+            j++;
+        } else {
+            str[k++] = str[i];
+        }
+    }
+    str[k] = '\0';
+}
+
 
