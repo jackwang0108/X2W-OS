@@ -44,15 +44,15 @@ size_t memmove(void* dst, const void* src, size_t size){
     if (dst <= src) {
         tmp = dst;
         s = (char *)src;
-        while (size--)
+        while (size--){
             *tmp++ = *s++;
-            num++;
+            num++;}
     } else {
         tmp = dst + size;
         s = (char *)src + size;
-        while (size--)
+        while (size--){
             *--tmp = *--s;
-            num++;
+            num++;}
     }
 
     return num;
