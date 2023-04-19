@@ -67,10 +67,7 @@ int test_string(void){
     // regu_replace(str, "Hello", "Hi", 2048);
     // kprintf("\tTesting Regular Expression Matching and Replacement:\n\tReplaced string: %s\n", str);
 
-    // char* test="123456";
-    // char sprintf_buffer[100] = {0};
-    // sprintf(sprintf_buffer,"\tTesting str_to_int,output :%d\n",str_to_int(test));
-    // uart_puts(sprintf_buffer);
+
     
     return -1;
 }
