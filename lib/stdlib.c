@@ -11,7 +11,8 @@
  */
 
 #include "stdlib.h"
-
+#define INT_MAX 2147483647
+#define INT_MIN -2147483648
 
 void itoa(uint64_t integer, char** buf_ptr_addr, uint8_t base){
     // 使用递归来完成转换
@@ -24,4 +25,31 @@ void itoa(uint64_t integer, char** buf_ptr_addr, uint8_t base){
         *((*buf_ptr_addr)++) = remain + '0';
     else
         *((*buf_ptr_addr)++) = remain - 10 + 'A';
+}
+
+int64_t atoi(char* str){
+    int sign=1,num=0;
+
+    //跳过字符串开头处的空格
+    while (*str == ' ')
+    {
+        str++;
+    }
+
+    //处理符号位
+    if(*str == '-'){
+        sign = -1;
+        str++;
+    }
+
+    //逐个字符解析数字
+    while(*str >='0' && *str <='9'){
+        num = num*10 + (*str-'0');
+        str++;
+        if (num > INT_MAX / 10 || (num == INT_MAX / 10 && (*str - '0') > INT_MAX % 10)) {
+            return sign == -1 ? INT_MIN : INT_MAX;  // 溢出处理
+        }
+    }
+    
+    return num*sign;
 }

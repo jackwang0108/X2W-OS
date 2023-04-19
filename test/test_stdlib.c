@@ -14,15 +14,33 @@
 // 声明外部符号, 避免include
 extern void uart_puts(const char *);
 
+//_test_itoa用于测试itoa函数
+void _test_itoa(void);
+
+//_test_atoi用于测试atoi函数
+void _test_atoi(void);
+
 int test_stdlib(void){
     uart_puts("=> "), uart_puts(__func__), uart_puts(": \n");
-    // test itoa
+    _test_itoa();
+    _test_atoi();
+
+    return 0;
+}
+
+void _test_itoa(void){
+        // test itoa
     char itoa_buf[64] = {0};
     for (int base = 2; base <= 128; base *= 2){
         char *str = itoa_buf;
         itoa(base, &str, 2);
         uart_puts(itoa_buf), uart_puts("\n");
     }
+}
 
-    return 0;
+void _test_atoi(void){
+    char* test="123456";
+    char sprintf_buffer[100] = {0};
+    sprintf(sprintf_buffer,"Testing atoi,output :%d\n",atoi(test));
+    uart_puts(sprintf_buffer);
 }

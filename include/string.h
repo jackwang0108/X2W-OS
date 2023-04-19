@@ -56,6 +56,20 @@ size_t strmset(void *dst, char value, size_t size);
  */
 size_t memcpy(void *dst, const void* src, size_t size);
 
+/**
+ * @brief memmove - Copy a block of memory, handling overlaps
+ * 
+ * @param dst Destination buffer
+ * @param src Source buffer
+ * @param size Size of buffer
+ * @return size_t return the copied char num
+ * @note 与 memcpy() 不同，memmove() 处理重叠缓冲区。
+ * 复制发生的过程就像 src 中的字节首先被复制到
+ * 不与 src 或 dest 和字节重叠的临时缓冲区
+ * 然后从临时缓冲区复制到目标。
+ * @note 此函数用于代替 memcpy() 在可能重叠的内存块之间进行复制。
+ */
+size_t memmove(void* dst, const void *src, size_t size);
 
 /**
  * @brief `memcmp`用于比较两个分别以`a`和`b`为起始地址的的`size`个字节的内存区域的值
@@ -193,6 +207,8 @@ int regu_match(const char *str, const char *pattern, int match_pos[]);
  * @return void return
 */
 void regu_replace(char *str, const char *pattern, const char *replacement, int max_len);
+
+
 
 
 #endif
