@@ -16,12 +16,11 @@
 #include "kernel/kinit.h"
 
 void kernel_main(void){
-    uart_puts("Jump into kernel!\n");
     kprintf(DELIMITER);
-    kprintf("Start kinit_all!\n");
+    uart_puts("In kernel!\n");
+    kprintf("Kernel init!\n");
     kinit_all();
 
-    kprintf(DELIMITER);
     kprintf("Start testing!\n");
     test_all();
 

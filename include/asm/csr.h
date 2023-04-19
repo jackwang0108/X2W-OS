@@ -92,6 +92,20 @@
 #define MCAUSE_LOAD_GUEST_PAGE_FAULT        0x15
 #define MCAUSE_VIRTUAL_INST_FAULT           0x16
 #define MCAUSE_STORE_GUEST_PAGE_FAULT       0x17
+/* ----- mtvec寄存器 ----- */
+
+/// `TRAP_DIRECT`宏将`mtvec`寄存器的`mode`字段设置为0, 即直接模式
+#define TRAP_DIRECT         (0b00)
+/// `TRAP_INDIRECT`宏将`mtvec`寄存器的`mode`字段设置为1, 即间接模式
+#define TRAP_INDIRECT       (0b01)
+
+
+/* ----- mcause寄存器 ----- */
+/// `IS_INTERRUPT`宏用于判断当前陷入是否为中断
+#define IS_INTERRUPT        (1 << 63)
+/// `IS_EXCEPTION`宏用于判断当前陷入是否为异常
+#define IS_EXCEPTION        (0 << 64)
+
 
 /* ------------------------------ 宏函数 ------------------------------ */
 

@@ -50,11 +50,11 @@ typedef int64_t offset_t;
 /// 地址类型
 typedef uint64_t addr_t;
 
-/// 整形寄存器类型
+/// 整型寄存器类型
 typedef uint64_t ireg_t;
 
 /// 浮点寄存器类型
-typedef uint32_t freg_t;
+typedef uint64_t freg_t;
 
 /// `ARRAY_SIZE`宏函数用于计算数组`array`中的元素个数, 返回值类型为`size_t`
 #define ARRAY_SIZE(array)  ((size_t)(sizeof(array) / sizeof((array)[0])))
@@ -77,6 +77,15 @@ typedef uint32_t freg_t;
  * @note 参考: https://stackoverflow.com/questions/25408795/tell-gcc-that-a-function-call-will-not-return
  */
 #define NO_RETURN __attribute__((noreturn))
+
+/**
+ * @brief `DEPRECATED`宏用于通知`GCC`/`Clang`编译器被修饰的对象已经弃用, 帮助编译器静态分析用
+ * 
+ * @note `NO_RETURN`宏本质上是借助了`GCC`/`Clang`的`__attribute__`关键词实现的, 使用的标记(annotation)是: `deprecated`
+ * 
+ * @note 参考: https://renenyffenegger.ch/notes/development/languages/C-C-plus-plus/GCC/__attribute__/deprecated/index
+ */
+#define DEPRECATED __attribute__((deprecated))
 
 /**
  * @brief `UNREACHABLE`宏用于通知`GCC`/`Clang`编译器不会运行到此处, 帮助编译器静态分析用
