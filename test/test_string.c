@@ -13,11 +13,10 @@
 
 // 声明外部符号, 避免include
 extern void uart_puts(const char*);
-// extern size_t kprintf(const char* format, ...);
+
 
 int test_string(void){
     uart_puts("=> "), uart_puts(__func__), uart_puts(": \n");
-    // TODO 已经完成string的测试：
     char s[1024]="123456789qwertyuiop@#$$&*())\0";
     char t[1024]="eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\0";
     char* dst = "ffffffffffffffffffffffff\0"; 
@@ -62,13 +61,11 @@ int test_string(void){
     kprintf("\ttest encrypt_decrypt in break-coding thr string : after break-coding:%s\n",t2);
     char* test="abcmmm";
     kprintf("\ttest memmove ,return value: %d",memmove(test,"def\n",3));
-   
+
     // char str[2048] = "Hello X2W-OS! Hello our operating system!";
     // kprintf("\tTesting Regular Expression Matching and Replacement:\n\tOriginal string: %s\n", str);
     // regu_replace(str, "Hello", "Hi", 2048);
     // kprintf("\tTesting Regular Expression Matching and Replacement:\n\tReplaced string: %s\n", str);
-
-
     
     return -1;
 }
