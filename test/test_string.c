@@ -12,7 +12,7 @@
 
 // 声明外部符号, 避免include
 extern void uart_puts(const char*);
-extern size_t kprintf(const char* format, ...);
+// extern size_t kprintf(const char* format, ...);
 
 int test_string(void){
     uart_puts("=> "), uart_puts(__func__), uart_puts(": \n");
@@ -59,13 +59,18 @@ int test_string(void){
     kprintf("\ttest encrypt_decrypt in coding thr string : after coding:%s\n",t2);
     encrypt_decrypt(t2,strlen(t2)-3,'T');
     kprintf("\ttest encrypt_decrypt in break-coding thr string : after break-coding:%s\n",t2);
-
+    // char* test="abcmmm";
+    // kprintf("\t %s",memmove(test,"def",3));
    
-    char str[2048] = "Hello X2W-OS! Hello our operating system!";
-    kprintf("\tTesting Regular Expression Matching and Replacement:\n\tOriginal string: %s\n", str);
-    regu_replace(str, "Hello", "Hi", 2048);
-    kprintf("\tTesting Regular Expression Matching and Replacement:\n\tReplaced string: %s\n", str);
+    // char str[2048] = "Hello X2W-OS! Hello our operating system!";
+    // kprintf("\tTesting Regular Expression Matching and Replacement:\n\tOriginal string: %s\n", str);
+    // regu_replace(str, "Hello", "Hi", 2048);
+    // kprintf("\tTesting Regular Expression Matching and Replacement:\n\tReplaced string: %s\n", str);
 
-
+    // char* test="123456";
+    // char sprintf_buffer[100] = {0};
+    // sprintf(sprintf_buffer,"\tTesting str_to_int,output :%d\n",str_to_int(test));
+    // uart_puts(sprintf_buffer);
+    
     return -1;
 }
