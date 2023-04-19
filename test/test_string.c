@@ -8,6 +8,7 @@
  * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
  */
 
+#include "kernel/kstdio.h"
 #include "test/test_string.h"
 
 // 声明外部符号, 避免include
