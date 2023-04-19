@@ -38,6 +38,23 @@ size_t memcpy(void* dst, const void* src, size_t size){
     return num;
 }
 
+size_t memmove(void* dst, const void* src, size_t size){
+    char *tmp, *s;
+
+    if (dst <= src) {
+        tmp = dst;
+        s = (char *)src;
+        while (size--)
+            *tmp++ = *s++;
+    } else {
+        tmp = dst + size;
+        s = (char *)src + size;
+        while (size--)
+            *--tmp = *--s;
+    }
+
+    return dst;
+}
 
 int8_t memcmp(const void* a, const void* b, size_t size){
     const char* a_ = a;
