@@ -40,20 +40,22 @@ size_t memcpy(void* dst, const void* src, size_t size){
 
 size_t memmove(void* dst, const void* src, size_t size){
     char *tmp, *s;
-
+    size_t num = 0;
     if (dst <= src) {
         tmp = dst;
         s = (char *)src;
         while (size--)
             *tmp++ = *s++;
+            num++;
     } else {
         tmp = dst + size;
         s = (char *)src + size;
         while (size--)
             *--tmp = *--s;
+            num++;
     }
 
-    return dst;
+    return num;
 }
 
 int8_t memcmp(const void* a, const void* b, size_t size){
