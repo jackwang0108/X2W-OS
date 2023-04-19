@@ -17,7 +17,7 @@
  * @brief `test_strap`是`strap`库的测试函数
  * @return int 测试正常则返回0
  */
-NO_RETURN int test_starp(void);
+NO_RETURN int test_exception(void);
 
 
 #endif

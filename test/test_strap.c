@@ -11,9 +11,15 @@
 #include "test/test_strap.h"
 #include "kernel/kstdio.h"
 
-extern NO_RETURN void trigger_load_access_fault(void);
+// 使用汇编指令触发异常, 定义在test_strap-asm.S中
+extern NO_RETURN void trigger_breakpoint(void);                         // 触发breakpoint异常
+extern NO_RETURN void trigger_ecall(void);                              // 触发U-ecall异常
+DEPRECATED extern NO_RETURN void trigger_load_access_fault(void);       // 触发Load Access Fault异常, 已弃用
 
-NO_RETURN int test_starp(void){
+NO_RETURN int test_exception(void){
     kprintf("=> %s:\n", __func__);
-    trigger_load_access_fault();
+    // 由于开启了PMP为全地址, 因此不会触发该异常, 已经弃用
+    // trigger_load_access_fault();
+    trigger_breakpoint();
+    trigger_ecall();
 }

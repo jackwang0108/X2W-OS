@@ -44,7 +44,7 @@ void test_all(void){
     register_test_func(test_stdfmt);
     register_test_func(test_string);
     register_test_func(test_kstdio);
-    register_test_func(test_starp);
+    register_test_func(test_exception);
 
 
     for (int i = 0; i < _Test.regiter_idx; i++)
