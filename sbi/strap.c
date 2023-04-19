@@ -91,7 +91,7 @@ NO_RETURN int64_t general_trap_handler(strapframe_t *stf_ptr){
     bprintf("No %s handler register for this %s, with ID: %#X\n", s, s, trap_code);
     bprintf("Running %s instead\n", __func__);
     bprintf("Printing Trap Frame:\n");
-    print_trapframe(stf_ptr);
+    print_strapframe(stf_ptr, bprintf);
     bprintf("Please register handler to avoid hanging!\n");
     bprintf("Hanging HART Here\n");
     while (1);
@@ -103,20 +103,4 @@ void regitser_trap_handler(uint64_t trap_code, Bool interrupt, const char* msg, 
     if (msg != NULL)
         (interrupt ? intr_msg : excp_msg)[trap_code] = msg;
     (interrupt ? intr_handlers : excp_handlers)[trap_code] = trap_func;
-}
-
-void print_trapframe(strapframe_t *stf_ptr){
-    bprintf("Print Trap Frame at: %#016X\n", (void*)stf_ptr);
-    bprintf("mepc: %#016lX                  mstatus : %#016lX\n", stf_ptr->mepc, stf_ptr->mstatus);
-	bprintf(" gp : %#016lX tp : %#016lX t0 : %#016lX\n", stf_ptr->gp, stf_ptr->tp, stf_ptr->t0);
-	bprintf(" t1 : %#016lX t2 : %#016lX t3 : %#016lX\n", stf_ptr->t1, stf_ptr->t2, stf_ptr->s0);
-	bprintf(" s1 : %#016lX a0 : %#016lX a1 : %#016lX\n", stf_ptr->s1, stf_ptr->a0, stf_ptr->a1);
-	bprintf(" a2 : %#016lX a3 : %#016lX a4 : %#016lX\n", stf_ptr->a2, stf_ptr->a3, stf_ptr->a4);
-	bprintf(" a5 : %#016lX a6 : %#016lX a7 : %#016lX\n", stf_ptr->a5, stf_ptr->a6, stf_ptr->a7);
-	bprintf(" s2 : %#016lX s3 : %#016lX s4 : %#016lX\n", stf_ptr->s2, stf_ptr->s3, stf_ptr->s4);
-	bprintf(" s5 : %#016lX s6 : %#016lX s7 : %#016lX\n", stf_ptr->s5, stf_ptr->s6, stf_ptr->s7);
-	bprintf(" s8 : %#016lX s9 : %#016lX s10: %#016lX\n", stf_ptr->s8, stf_ptr->s9, stf_ptr->s10);
-	bprintf(" s11: %#016lX t3 : %#016lX t4 : %#016lX\n", stf_ptr->s11, stf_ptr->t3, stf_ptr->t4);
-	bprintf(" t5 : %#016lX t6 : %#016lX sp : %#016lX\n", stf_ptr->t5, stf_ptr->t6, stf_ptr->sp);
-	bprintf(" ra : %#016lX\n", stf_ptr->ra);
 }
