@@ -22,7 +22,7 @@
     "   ,M'`Mb.       ,;j9 `MM A'  `MM A'                .     `MM   MM    `Y   MM  \n" \
     "  ,P   `MM.   ,-='     :MM;    :MM;                 Mb     dM   MM    ,9   MM  \n" \
     ".MM:.  .:MMa.Ammmmmmm   VF      VF                  P\"Ybmmd\"  .JMMmmmd9  .JMML.\n\n" \
-    "Copyright Shihong Wang (c) 2023 with GNU Public License V3.0\n" \
+    "Copyright Shihong Wang, Shaofei Wang, Zhuiri Xiao (c) 2023 with GNU Public License V3.0\n" \
     "Enjoy!\n"
 
 /**
