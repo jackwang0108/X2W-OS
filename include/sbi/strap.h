@@ -73,7 +73,7 @@ void regitser_strap_handler(uint64_t trap_code, Bool interrupt, const char* msg,
 /**
  * @brief `general_strap_handler`是所有中断/异常的缺省处理函数, 将会在屏幕上输出中断/异常信息, 打印陷入帧, 而后挂起内核
  * 
- * @param mcause mcasue寄存器的值
+ * @param stf_ptr 保存被中断的程序上下文信息(所有通用寄存器和部分CSR寄存器)的陷入栈, 在`strap_enter`中构建
  * @return NO_RETURN 该函数将挂起内核, 不会返回至内核继续运行
  */
 NO_RETURN int64_t general_strap_handler(strapframe_t *stf_ptr);
