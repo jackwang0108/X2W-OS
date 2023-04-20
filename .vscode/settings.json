@@ -23,7 +23,8 @@
                 "test.h": "c",
                 "test_kstdio.h": "c",
                 "test_strap.h": "c",
-                "trapframe.h": "c"
+                "trapframe.h": "c",
+                "trap_entry.h": "c"
         },
         "C_Cpp.errorSquiggles": "enabled"
 }
