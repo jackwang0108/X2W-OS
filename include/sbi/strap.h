@@ -38,6 +38,21 @@ void strap_init(void);
 
 
 /**
+ * @brief `delegate_traps`用于将`M模式`下的一些中断和异常委托至`S模式`
+ * 
+ * @note 目前将以下中断/异常进行了委托:
+ *  1. 软件中断, 时钟中断, 外部中断
+ *  2. 指令未对齐异常, 读取指令页异常, 读取数据页异常, 存储数据页异常, 读取数据异常, 存储数据异常, 断点异常, U模式下的ecall异常
+ * 
+ * @note 
+ *  1. 委托中断和异常本质上就是读写`mideleg`和`medeleg`寄存器. 这两个寄存器每一位对应一种中断/异常
+ *  2. 设置`mideleg`和`medeleg`寄存器对应的位后, 对应的中断/异常发生后就会进入到`ktrap_enter`中
+ *  3. 这两个寄存器每一位具体操作的是什么中断/异常, 参考RISC-V手册: 3.1.8 Machine Trap Delegation Registers (medeleg and mideleg) 
+ */
+void delegate_traps(void);
+
+
+/**
  * @brief `strap_dispatcher`是通用异常/中断处理函数, 将会根据`mcause`寄存器的值运行不同的中断处理函数
  * 
  * @param stf_ptr 保存被中断的程序上下文信息(所有通用寄存器和部分CSR寄存器)的陷入栈, 在`strap_enter`中构建
