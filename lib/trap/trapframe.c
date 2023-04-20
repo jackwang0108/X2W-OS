@@ -38,6 +38,7 @@ void print_strapframe(strapframe_t *stf_ptr, printf_t print_func){
 void print_ktrapframe(ktrapframe_t *ktf_ptr, printf_t print_func){
     printf_t printf = print_func;
     printf("Print Kernel Trap Frame at: %#016X\n", (void*)ktf_ptr);
+	printf("origin_a0: %#016lX\n", ktf_ptr->origin_a0);
     printf("sepc: %#016lX                  sstatus : %#016lX\n", ktf_ptr->sepc, ktf_ptr->sstatus);
     printf("scause: %#016lX               sbadaddr : %#016lX\n", ktf_ptr->scause, ktf_ptr->sbadaddr);
 	print_gtrapframe(&ktf_ptr->gregisters, printf);
