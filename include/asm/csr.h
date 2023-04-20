@@ -72,6 +72,11 @@
 
 /* ----- mcause寄存器 ----- */
 
+/// `MCAUSE_INTERRUPT_FLAG`宏用于判断当前陷入是否为中断
+#define MCAUSE_INTERRUPT_FLAG        (1 << 63)
+/// `MCAUSE_EXCEPTION_FLAG`宏用于判断当前陷入是否为异常
+#define MCAUSE_EXCEPTION_FLAG        (0 << 64)
+
 #define MCAUSE_INTERRUPT_FLAG               (1UL << 63)
 #define MCAUSE_MISALIGNED_FETCH             0x00
 #define MCAUSE_FETCH_ACCESS                 0x01
@@ -101,10 +106,6 @@
 
 
 /* ----- mcause寄存器 ----- */
-/// `IS_INTERRUPT`宏用于判断当前陷入是否为中断
-#define IS_INTERRUPT        (1 << 63)
-/// `IS_EXCEPTION`宏用于判断当前陷入是否为异常
-#define IS_EXCEPTION        (0 << 64)
 
 
 /* ------------------------------ 宏函数 ------------------------------ */
