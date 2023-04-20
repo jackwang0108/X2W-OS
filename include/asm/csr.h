@@ -64,10 +64,10 @@
 
 /* ----- mtvec寄存器 ----- */
 
-/// `MTVEC_TRAP_DIRECT`宏表示`mtvec`寄存器处于直接模式
-#define MTVEC_TRAP_DIRECT                 (0b00)
+/// `TVEC_TRAP_DIRECT`宏表示`mtvec`寄存器处于直接模式
+#define TVEC_TRAP_DIRECT                (0b00)
 /// `MTVEC_TRAP_INDIRECT`宏表示`mtvec`寄存器处于间接模式
-#define MTVEC_TRAP_INDIRECT               (0b01)
+#define TVEC_TRAP_INDIRECT              (0b01)
 
 
 /* ----- mcause, scause, ucasue寄存器 ----- */

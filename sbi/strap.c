@@ -15,7 +15,7 @@
 #include "sbi/sstdio.h"
 
 // 中断的提示信息
-const char *intr_msg[MAX_INTR_EXCP_INFO_NUM] = {
+const char *sintr_msg[MAX_INTR_EXCP_INFO_NUM] = {
     "User Software Interrupt",
     "Supervisor Software Interrupt",
     "Reserved for Future Standard Use",
@@ -31,7 +31,7 @@ const char *intr_msg[MAX_INTR_EXCP_INFO_NUM] = {
 };
 
 // 异常的提示信息
-const char *excp_msg[MAX_INTR_EXCP_INFO_NUM] = {
+const char *sexcp_msg[MAX_INTR_EXCP_INFO_NUM] = {
     "Instrution Address Misaligned",
     "Instrution Access Fault",
     "Illegal Instruction",
@@ -58,7 +58,7 @@ strap_handler_t excp_handlers[MAX_INTR_EXCP_INFO_NUM];
 
 void strap_init(void){
     // 设置中断向量地址, 设置为直接模式
-    write_csr(mtvec, ((addr_t)strap_enter & (~((addr_t)MTVEC_TRAP_DIRECT))));
+    write_csr(mtvec, ((addr_t)strap_enter & (~((addr_t)TVEC_TRAP_DIRECT))));
     // 关闭所有的中断
     write_csr(mie, 0);
     // 为所有的异常和中断注册处理函数
@@ -109,10 +109,11 @@ NO_RETURN int64_t general_strap_handler(strapframe_t *stf_ptr){
     ireg_t mcause = read_csr(mcause);
     Bool is_interrupt = ((mcause & CAUSE_INTERRUPT_FLAG) != 0) ? 1 : 0;
     uint64_t trap_code = mcause & ~(CAUSE_INTERRUPT_FLAG);
-    const char **msg_source = (is_interrupt ? intr_msg : excp_msg);
+    const char **msg_source = (is_interrupt ? sintr_msg : sexcp_msg);
     const char *msg = msg_source[trap_code];
     const char *s = is_interrupt ? "Interrupt" : "Exception";
     bprintf("==================================================================\n");
+    bprintf("Message from SBI General Trap Handler:\n");
     bprintf("%s Happened, %s ID: %#X, mcause register: %#X\n", s, s, trap_code, mcause);
     bprintf("Detailed Message: %s\n", msg);
     bprintf("No %s handler register for this %s, with ID: %#X\n", s, s, trap_code);
@@ -126,8 +127,8 @@ NO_RETURN int64_t general_strap_handler(strapframe_t *stf_ptr){
 }
 
 
-void regitser_strap_handler(uint64_t trap_code, Bool interrupt, const char* msg, strap_handler_t strap_func){
+void regitser_strap_handler(uint64_t trap_code, Bool interrupt, const char* msg, strap_handler_t trap_func){
     if (msg != NULL)
-        (interrupt ? intr_msg : excp_msg)[trap_code] = msg;
-    (interrupt ? intr_handlers : excp_handlers)[trap_code] = strap_func;
+        (interrupt ? sintr_msg : sexcp_msg)[trap_code] = msg;
+    (interrupt ? intr_handlers : excp_handlers)[trap_code] = trap_func;
 }
