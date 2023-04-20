@@ -70,42 +70,65 @@
 #define MTVEC_TRAP_INDIRECT               (0b01)
 
 
-/* ----- mcause寄存器 ----- */
+/* ----- mcause, scause, ucasue寄存器 ----- */
 
-/// `MCAUSE_INTERRUPT_FLAG`宏用于判断当前陷入是否为中断
-#define MCAUSE_INTERRUPT_FLAG        (1 << 63)
-/// `MCAUSE_EXCEPTION_FLAG`宏用于判断当前陷入是否为异常
-#define MCAUSE_EXCEPTION_FLAG        (0 << 64)
+/// `CAUSE_INTERRUPT_FLAG`宏用于判断当前陷入是否为中断
+#define CAUSE_INTERRUPT_FLAG        (1UL << 63)
+/// `CAUSE_EXCEPTION_FLAG`宏用于判断当前陷入是否为异常
+#define CAUSE_EXCEPTION_FLAG        (0UL << 64)
 
-#define MCAUSE_INTERRUPT_FLAG               (1UL << 63)
-#define MCAUSE_MISALIGNED_FETCH             0x00
-#define MCAUSE_FETCH_ACCESS                 0x01
-#define MCAUSE_ILLEGAL_INSTRUCTION          0x02
-#define MCAUSE_BREAKPOINT                   0x03
-#define MCAUSE_MISALIGNED_LOAD              0x04
-#define MCAUSE_LOAD_ACCESS                  0x05
-#define MCAUSE_MISALIGNED_STORE             0x06
-#define MCAUSE_STORE_ACCESS                 0x07
-#define MCAUSE_USER_ECALL                   0x08
-#define MCAUSE_SUPERVISOR_ECALL             0x09
-#define MCAUSE_VIRTUAL_SUPERVISOR_ECALL     0x0A
-#define MCAUSE_MACHINE_ECALL                0x0B
-#define MCAUSE_FETCH_PAGE_FAULT             0x0C
-#define MCAUSE_LOAD_PAGE_FAULT              0x0D
-#define MCAUSE_STORE_PAGE_FAULT             0x0F
-#define MCAUSE_FETCH_GUEST_PAGE_FAULT       0x14
-#define MCAUSE_LOAD_GUEST_PAGE_FAULT        0x15
-#define MCAUSE_VIRTUAL_INST_FAULT           0x16
-#define MCAUSE_STORE_GUEST_PAGE_FAULT       0x17
-/* ----- mtvec寄存器 ----- */
-
-/// `TRAP_DIRECT`宏将`mtvec`寄存器的`mode`字段设置为0, 即直接模式
-#define TRAP_DIRECT         (0b00)
-/// `TRAP_INDIRECT`宏将`mtvec`寄存器的`mode`字段设置为1, 即间接模式
-#define TRAP_INDIRECT       (0b01)
+/* 异常的编号 */
+#define CAUSE_EXCEPTION_MISALIGNED_FETCH                   0x00
+#define CAUSE_EXCEPTION_FETCH_ACCESS                       0x01
+#define CAUSE_EXCEPTION_ILLEGAL_INSTRUCTION                0x02
+#define CAUSE_EXCEPTION_BREAKPOINT                         0x03
+#define CAUSE_EXCEPTION_MISALIGNED_LOAD                    0x04
+#define CAUSE_EXCEPTION_LOAD_ACCESS                        0x05
+#define CAUSE_EXCEPTION_MISALIGNED_STORE                   0x06
+#define CAUSE_EXCEPTION_STORE_ACCESS                       0x07
+#define CAUSE_EXCEPTION_USER_ECALL                         0x08
+#define CAUSE_EXCEPTION_SUPERVISOR_ECALL                   0x09
+#define CAUSE_EXCEPTION_VIRTUAL_SUPERVISOR_ECALL           0x0A
+#define CAUSE_EXCEPTION_MACHINE_ECALL                      0x0B
+#define CAUSE_EXCEPTION_FETCH_PAGE_FAULT                   0x0C
+#define CAUSE_EXCEPTION_LOAD_PAGE_FAULT                    0x0D
+#define CAUSE_EXCEPTION_STORE_PAGE_FAULT                   0x0F
+#define CAUSE_EXCEPTION_FETCH_GUEST_PAGE_FAULT             0x14
+#define CAUSE_EXCEPTION_LOAD_GUEST_PAGE_FAULT              0x15
+#define CAUSE_EXCEPTION_VIRTUAL_INST_FAULT                 0x16
+#define CAUSE_EXCEPTION_STORE_GUEST_PAGE_FAULT             0x17
 
 
-/* ----- mcause寄存器 ----- */
+/* 中断的编号 */
+#define CAUSE_INTERRUPT_U_SOFTWARE_INTERRUPT               0x00
+#define CAUSE_INTERRUPT_S_SOFTWARE_INTERRUPT               0x01
+#define CAUSE_INTERRUPT_M_SOFTWARE_INTERRUPT               0x03
+#define CAUSE_INTERRUPT_U_TIMER_INTERRUPT                  0x04
+#define CAUSE_INTERRUPT_S_TIMER_INTERRUPT                  0x05
+#define CAUSE_INTERRUPT_M_TIMER_INTERRUPT                  0x07
+#define CAUSE_INTERRUPT_U_EXTERNAL_INTERRUPT               0x08
+#define CAUSE_INTERRUPT_S_EXTERNAL_INTERRUPT               0x09
+#define CAUSE_INTERRUPT_M_EXTERNAL_INTERRUPT               0x11
+
+
+
+/* ----- mip寄存器 ----- */
+#define MIP_U_SOFTWARE_INTERRUPT                            (1UL << CAUSE_INTERRUPT_U_SOFTWARE_INTERRUPT)
+#define MIP_S_SOFTWARE_INTERRUPT                            (1UL << CAUSE_INTERRUPT_S_SOFTWARE_INTERRUPT)
+#define MIP_M_SOFTWARE_INTERRUPT                            (1UL << CAUSE_INTERRUPT_M_SOFTWARE_INTERRUPT)
+#define MIP_U_TIMER_INTERRUPT                               (1UL << CAUSE_INTERRUPT_U_TIMER_INTERRUPT)
+#define MIP_S_TIMER_INTERRUPT                               (1UL << CAUSE_INTERRUPT_S_TIMER_INTERRUPT)
+#define MIP_M_TIMER_INTERRUPT                               (1UL << CAUSE_INTERRUPT_M_TIMER_INTERRUPT)
+#define MIP_U_EXTERNAL_INTERRUPT                            (1UL << CAUSE_INTERRUPT_U_EXTERNAL_INTERRUPT)
+#define MIP_S_EXTERNAL_INTERRUPT                            (1UL << CAUSE_INTERRUPT_S_EXTERNAL_INTERRUPT)
+#define MIP_M_EXTERNAL_INTERRUPT                            (1UL << CAUSE_INTERRUPT_M_EXTERNAL_INTERRUPT)
+
+
+/* ----- medeleg寄存器 ----- */
+
+
+
+/* ----- mideleg寄存器 ----- */
 
 
 /* ------------------------------ 宏函数 ------------------------------ */

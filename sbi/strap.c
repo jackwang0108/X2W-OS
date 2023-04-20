@@ -58,7 +58,7 @@ trap_handler_t excp_handlers[MAX_INTR_EXCP_INFO_NUM];
 
 void strap_init(void){
     // 设置中断向量地址, 设置为直接模式
-    write_csr(mtvec, ((addr_t)strap_enter & (~((addr_t)0b11))));
+    write_csr(mtvec, ((addr_t)strap_enter & (~((addr_t)MTVEC_TRAP_DIRECT))));
     // 关闭所有的中断
     write_csr(mie, 0);
     // 为所有的异常和中断注册处理函数
@@ -69,19 +69,46 @@ void strap_init(void){
 }
 
 
+void delegate_traps(void){
+    // 将S模式下的发生的软件中断, 时钟中断, 外部中断委托给S模式, 即在S模式下发生了这些中断, 则进入到S模式的陷入入口(中断处理程序)
+    ireg_t delegated_interrupts = MIP_S_SOFTWARE_INTERRUPT | MIP_S_TIMER_INTERRUPT | MIP_S_EXTERNAL_INTERRUPT;
+    // 将S模式下的发生的以下异常:
+    //      1. 指令未对齐异常
+    //      2. 读取指令页异常
+    //      3. 读取数据页异常
+    //      4. 存储数据页异常
+    //      5. 读取数据异常
+    //      6. 存储数据异常
+    //      7. 断点异常
+    //      8. U模式下的ecall异常
+    // 委托给S模式, 即在S模式下发生了这些异常, 则进入到S模式的陷入入口(异常处理程序)
+    ireg_t delegated_exceptions = \
+                                (1UL << CAUSE_EXCEPTION_MISALIGNED_FETCH)                   |
+                                (1UL << CAUSE_EXCEPTION_FETCH_PAGE_FAULT)                   |
+                                (1UL << CAUSE_EXCEPTION_LOAD_PAGE_FAULT)                    |
+                                (1UL << CAUSE_EXCEPTION_STORE_PAGE_FAULT)                   |
+                                (1UL << CAUSE_EXCEPTION_LOAD_ACCESS)                        |
+                                (1UL << CAUSE_EXCEPTION_STORE_ACCESS)                       |
+                                (1UL << CAUSE_EXCEPTION_BREAKPOINT)                         |
+                                (1UL << CAUSE_EXCEPTION_USER_ECALL);
+    write_csr(mideleg, delegated_interrupts);
+    write_csr(medeleg, delegated_exceptions);
+}
+
+
 void strap_dispatcher(strapframe_t *stf_ptr){
     ireg_t mcause = read_csr(mcause);
 
-    Bool is_interrupt = ((mcause & MCAUSE_INTERRUPT_FLAG) != 0) ? 1 : 0;
-    uint64_t trap_code = mcause & ~(MCAUSE_INTERRUPT_FLAG);
+    Bool is_interrupt = ((mcause & CAUSE_INTERRUPT_FLAG) != 0) ? 1 : 0;
+    uint64_t trap_code = mcause & ~(CAUSE_INTERRUPT_FLAG);
     int64_t rtval UNUSED = (is_interrupt ? intr_handlers : excp_handlers)[trap_code](stf_ptr);
 }
 
 
 NO_RETURN int64_t general_trap_handler(strapframe_t *stf_ptr){
     ireg_t mcause = read_csr(mcause);
-    Bool is_interrupt = ((mcause & MCAUSE_INTERRUPT_FLAG) != 0) ? 1 : 0;
-    uint64_t trap_code = mcause & ~(MCAUSE_INTERRUPT_FLAG);
+    Bool is_interrupt = ((mcause & CAUSE_INTERRUPT_FLAG) != 0) ? 1 : 0;
+    uint64_t trap_code = mcause & ~(CAUSE_INTERRUPT_FLAG);
     const char **msg_source = (is_interrupt ? intr_msg : excp_msg);
     const char *msg = msg_source[trap_code];
     const char *s = is_interrupt ? "Interrupt" : "Exception";
