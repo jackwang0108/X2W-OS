@@ -18,9 +18,9 @@
 
 
 /**
- * @brief `ecall_init`用于初始化`SBI`调用
+ * @brief `secall_init`用于初始化`SBI`调用
  */
-void ecall_init(void);
+void secall_init(void);
 
 /**
  * @brief `sup_ecall_handler`是`Supervisor`模式下`ecall`指令的处理函数

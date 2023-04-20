@@ -19,8 +19,8 @@ void sinit_all(void){
     bprintf("=> strap_init\n");
     strap_init();
     // 初始化 SBI Ecall 异常处理模块
-    bprintf("=> ecall_init\n");
-    ecall_init();
+    bprintf("=> secall_init\n");
+    secall_init();
     // 委托 S模式下的中断和异常给S模式
     delegate_traps();
     bprintf("=> delegate_traps\n");

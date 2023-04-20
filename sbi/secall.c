@@ -13,8 +13,8 @@
 #include "sbi/secall.h"
 
 
-void ecall_init(void){
-    regitser_trap_handler(MCAUSE_EXCEPTION_SUPERVISOR_ECALL, False, NULL, sup_ecall_handler);
+void secall_init(void){
+    regitser_strap_handler(CAUSE_EXCEPTION_SUPERVISOR_ECALL, False, NULL, sup_ecall_handler);
 }
 
 int64_t sup_ecall_handler(strapframe_t *stf_ptr){

@@ -51,10 +51,10 @@ const char *excp_msg[MAX_INTR_EXCP_INFO_NUM] = {
 };
 
 // 中断处理函数表
-trap_handler_t intr_handlers[MAX_INTR_EXCP_INFO_NUM];
+strap_handler_t intr_handlers[MAX_INTR_EXCP_INFO_NUM];
 
 // 异常处理函数表
-trap_handler_t excp_handlers[MAX_INTR_EXCP_INFO_NUM];
+strap_handler_t excp_handlers[MAX_INTR_EXCP_INFO_NUM];
 
 void strap_init(void){
     // 设置中断向量地址, 设置为直接模式
@@ -63,9 +63,9 @@ void strap_init(void){
     write_csr(mie, 0);
     // 为所有的异常和中断注册处理函数
     for (size_t i = 0; i < MAX_INTR_EXCP_INFO_NUM; i++)
-        regitser_trap_handler(i, False, NULL, general_trap_handler);
+        regitser_strap_handler(i, False, NULL, general_strap_handler);
     for (size_t i = 0; i < MAX_INTR_EXCP_INFO_NUM; i++)
-        regitser_trap_handler(i, True, NULL, general_trap_handler);
+        regitser_strap_handler(i, True, NULL, general_strap_handler);
 }
 
 
@@ -105,7 +105,7 @@ void strap_dispatcher(strapframe_t *stf_ptr){
 }
 
 
-NO_RETURN int64_t general_trap_handler(strapframe_t *stf_ptr){
+NO_RETURN int64_t general_strap_handler(strapframe_t *stf_ptr){
     ireg_t mcause = read_csr(mcause);
     Bool is_interrupt = ((mcause & CAUSE_INTERRUPT_FLAG) != 0) ? 1 : 0;
     uint64_t trap_code = mcause & ~(CAUSE_INTERRUPT_FLAG);
@@ -126,8 +126,8 @@ NO_RETURN int64_t general_trap_handler(strapframe_t *stf_ptr){
 }
 
 
-void regitser_trap_handler(uint64_t trap_code, Bool interrupt, const char* msg, trap_handler_t trap_func){
+void regitser_strap_handler(uint64_t trap_code, Bool interrupt, const char* msg, strap_handler_t strap_func){
     if (msg != NULL)
         (interrupt ? intr_msg : excp_msg)[trap_code] = msg;
-    (interrupt ? intr_handlers : excp_handlers)[trap_code] = trap_func;
+    (interrupt ? intr_handlers : excp_handlers)[trap_code] = strap_func;
 }
