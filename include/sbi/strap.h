@@ -17,6 +17,7 @@
 #include "types.h"
 #include "constrains.h"
 #include "trap/trapframe.h"
+#include "trap/trap_entry.h"
 
 
 /**
@@ -63,23 +64,5 @@ void regitser_trap_handler(uint64_t trap_code, Bool interrupt, const char* msg, 
  */
 NO_RETURN int64_t general_trap_handler(strapframe_t *stf_ptr);
 
-
-/**
- * @brief `strap_enter`是`SBI`的陷入入口函数, 由汇编实现, 定义在 `strap_enter.S`中
- * 
- * @note 该函数会:
- *      1. 在`M模式`的栈中构建被打断程序的陷入帧
- *      2. 将被打断的程序的陷入帧作为参数调用`strap_dispatcher`函数
- */
-extern void strap_enter(void);
-
-
-/**
- * @brief `strap_exit`是`SBI`的陷入出口函数, 由汇编实现, 定义在 `strap_enter.S`中
- * 
- * @note 该函数会:
- *      1. 将`M模式`的栈中构建的被打断程序的陷入帧恢复到寄存器中
- */
-extern void strap_exit(void);
 
 #endif
