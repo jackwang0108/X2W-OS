@@ -19,10 +19,10 @@ void ecall_init(void){
 
 int64_t sup_ecall_handler(strapframe_t *stf_ptr){
     // ecall id 保存在 a7 寄存器中
-    ireg_t arg0 UNUSED = stf_ptr->a0;
-    ireg_t arg1 UNUSED = stf_ptr->a1;
-    ireg_t arg2 UNUSED = stf_ptr->a2;
-    ireg_t ecall_id = stf_ptr->a7;
+    ireg_t arg0 UNUSED = stf_ptr->gregisters.a0;
+    ireg_t arg1 UNUSED = stf_ptr->gregisters.a1;
+    ireg_t arg2 UNUSED = stf_ptr->gregisters.a2;
+    ireg_t ecall_id = stf_ptr->gregisters.a7;
 
     int64_t ret = -1;
     switch (ecall_id) {
