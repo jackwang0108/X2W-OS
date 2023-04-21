@@ -35,11 +35,11 @@
 void uart_init(void);
 
 /**
- * @brief `uart_get`从`UART`设备接受输入
+ * @brief `uart_get`从`UART`设备接受一个字符
  * 
- * @warning 目前没有实现
+ * @note 目前`uart_get`是轮询的方式获得字符的, 未来在完成中断后需要改为中断式获得字符
  */
-void uart_get(void);
+char uart_get(void);
 
 /**
  * @brief `uart_put`向`UART`设备发送一个字符

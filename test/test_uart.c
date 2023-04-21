@@ -13,6 +13,7 @@
 
 // 声明外部符号, 避免include
 extern void uart_put(char);
+extern char uart_get(void);
 extern void uart_puts(const char*);
 
 int test_uart(void){
@@ -26,6 +27,13 @@ int test_uart(void){
     // 测试 uart_puts
     char *str = "Hello UART!\n";
     uart_puts(str);
+
+    char *prompt0 = "Please enter a <Enter>: ";
+    char *prompt1 = "\nI get an <Enter>!\n";
+    char ch;
+    uart_puts(prompt0);
+    while ((ch = uart_get()) != '\r');
+    uart_puts(prompt1);
 
     return 0;
 }

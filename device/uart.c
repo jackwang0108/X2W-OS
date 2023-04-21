@@ -48,6 +48,9 @@ void uart_puts(const char* str){
         uart_put((char) str[i]);
 }
 
-void uart_get(void){
-    uart_puts("ERROR: Not Implemented Yet!\n");
+char uart_get(void){
+    if (read_8_bits(UART_LSR) & UART_LSR_RDR)
+        return read_8_bits(UART_DAT);
+    else
+        return -1;
 }
