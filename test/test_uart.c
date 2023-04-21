@@ -28,12 +28,12 @@ int test_uart(void){
     char *str = "Hello UART!\n";
     uart_puts(str);
 
-    char *prompt0 = "Please enter a <Enter>: ";
-    char *prompt1 = "\nI get an <Enter>!\n";
-    char ch;
-    uart_puts(prompt0);
-    while ((ch = uart_get()) != '\r');
-    uart_puts(prompt1);
+    // char *prompt0 = "Please enter a <Enter>: ";
+    // char *prompt1 = "\nI get an <Enter>!\n";
+    // char ch;
+    // uart_puts(prompt0);
+    // while ((ch = uart_get()) != '\r');
+    // uart_puts(prompt1);
 
     return 0;
 }

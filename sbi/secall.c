@@ -32,6 +32,12 @@ int64_t sup_ecall_handler(strapframe_t *stf_ptr){
             break;
         case SBICALL_CONSOLE_PUTSTR:
             bprintf("%s", (char*)arg0);
+            ret = 0;
+            break;
+        case SBICALL_CONSOLE_GETCHAR:
+            // RISC-V ABI中a0寄存器用于保存函数返回值
+            stf_ptr->gregisters.a0 = uart_get();
+            ret = 0;
             break;
         default:
             bprintf("Ecall Error: Non-supported ecall ID: %#X!\n", ecall_id);

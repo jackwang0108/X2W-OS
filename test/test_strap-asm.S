@@ -12,6 +12,6 @@ trigger_breakpoint:
 
 .global trigger_ecall
 trigger_ecall:
-	li a0, 0x70000000
+	li a7, 0x03
 	ecall
 	ret
