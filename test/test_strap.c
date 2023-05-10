@@ -22,4 +22,5 @@ int test_exception(void){
     // trigger_load_access_fault();
     // trigger_breakpoint();
     trigger_ecall();
+    UNREACHABLE;
 }
