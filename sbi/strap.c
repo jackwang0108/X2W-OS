@@ -12,6 +12,7 @@
 #include "string.h"
 #include "asm/csr.h"
 #include "sbi/strap.h"
+#include "sbi/stimer.h"
 #include "sbi/sstdio.h"
 
 // 中断的提示信息
@@ -66,6 +67,8 @@ void strap_init(void){
         regitser_strap_handler(i, False, NULL, general_strap_handler);
     for (size_t i = 0; i < MAX_INTR_EXCP_INFO_NUM; i++)
         regitser_strap_handler(i, True, NULL, general_strap_handler);
+    // 注册M模式下的中断处理函数
+    regitser_strap_handler(CAUSE_INTERRUPT_M_TIMER_INTERRUPT, True, "SBI/Machine Timer Interrupt", stimer_interrupt_handler);
 }
 
 

@@ -8,7 +8,7 @@
  * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
  */
 
-
+#include "sbi/stimer.h"
 #include "sbi/sstdio.h"
 #include "sbi/secall.h"
 
@@ -26,6 +26,10 @@ int64_t sup_ecall_handler(strapframe_t *stf_ptr){
 
     int64_t ret = -1;
     switch (ecall_id) {
+        case SBICALL_SETTIMER:
+            clint_timer_event_start(stf_ptr->gregisters.a0);
+            ret = 0;
+            break;
         case SBICALL_CONSOLE_PUTCHAR:
             bprintf("%c", (char)arg0);
             ret = 0;
