@@ -8,8 +8,8 @@
  * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
  */
 
-#include "asm/csr.h"
 #include "kernel/ktrap.h"
+#include "kernel/ktimer.h"
 #include "kernel/kstdio.h"
 
 
@@ -63,9 +63,9 @@ void ktrap_init(void){
     write_csr(sie, -1);
     // 为所有的异常和中断注册处理函数
     for (size_t i = 0; i < MAX_INTR_EXCP_INFO_NUM; i++)
-        regitser_ktrap_handler(i, False, NULL, general_ktrap_handler);
+        register_ktrap_handler(i, False, NULL, general_ktrap_handler);
     for (size_t i = 0; i < MAX_INTR_EXCP_INFO_NUM; i++)
-        regitser_ktrap_handler(i, True, NULL, general_ktrap_handler);
+        register_ktrap_handler(i, True, NULL, general_ktrap_handler);
 }
 
 
@@ -100,7 +100,7 @@ NO_RETURN int64_t general_ktrap_handler(ktrapframe_t *ktf_ptr){
 }
 
 
-void regitser_ktrap_handler(uint64_t trap_code, Bool interrupt, const char* msg, ktrap_handler_t trap_func){
+void register_ktrap_handler(uint64_t trap_code, Bool interrupt, const char* msg, ktrap_handler_t trap_func){
     if (msg != NULL)
         (interrupt ? kintr_msg : kexcp_msg)[trap_code] = msg;
     (interrupt ? intr_handlers : excp_handlers)[trap_code] = trap_func;

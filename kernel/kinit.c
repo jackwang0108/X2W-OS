@@ -10,9 +10,16 @@
 
 #include "kernel/ktrap.h"
 #include "kernel/kinit.h"
+#include "kernel/ktimer.h"
+#include "kernel/kstdio.h"
 
 
 void kinit_all(void){
     // uart_init();
     ktrap_init();
+    kprintf("=> ktrap_init\n");
+    ktimer_init();
+    kprintf("=> ktimer_init\n");
+    local_interrupt_enable();
+    kprintf("=> local_interrupt_enable\n");
 }

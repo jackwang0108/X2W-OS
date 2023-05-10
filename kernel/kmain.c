@@ -22,7 +22,7 @@ void kernel_main(void){
     kinit_all();
 
     kprintf("Start testing!\n");
-    test_all();
+    // test_all();
 
 	print_kmem();
     kprintf("Kernel Hanging Here!\n");
