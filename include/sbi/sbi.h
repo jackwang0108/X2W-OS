@@ -59,18 +59,22 @@ typedef enum __sbicall_id_t {
 #define _SBICALL3(scall_id, arg0, arg1, arg2)   _SBICALL(scall_id, arg0, arg1, arg2)
 
 /**
- * @brief `sbi_settimer`用于设置时钟
+ * @brief `sbi_settimer`用于设置时钟, 即设置`mtimecmp`寄存器的值为`next_ticks`
  * 
- * @param value 时钟的值
+ * @param next_ticks 时钟的值
  */
-void sbi_settimer(uint64_t value);
+static inline void sbi_settimer(uint64_t next_ticks){
+    _SBICALL1(SBICALL_SETTIMER, next_ticks);
+}
 
 /**
  * @brief `sbi_putc`用于向终端输出一个字符
  * 
  * @param c 需要输出的字符
  */
-void sbi_putc(char c);
+static inline void sbi_putc(char c){
+    _SBICALL1(SBICALL_CONSOLE_PUTCHAR, c);
+}
 
 /**
  * @brief `sbi_puts`用于向字符输出一个字符串
@@ -79,7 +83,9 @@ void sbi_putc(char c);
  * 
  * @warning `sbi_puts`不会对str是否是以'\0'结尾进行检查
  */
-void sbi_puts(char *str);
+static inline void sbi_puts(char *str){
+    _SBICALL1(SBICALL_CONSOLE_PUTSTR, str);
+}
 
 
 #endif
