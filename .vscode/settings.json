@@ -24,7 +24,11 @@
                 "test_kstdio.h": "c",
                 "test_strap.h": "c",
                 "trapframe.h": "c",
-                "trap_entry.h": "c"
+                "trap_entry.h": "c",
+                "timer.h": "c",
+                "io.h": "c",
+                "ktrap.h": "c",
+                "stimer.h": "c"
         },
         "C_Cpp.errorSquiggles": "enabled"
 }
