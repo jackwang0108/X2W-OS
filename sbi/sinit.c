@@ -10,6 +10,7 @@
 
 #include "sbi/sinit.h"
 #include "sbi/strap.h"
+#include "sbi/stimer.h"
 #include "sbi/secall.h"
 #include "sbi/sstdio.h"
 
@@ -24,4 +25,7 @@ void sinit_all(void){
     // 委托 S模式下的中断和异常给S模式
     delegate_traps();
     bprintf("=> delegate_traps\n");
+    // 初始化 SBI Timer
+    stimer_init();
+    bprintf("=> stimer_init\n");
 }

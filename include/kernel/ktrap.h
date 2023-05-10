@@ -12,6 +12,7 @@
 #define __INCLUDE_KERNEL_KTRAP_H
 
 #include "types.h"
+#include "asm/csr.h"
 #include "constrains.h"
 #include "trap/trapframe.h"
 #include "trap/trap_entry.h"
@@ -31,6 +32,20 @@ typedef int64_t (*ktrap_handler_t)(ktrapframe_t *ktf_ptr);
 
 
 /**
+ * @brief `local_interrupt_enable`用于打开S模式下的中断, 即设置`sstatus`寄存器的`SIE`位为1
+ */
+static inline void local_interrupt_enable(void){
+    set_csr(sstatus, SSTATUS_SIE);
+}
+
+/**
+ * @brief `local_interrupt_disable`用于关闭S模式下的中断, 即设置`sstatus`寄存器的`SIE`位为0
+ */
+static inline void local_interrupt_disable(void){
+    clear_csr(sstatus, SSTATUS_SIE);
+}
+
+/**
  * @brief `ktrap_init`是内核的异常/中断初始化函数
  */
 void ktrap_init(void);
@@ -45,14 +60,14 @@ void ktrap_dispatcher(ktrapframe_t *ktf_ptr);
 
 
 /**
- * @brief `regitser_ktrap_handler`是`SBI`异常/中断注册函数, 用于将编号为`trap_code`的异常/中断的处理函数`ktrap_func`注册到`SBI`的异常/中断处理函数表中
+ * @brief `register_ktrap_handler`是`SBI`异常/中断注册函数, 用于将编号为`trap_code`的异常/中断的处理函数`ktrap_func`注册到`SBI`的异常/中断处理函数表中
  * 
  * @param trap_code 注册的中断/异常的编号
  * @param interrupt 若为True, 则将处理函数注册为中断处理函数, 否则注册为异常处理函数
  * @param msg 中断的相关信息
  * @param ktrap_func 中断/异常处理函数, 需要为类型`ktrap_handler_t`, 即函数原型需要为`int64_t funcname(ireg_t kcause)`
  */
-void regitser_ktrap_handler(uint64_t trap_code, Bool interrupt, const char* msg, ktrap_handler_t ktrap_func);
+void register_ktrap_handler(uint64_t trap_code, Bool interrupt, const char* msg, ktrap_handler_t ktrap_func);
 
 
 /**

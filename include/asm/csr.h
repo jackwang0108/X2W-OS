@@ -62,6 +62,15 @@
 #define MSTATUS_MPIE_EN             (INTR_EN << MSTATUS_MPIE_SHIFT)
 
 
+/* ----- sstatus寄存器 ----- */
+#define SSTATUS_SIE                 0x00000002UL
+#define SSTATUS_SPIE                0x00000020UL
+#define SSTATUS_SPP                 0x00000100UL
+#define SSTATUS_SUM                 0x00040000UL
+#define SSTATUS_FS                  0x00006000UL
+#define SSTATUS_XS                  0x00018000UL
+
+
 /* ----- mtvec寄存器 ----- */
 
 /// `TVEC_TRAP_DIRECT`宏表示`mtvec`寄存器处于直接模式
@@ -113,6 +122,7 @@
 
 
 /* ----- mip寄存器 ----- */
+// * MIP寄存器和MIE寄存器的结构是一样的
 #define MIP_U_SOFTWARE_INTERRUPT                            (1UL << CAUSE_INTERRUPT_U_SOFTWARE_INTERRUPT)
 #define MIP_S_SOFTWARE_INTERRUPT                            (1UL << CAUSE_INTERRUPT_S_SOFTWARE_INTERRUPT)
 #define MIP_M_SOFTWARE_INTERRUPT                            (1UL << CAUSE_INTERRUPT_M_SOFTWARE_INTERRUPT)
@@ -122,6 +132,34 @@
 #define MIP_U_EXTERNAL_INTERRUPT                            (1UL << CAUSE_INTERRUPT_U_EXTERNAL_INTERRUPT)
 #define MIP_S_EXTERNAL_INTERRUPT                            (1UL << CAUSE_INTERRUPT_S_EXTERNAL_INTERRUPT)
 #define MIP_M_EXTERNAL_INTERRUPT                            (1UL << CAUSE_INTERRUPT_M_EXTERNAL_INTERRUPT)
+
+
+/* ----- mie寄存器 ----- */
+// * MIP寄存器和MIE寄存器的结构是一样的
+#define MIE_U_SOFTWARE_INTERRUPT                            MIP_U_SOFTWARE_INTERRUPT
+#define MIE_S_SOFTWARE_INTERRUPT                            MIP_S_SOFTWARE_INTERRUPT
+#define MIE_M_SOFTWARE_INTERRUPT                            MIP_M_SOFTWARE_INTERRUPT
+#define MIE_U_TIMER_INTERRUPT                               MIP_U_TIMER_INTERRUPT
+#define MIE_S_TIMER_INTERRUPT                               MIP_S_TIMER_INTERRUPT
+#define MIE_M_TIMER_INTERRUPT                               MIP_M_TIMER_INTERRUPT
+#define MIE_U_EXTERNAL_INTERRUPT                            MIP_U_EXTERNAL_INTERRUPT
+#define MIE_S_EXTERNAL_INTERRUPT                            MIP_S_EXTERNAL_INTERRUPT
+#define MIE_M_EXTERNAL_INTERRUPT                            MIP_M_EXTERNAL_INTERRUPT
+
+
+/* ----- sie寄存器 ----- */
+/*
+ * RISC-V将中断分为四类: 
+ *      - 软件中断, (Software Interrupt,    SI),    SIE
+ *      - 时钟中断, (Timer Interrupt,       TI),    TIE
+ *      - 外部中断, (External Interrupt,    EI),    EIE
+ *      - 调试中断, (Debug Interrupt,       DI),
+ * SIE寄存器是Supervisor模式下的中断使能寄存器(Interrupt Enable)
+ * 由于中断委托, 所以是SIE能屏蔽的寄存器包含U模式下的, SSIE/USIE, STIE/UTIE, SEIE/UEIE
+ */
+#define SIE_S_SOFTWARE_INTERRUPT                            (1UL << CAUSE_INTERRUPT_S_SOFTWARE_INTERRUPT)
+#define SIE_S_TIMER_INTERRUPT                               (1UL << CAUSE_INTERRUPT_S_TIMER_INTERRUPT)
+#define SIE_S_EXTERNAL_INTERRUPT                            (1UL << CAUSE_INTERRUPT_S_EXTERNAL_INTERRUPT)
 
 
 /* ----- medeleg寄存器 ----- */
@@ -198,7 +236,45 @@
 })
 
 
+/**
+ * @brief `set_csr`用于将`csr`寄存器的值`value`位的值设置为1
+ * 
+ * @param csr 要设置的`CSR`寄存器名
+ * @param value 要设置的位
+ * 
+ * @note `rK`约束参考, `r`是简单约束, `K`是`RISC-V`的机器限定约束:
+ * 1. https://gcc.gnu.org/onlinedocs/gcc/Simple-Constraints.html
+ * 2. https://gcc.gnu.org/onlinedocs/gcc/Machine-Constraints.html
+ */
+#define set_csr(csr, value) ({                      \
+    unsigned long __v = (unsigned long) (value);    \
+    __asm__ __volatile__(                           \
+        "csrs " #csr ", %0"                         \
+        :                                           \
+        : "rK" (__v)                                \
+        : "memory"                                  \
+    );                                              \
+})
 
+/**
+ * @brief `clear_csr`用于将`csr`寄存器的值`value`位的值设置为0
+ * 
+ * @param csr 要设置的`CSR`寄存器名
+ * @param value 要设置的位
+ * 
+ * @note `rK`约束参考, `r`是简单约束, `K`是`RISC-V`的机器限定约束:
+ * 1. https://gcc.gnu.org/onlinedocs/gcc/Simple-Constraints.html
+ * 2. https://gcc.gnu.org/onlinedocs/gcc/Machine-Constraints.html
+ */
+#define clear_csr(csr, value) ({                    \
+    unsigned long __v = (unsigned long) (value);    \
+    __asm__ __volatile__(                           \
+        "csrc " #csr ", %0"                         \
+        :                                           \
+        : "rK" (__v)                                \
+        : "memory"                                  \
+    );                                              \
+})
 
 
 
