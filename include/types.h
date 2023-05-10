@@ -61,7 +61,17 @@ typedef uint64_t freg_t;
 
 
 /**
- * @brief `UNUSED`宏用于通知`GCC`/`Clang`寄存器被修饰的变量可能没有被使用, 从而在编译的时候静默警告
+ * @brief `ALIGN64`宏用于通知`GCC`/`Clang`编译器被修饰的变量需要是64-bit对齐, 帮助编译器编译时候生成对应的ELF可执行文件
+ * 
+ * @note `ALIGN64`宏本质上是借助了`GCC`/`Clang`的`__attribute__`关键词实现的, 使用的标记(annotation)是: `aligned`
+ * 
+ * @note 参考: https://gcc.gnu.org/onlinedocs/gcc-3.4.6/gcc/Variable-Attributes.html
+ */
+#define ALIGN64 __attribute__((aligned(64)))
+
+
+/**
+ * @brief `UNUSED`宏用于通知`GCC`/`Clang`编译器被修饰的变量可能没有被使用, 从而在编译的时候静默警告
  * 
  * @note `UNUSED`宏本质上是借助了`GCC`/`Clang`的`__attribute__`关键词实现的, 使用的标记(annotation)是: `unused`
  * 
