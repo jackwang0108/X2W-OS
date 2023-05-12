@@ -28,7 +28,9 @@
                 "timer.h": "c",
                 "io.h": "c",
                 "ktrap.h": "c",
-                "stimer.h": "c"
+                "stimer.h": "c",
+                "ktimer.h": "c",
+                "stdbitmap.h": "c"
         },
         "C_Cpp.errorSquiggles": "enabled"
 }
