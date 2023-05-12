@@ -1,7 +1,7 @@
 #include "trap/tfoffset.h"
 
 /**
- * @brief `ktrap_enter`是`SBI`的陷入入口函数, C语言描述为`void ktrap_enter(void)`
+ * @brief `ktrap_enter`是内核的的陷入入口函数, C语言描述为`void ktrap_enter(void)`
  * 
  * @note `ktrap_enter`函数的作用:
  *  1. 保存现场: 将通用寄存器和一些csr寄存器保存到陷入栈中

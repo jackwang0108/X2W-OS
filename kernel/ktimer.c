@@ -27,7 +27,9 @@ void ktimer_init(void){
 }
 
 int64_t ktimer_interrupt_handler(ktrapframe_t *kft_ptr){
+    // 关闭Supervisor模式下的时钟中断, 避免S模式下的时钟中断嵌套
     clear_csr(sie, SIE_S_TIMER_INTERRUPT);
+    // 重新设置mtimecmp寄存器
     reset_timer();
     ticks++;
     kprintf("Core0 Timer Interrupt, ticks=%lu\r\n", ticks);

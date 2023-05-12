@@ -27,6 +27,7 @@ int64_t sup_ecall_handler(strapframe_t *stf_ptr){
     int64_t ret = -1;
     switch (ecall_id) {
         case SBICALL_SETTIMER:
+            // bprintf("ecall for mtimecmp happened!\n");
             clint_timer_event_start(stf_ptr->gregisters.a0);
             ret = 0;
             break;

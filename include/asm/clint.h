@@ -27,11 +27,11 @@
 #define CLINT_TIMER_MTIME_ADDR          (CLINT_BASE_ADDR + 0xBFF8)
 
 /**
- * @brief `CLINT`中断控制器的`mtimecmp`寄存器的地址, 每个`HART`都有自己的`mtimecmp`寄存器, 这个地址是`HART0`的`mtimecmp`寄存器的地址
+ * @brief `CLINT`中断控制器的`mtimecmp0`寄存器的地址, 每个`HART`都有自己的`mtimecmp`寄存器, 这个地址是`HART0`的`mtimecmp`寄存器的地址
  * 
  * @note 该值参考`SiFive`手册`P176`的`CLINT Memory Map`
  */
-#define CLINT_TIMER_MTIMECMP_ADDR       (CLINT_BASE_ADDR + 0x4000)
+#define CLINT_TIMER_MTIMECMP_0_ADDR       (CLINT_BASE_ADDR + 0x4000)
 
 
 #endif
