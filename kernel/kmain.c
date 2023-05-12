@@ -11,9 +11,10 @@
 #include "uart.h"
 #include "types.h"
 #include "test/test.h"
-#include "kernel/kstdio.h"
+#include "kernel/ktrap.h"
 #include "kernel/kmain.h"
 #include "kernel/kinit.h"
+#include "kernel/kstdio.h"
 
 void kernel_main(void){
     kprintf(DELIMITER);
@@ -22,10 +23,13 @@ void kernel_main(void){
     kinit_all();
 
     kprintf("Start testing!\n");
-    // test_all();
+    test_all();
 
 	print_kmem();
     kprintf("Kernel Hanging Here!\n");
+
+    kprintf("local_interrupt_enable\n");
+    local_interrupt_enable();
     while (1);
 }
 
