@@ -72,6 +72,9 @@ void ktimer_init(void);
 
 /**
  * @brief `ktimer_interrupt_handler`是S模式下的时钟中断处理函数
+ * 
+ * @param ktf_ptr 陷入帧, S模式下中断触发后在`ktrap_enter`中构建
+ * @return int64_t 处理结果, 若为0则表示处理正常, -1表示处理失败
  */
 int64_t ktimer_interrupt_handler(ktrapframe_t *kft_ptr);
 

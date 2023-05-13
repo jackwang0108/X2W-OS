@@ -46,7 +46,10 @@ static inline void local_interrupt_disable(void){
 }
 
 /**
- * @brief `ktrap_init`是内核的异常/中断初始化函数
+ * @brief `ktrap_init`是内核的异常/中断初始化函数, 主要:
+ *      1. 设置了`sstvec`寄存器
+ *      2. 设置了`sie`寄存器
+ *      3. 将所有异常和中断处理函数设置为通用异常/中断处理函数
  */
 void ktrap_init(void);
 
