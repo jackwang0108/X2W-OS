@@ -18,7 +18,7 @@
 
 void kernel_main(void){
     kprintf(DELIMITER);
-    uart_puts("In kernel!\n");
+    kprintf("In kernel!\n");
     kprintf("Kernel init!\n");
     kinit_all();
 
