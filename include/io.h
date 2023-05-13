@@ -135,7 +135,7 @@ static inline uint64_t read_64_bits(uint64_t addr);
  * @note 因为地址的值(寄存器的值)可能会被设备改变, 因此必须声明是volatile, 以避免GCC进行优化 
  */
 #define mkread(width) \
-static inline uint##width##_t mkname(read, width)(uint64_t addr){ \
+static inline uint##width##_t mkname(read, width)(addr_t addr){ \
     uint##width##_t __v = *(volatile uint##width##_t*)addr; \
     __iormb(); \
     return __v; \
@@ -149,7 +149,7 @@ static inline uint##width##_t mkname(read, width)(uint64_t addr){ \
  * @note 因为地址的值(寄存器的值)可能会被设备改变, 因此必须声明是volatile, 以避免GCC进行优化 
  */
 #define mkwrite(width) \
-static inline void mkname(write, width)(uint64_t addr, uint##width##_t value){ \
+static inline void mkname(write, width)(addr_t addr, uint##width##_t value){ \
     uint##width##_t __v = value; \
     __iowmb(); \
     *(volatile uint##width##_t*)addr = __v; \
