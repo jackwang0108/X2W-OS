@@ -16,7 +16,7 @@
 uint64_t volatile ALIGN64 ticks;
 
 void reset_timer(void){
-    sbi_settimer(get_cycle() + TIMER_BASE_FRQENCY / TIMER_FREQUENCY_HZ);
+    sbi_settimer(get_cycle() + CLINT_TIMER_BASE_FRQENCY / CLINT_TIMER_FREQUENCY_HZ);
     // 打开Supervisor模式下的时钟中断
     set_csr(sie, SIE_S_TIMER_INTERRUPT);
 }
