@@ -30,7 +30,8 @@
                 "ktrap.h": "c",
                 "stimer.h": "c",
                 "ktimer.h": "c",
-                "stdbitmap.h": "c"
+                "stdbitmap.h": "c",
+                "plic.h"
         },
         "C_Cpp.errorSquiggles": "enabled"
 }
