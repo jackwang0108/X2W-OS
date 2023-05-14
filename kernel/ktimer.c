@@ -31,6 +31,6 @@ int64_t ktimer_interrupt_handler(ktrapframe_t *kft_ptr){
     // 重新设置mtimecmp寄存器
     reset_timer();
     ticks++;
-    kprintf("Core0 Timer Interrupt, ticks=%lu\r\n", ticks);
+    // kprintf("Core0 Timer Interrupt, ticks=%lu\r\n", ticks);
     return 0;
 }
