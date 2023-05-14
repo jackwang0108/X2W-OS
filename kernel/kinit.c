@@ -10,6 +10,7 @@
 
 #include "kernel/ktrap.h"
 #include "kernel/kinit.h"
+#include "kernel/kplic.h"
 #include "kernel/ktimer.h"
 #include "kernel/kstdio.h"
 
@@ -17,6 +18,8 @@
 void kinit_all(void){
     ktrap_init();
     kprintf("=> ktrap_init\n");
+    kplic_init();
+    kprintf("=> kplic_init\n");
     ktimer_init();
     kprintf("=> ktimer_init\n");
 }
