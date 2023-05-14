@@ -63,6 +63,7 @@
 
 
 /* ----- sstatus寄存器 ----- */
+/// Supervisor Interrupt Enable
 #define SSTATUS_SIE                 0x00000002UL
 #define SSTATUS_SPIE                0x00000020UL
 #define SSTATUS_SPP                 0x00000100UL
