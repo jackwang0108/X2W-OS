@@ -20,6 +20,11 @@
 #define DEBUG 1
 
 /**
+ * @brief 当前系统`CPU`核心数
+ */
+#define MAX_CPU_NUM 1
+
+/**
  * @brief `CPU`是否具有浮点寄存器, 若
  * - `WITH_FP_REG = 0`, `CPU` 不具有浮点寄存器
  * - `WITH_FP_REG = 1`, `CPU` 具有浮点寄存器
@@ -42,11 +47,14 @@
 /// `UART`设备的波特率
 #define UART_BAUD_RATE              115200
 
-/// `CPU`内的`CLINT`中断控制器的时钟频率, 目前`1000次/秒`
-#define TIMER_FREQUENCY_HZ          1000
+/// `CLINT`中断控制器的时钟中断频率, 目前`1000次/秒`
+#define CLINT_TIMER_FREQUENCY_HZ          1000
 
-/// `CPU`内的`CLINT`中断控制器默认的时钟频率
-#define TIMER_BASE_FRQENCY          10000000
+/// `CLINT`中断控制器的时钟中断的默认的时钟频率
+#define CLINT_TIMER_BASE_FRQENCY          10000000
+
+/// `PLIC`中断控制器最大支持的中断数量
+#define PLIC_MAX_INTERRUPTS_NUM     53
 
 /// 最大测试函数的数量
 #define MAX_TEST_FUNCTION_NUM       20
