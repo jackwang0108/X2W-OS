@@ -60,4 +60,11 @@ void uart_put(char chr);
 void uart_puts(const char *string);
 
 
+/**
+ * @brief `UART`外部设备的中断处理函数, 用于接受字符
+ * 
+ * @note 接受到的字符将被放入字符缓冲区
+ */
+void uart_interrupt_handler(void);
+
 #endif

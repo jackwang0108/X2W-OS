@@ -21,7 +21,7 @@ void uart_init(void){
     // divisor将写入16550的除数寄存器
     uint16_t divisor = (uint16_t) (UART16550_CLOCK / (16 * UART_BAUD_RATE));
 
-    // 目前使用轮询方式, 因此禁止16550的四种中断
+    // 初始化阶段, 先禁止16550的四种中断
     write_8_bits(UART_IER, 0b00000000);
 
     // 打开DLAB位以设置波特率
@@ -34,6 +34,9 @@ void uart_init(void){
 
     // 设置FIFO工作模式, FIFO队列长度设置为14字节, 每次发送/接受数据均清空FIFO
     write_8_bits(UART_FCR, 0b11000111);
+
+    // 使能接收缓冲区满中断
+    write_8_bits(UART_IER, 0b00000001);
 }
 
 
@@ -53,4 +56,16 @@ char uart_get(void){
         return read_8_bits(UART_DAT);
     else
         return -1;
+}
+
+// TODO: 添加一个字符缓冲区
+void uart_interrupt_handler(void){
+    char c = uart_get();
+    if (c < 0)
+        return;
+    else if (c == '\r') {
+        uart_puts("Enter an enter!\n");
+    }
+    // 屏幕上回显, 然后返回
+    uart_put(c);
 }
