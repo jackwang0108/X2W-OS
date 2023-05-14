@@ -67,15 +67,22 @@ void strap_init(void){
         regitser_strap_handler(i, False, NULL, general_strap_handler);
     for (size_t i = 0; i < MAX_INTR_EXCP_INFO_NUM; i++)
         regitser_strap_handler(i, True, NULL, general_strap_handler);
-    // 注册M模式下的中断处理函数
-    regitser_strap_handler(CAUSE_INTERRUPT_M_TIMER_INTERRUPT, True, "SBI/Machine Timer Interrupt", stimer_interrupt_handler);
+    // 注册M模式下的时钟中断处理函数
+    regitser_strap_handler(CAUSE_INTERRUPT_M_TIMER_INTERRUPT, True, "Machine Timer Interrupt", stimer_interrupt_handler);
 }
 
 
 void delegate_traps(void){
-    // 将S模式下的发生的软件中断, 时钟中断, 外部中断委托给S模式, 即在S模式下发生了这些中断, 则进入到S模式的陷入入口(中断处理程序)
-    ireg_t delegated_interrupts = MIP_S_SOFTWARE_INTERRUPT | MIP_S_TIMER_INTERRUPT | MIP_S_EXTERNAL_INTERRUPT;
-    // 将S模式下的发生的以下异常:
+    // 将S模式下的发生的:
+    //      1. 软件中断
+    //      2. 时钟中断
+    //      3. 外部中断
+    // 委托给S模式, 即在S模式下发生了这些中断, 则进入到S模式的陷入入口(中断处理程序)
+    ireg_t delegated_interrupts = \
+                                MIP_S_SOFTWARE_INTERRUPT    | 
+                                MIP_S_TIMER_INTERRUPT       |
+                                MIP_S_EXTERNAL_INTERRUPT;
+    // 将S模式下的发生的:
     //      1. 指令未对齐异常
     //      2. 读取指令页异常
     //      3. 读取数据页异常
@@ -83,7 +90,8 @@ void delegate_traps(void){
     //      5. 读取数据异常
     //      6. 存储数据异常
     //      7. 断点异常
-    //      8. U模式下的ecall异常
+    //      8. 非法指令
+    //      9. U模式下的ecall异常
     // 委托给S模式, 即在S模式下发生了这些异常, 则进入到S模式的陷入入口(异常处理程序)
     ireg_t delegated_exceptions = \
                                 (1UL << CAUSE_EXCEPTION_MISALIGNED_FETCH)                   |
@@ -93,6 +101,7 @@ void delegate_traps(void){
                                 (1UL << CAUSE_EXCEPTION_LOAD_ACCESS)                        |
                                 (1UL << CAUSE_EXCEPTION_STORE_ACCESS)                       |
                                 (1UL << CAUSE_EXCEPTION_BREAKPOINT)                         |
+                                (1UL << CAUSE_EXCEPTION_ILLEGAL_INSTRUCTION)                |
                                 (1UL << CAUSE_EXCEPTION_USER_ECALL);
     write_csr(mideleg, delegated_interrupts);
     write_csr(medeleg, delegated_exceptions);
