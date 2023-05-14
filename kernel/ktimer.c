@@ -23,7 +23,6 @@ void reset_timer(void){
 
 void ktimer_init(void){
     reset_timer();
-    register_ktrap_handler(CAUSE_INTERRUPT_S_TIMER_INTERRUPT, True, "Supervisor Timer Interrupt", ktimer_interrupt_handler);
 }
 
 int64_t ktimer_interrupt_handler(ktrapframe_t *kft_ptr){
