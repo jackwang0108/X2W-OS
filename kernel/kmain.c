@@ -20,20 +20,23 @@ void kernel_main(void){
     kprintf(DELIMITER);
     kprintf("In kernel!\n");
     kprintf("Kernel init!\n");
+	// 初始化内核
     kinit_all();
 
     kprintf("Start testing!\n");
-    test_all();
+	// 测试库文件
+    // test_all();
 
+	// 输出内核内存映像信息
 	print_kmem();
     kprintf("Kernel Hanging Here!\n");
 
     kprintf("local_interrupt_enable\n");
-    local_interrupt_enable();
+	// 打开S模式下所有中断
+    supervisor_interrupt_enable();
     while (1);
 }
 
-// TODO: 需要完成printf函数更多的feature
 void print_kmem(void){
     kprintf(DELIMITER);
     kprintf("X2W-OS Image Layout:\n");
