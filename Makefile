@@ -53,8 +53,8 @@ CFLAGS = \
 	-Wmissing-prototypes \
 	-Werror=strict-prototypes \
 	-Werror=incompatible-pointer-types \
-
-#	-save-temps -dumpdir=${BDIR}/temps/ \
+	-save-temps
+#	-dumpdir=${BDIR}/temps/ \
 
 # QEMU 参数
 #		1. -nographic: 不显示图形界面
@@ -307,7 +307,6 @@ full: all disasm documentation
 .PHONY: mkdir
 mkdir:
 	@mkdir -p ${BDIR}/disasms
-	@mkdir -p ${BDIR}/temps
 	@mkdir -p $(foreach dir, $(K_SRCS_DIR), ${BDIR}/$(dir))
 	@mkdir -p $(foreach dir, $(S_SRCS_DIR), ${BDIR}/$(dir))
 
