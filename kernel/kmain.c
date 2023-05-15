@@ -26,8 +26,13 @@ void kernel_main(void){
 	int one = 1;
 	ASSERT(one == 1, "var one not equals to 1!");
 
-	int a = 1, b = 2;
-	ASSERT(a == b, "var a = %d, b = %d", a, b);
+	int a = 1, b = 1;
+	ASSERT(a == b, "var a=%d, b=%d", a, b);
+
+	int* c = &a;
+	// c 被错误初始化为NULL
+	c = NULL;
+	ASSERT(c != NULL, "c=%#016x shouldn't be NULL", c);
 
 	// 初始化内核
     kinit_all();

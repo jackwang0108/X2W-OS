@@ -45,9 +45,9 @@ static inline void kpanic_spin(char *filename, int line, const char* func, const
      * @brief `ASSERT`将确保`CONDITION`成立, 若不成立则将挂起内核并输出提示信息`MSG`
      * 
      */
-    #define ASSERT(CONDITION, MSG, ...) if (CONDITION) {} else {PANIC(#CONDITION, #MSG);}
+    #define ASSERT(CONDITION, MSG, ARGS...) if (CONDITION) {} else {PANIC(#CONDITION, #MSG, ##ARGS);}
 #else
-    #define ASSERT(CONDITION, MSG, ...) ((void) 0)
+    #define ASSERT(CONDITION, MSG, ARGS...) ((void) 0)
 #endif
 
 #define PANIC(...) kpanic_spin(__FILE__, __LINE__, __func__, __VA_ARGS__)
