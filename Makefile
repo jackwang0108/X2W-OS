@@ -442,6 +442,10 @@ clean:
 	rm -rf ${RDIR}/docs/sphinx/build/*
 
 
+# clean 目标将会:
+#		1. 运行 clean 伪目标
+#		2. 运行 all 目标
+rebuild: clean all
 
 # ----------------------------------------------------------
 # 命令行工具
