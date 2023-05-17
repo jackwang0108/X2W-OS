@@ -8,9 +8,9 @@
  * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
  */
 
-#include "uart.h"
 #include "types.h"
 #include "test/test.h"
+#include "device/uart.h"
 #include "kernel/ktrap.h"
 #include "kernel/kmain.h"
 #include "kernel/kinit.h"
