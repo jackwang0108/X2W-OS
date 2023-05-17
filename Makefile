@@ -50,6 +50,7 @@ CFLAGS = \
 	-I include/ \
 	-fomit-frame-pointer \
 	-Wall \
+	-Werror \
 	-Wmissing-prototypes \
 	-Werror=strict-prototypes \
 	-Werror=incompatible-pointer-types \
