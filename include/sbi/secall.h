@@ -11,10 +11,10 @@
 #ifndef __INCLUDE_SBI_SECALL_H
 #define __INCLUDE_SBI_SECALL_H
 
-#include "uart.h"
 #include "asm/csr.h"
 #include "sbi/sbi.h"
 #include "sbi/strap.h"
+#include "device/uart.h"
 
 
 /**

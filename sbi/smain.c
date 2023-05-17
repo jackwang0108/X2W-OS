@@ -8,13 +8,13 @@
  * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
  */
 
-#include "uart.h"
 #include "types.h"
 #include "constrains.h"
 #include "asm/csr.h"
 #include "sbi/sinit.h"
 #include "sbi/smain.h"
 #include "sbi/sstdio.h"
+#include "device/uart.h"
 
 
 NO_RETURN void sbi_main(void){

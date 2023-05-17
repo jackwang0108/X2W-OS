@@ -14,7 +14,7 @@
  * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
  */
 
-#include "uart.h"
+#include "device/uart.h"
 
 void uart_init(void){
     // 参考: https://wenku.baidu.com/view/6f7a176048d7c1c708a14521.html?_wkts_=1681021571718

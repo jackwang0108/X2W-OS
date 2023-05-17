@@ -8,12 +8,12 @@
  * @copyright Copyright Shihong Wang (c) 2023 with GNU Public License V3.0
  */
 
-#include "uart.h"
 #include "string.h"
 #include "asm/csr.h"
 #include "sbi/strap.h"
 #include "sbi/stimer.h"
 #include "sbi/sstdio.h"
+#include "device/uart.h"
 
 // 中断的提示信息
 const char *sintr_msg[MAX_INTR_EXCP_INFO_NUM] = {

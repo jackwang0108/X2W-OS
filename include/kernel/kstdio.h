@@ -13,8 +13,8 @@
 #ifndef __INCLUDE_KERNEL_KSTDIO_H
 #define __INCLUDE_KERNEL_KSTDIO_H
 
-#include "uart.h"
 #include "stdfmt.h"
+#include "device/uart.h"
 
 /**
  * @brief kprintf用于格式化输出字符串

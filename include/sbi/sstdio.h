@@ -13,8 +13,8 @@
 #ifndef __INCLUDE_SBI_SSTDIO_H
 #define __INCLUDE_SBI_SSTDIO_H
 
-#include "uart.h"
 #include "stdfmt.h"
+#include "device/uart.h"
 
 /**
  * @brief bprintf用于格式化输出字符串
