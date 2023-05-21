@@ -18,3 +18,12 @@ kernel_start:
 .global kstacks_start
 kstacks_start:
     .skip 4096
+.global kstacks_end
+kstacks_end:
+
+
+.section .rodata
+.align 3
+.global kernel_info
+kernel_info:
+    .string "X2WOS, Version 0.1"
