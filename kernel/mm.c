@@ -97,6 +97,14 @@ void memory_init(addr_t start_paddr, addr_t end_paddr){
 
     // 初始化内存池
     init_pools(start_paddr, total_pages);
+
+    // debug
+    kprintf("Memory Management Info:\n");
+    kprintf("\ttotal physical pages available: %#X\n", total_pages);
+    kprintf("\tkernel physical pool is at: %#X\n", &kernel_ppool);
+    kprintf("\t%#X kernel physical pages available, start from %#X\n", kernel_ppool.size, kernel_ppool.paddr_start);
+    kprintf("\tuser physical pool is at: %#X\n", &user_ppool);
+    kprintf("\t%#X user physical pages available, start from %#X\n", user_ppool.size, user_ppool.paddr_start);
 }
 
 

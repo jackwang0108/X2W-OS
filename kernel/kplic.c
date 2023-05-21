@@ -48,10 +48,14 @@ void kplic_enable_interrupt(uint64_t cid, uint32_t hwiid, Bool enable, Bool m_mo
 }
 
 void kplic_init(void){
+    kprintf("KPLIC Info:");
+    kprintf("\tSet priority off INTR_NO %d~%d to 1\n", 1, PLIC_MAX_INTERRUPTS_NUM);
     // 设置所有中断的优先级为1
     for (int hwiid = 1; hwiid <= PLIC_MAX_INTERRUPTS_NUM; hwiid++)
         kplic_set_priority(hwiid, 1);
     // 逐核心设置
+    kprintf("\tDisable INTR_NO %d~%d of all CPU\n", 1, PLIC_MAX_INTERRUPTS_NUM);
+    kprintf("\tSet Interrupt Priority Threshold Register of all CPU to 0\n");
     for (int cpu_id = 0; cpu_id < MAX_CPU_NUM; cpu_id++){
         // 设置该核心的中断优先级阈值寄存器为0, 即不屏蔽任何外部设备
         write_32_bits(plic_threshold_addr(CPU_TO_HART(cpu_id), True), 0);
@@ -61,8 +65,11 @@ void kplic_init(void){
     }
 
     // 打开外部中断总开关
+    kprintf("\tSet Software External Interrupt (SEIE) of sie\n");
     set_csr(sie, SIE_S_EXTERNAL_INTERRUPT);
+
     // 打开CPU0的UART0中断
+    kprintf("\tEnable UART0 Interrupt (SEIE) of CPU 0\n");
     kplic_enable_interrupt(0, UART0_INTERRUPT, True, True);
 }
 

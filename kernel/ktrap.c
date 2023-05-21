@@ -59,11 +59,14 @@ ktrap_handler_t excp_handlers[MAX_INTR_EXCP_INFO_NUM];
 
 
 void ktrap_init(void){
+    kprintf("KTrap Info:\n");
     // 设置当前运行线程为内核线程
     write_csr(sscratch, 0);
     // 设置中断向量地址, 设置为直接模式
+    kprintf("\tSet stvec to %#X, mode=%s\n", (addr_t) ktrap_enter, "DIRECT");
     write_csr(stvec, ((addr_t)ktrap_enter & (~((addr_t)TVEC_TRAP_DIRECT))));
     // 开启所有的中断
+    kprintf("\tEnable All Supervisor Interrupts");
     write_csr(sie, -1);
     // 为所有的异常和中断注册通用异常处理函数
     for (size_t i = 0; i < MAX_INTR_EXCP_INFO_NUM; i++)
@@ -71,8 +74,10 @@ void ktrap_init(void){
     for (size_t i = 0; i < MAX_INTR_EXCP_INFO_NUM; i++)
         register_ktrap_handler(i, True, NULL, general_ktrap_handler);
     // 为S模式下的时钟中断注册中断处理函数
+    kprintf("\tRegister Supervisor Timer Interrupt Handler");
     register_ktrap_handler(CAUSE_INTERRUPT_S_TIMER_INTERRUPT, True, "Supervisor Timer Interrupt", ktimer_interrupt_handler);
     // 为S模式下的外部中断注册中断处理函数
+    kprintf("\tRegister Supervisor External Interrupt Handler");
     register_ktrap_handler(CAUSE_INTERRUPT_S_EXTERNAL_INTERRUPT, True, "Supervisor External Interrupt", kplic_interrupt_handler);
 }
 
