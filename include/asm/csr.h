@@ -163,11 +163,35 @@
 #define SIE_S_EXTERNAL_INTERRUPT                            (1UL << CAUSE_INTERRUPT_S_EXTERNAL_INTERRUPT)
 
 
-/* ----- medeleg寄存器 ----- */
+/*
+ * satp寄存器
+ * offset:      63            60 59                 44 43                                                    0
+ *              .---------------------------------------------------------------------------------------------,
+ *              |  Mode (WARL)  |     ASID (WARL)     |                       PPN (WARL)                      |
+ *              '---------------------------------------------------------------------------------------------'
+ * length:             4 Bit             16 Bit                                 44 Bit
+ * 
+ * Mode域:  控制分页模式
+ *          Value       Name        Description
+ *      -       0       Bare        No translation or protection
+ *      -     1-7       ----        Reserved
+ *      -       8       Sv39        Page-based 39-bit virtual addressing
+ *      -       9       Sv48        Page-based 48-bit virtual addressing
+ *      -      10       Sv57        Reserved for page-based 57-bit virtual addressing
+ *      -      11       Sv64        Reserved for page-based 64-bit virtual addressing
+ * 
+ * ASID域: 可选, 用于减少切换时的开销, 是为了和基于Spike指令集的系统兼容
+ *      
+ * PPN域: 保存页目录表物理页号(Physical Page Number)
+ *      - 运行内核线程时为内核页目录表物理页号
+ *      - 运行用户线程时为用户页目录表物理页号
+ */
+#define SATP_MODE_SV39                                      (0b1000UL << 60)
+#define SATP_MODE_SV48                                      (0b1001UL << 60)
+#define SATP_MODE_SV57                                      (0b1010UL << 60)
+#define SATP_MODE_SV64                                      (0b1011UL << 60)
 
 
-
-/* ----- mideleg寄存器 ----- */
 
 
 /* ------------------------------ 宏函数 ------------------------------ */
