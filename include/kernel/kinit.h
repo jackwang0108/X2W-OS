@@ -13,7 +13,6 @@
 
 #include "types.h"
 #include "constrains.h"
-#include "device/uart.h"
 
 
 /**
