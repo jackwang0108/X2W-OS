@@ -24,7 +24,8 @@ typedef enum __plic_interrupt_id_t {
 void kplic_set_priority(uint32_t hwiid, uint32_t priority){
     // 获得中断编号为hwiid的中断优先级寄存器的地址
     addr_t reg_addr = plic_priority_addr(hwiid);
-	kprintf("%s: reg = %#X, prio = %d\n", __func__, reg_addr, priority);
+    // Debug
+	// kprintf("%s: reg = %#X, prio = %d\n", __func__, reg_addr, priority);
     // 后三位表示优先级, PLIC上每个寄存器都是32位
     write_32_bits(reg_addr, priority);
 }
@@ -35,11 +36,11 @@ void kplic_enable_interrupt(uint64_t cid, uint32_t hwiid, Bool enable, Bool m_mo
     int hart_id = CPU_TO_HART(cid);
     // 计算hwiid的中断使能寄存器的MMIO地址
     addr_t reg_addr = plic_enable_addr(hart_id, m_mode) + 4 * (hwiid / 32);
-    // 输出到屏幕上
-    kprintf(
-        "%s Hardware Interrrupt ID: %3d at %#16X\n", 
-        enable == True ? "Enable" : "Disable", hwiid, reg_addr
-    );
+    // Debug, 输出到屏幕上
+    // kprintf(
+    //     "%s Hardware Interrrupt ID: %3d at %#16X\n", 
+    //     enable == True ? "Enable" : "Disable", hwiid, reg_addr
+    // );
     if (enable)
         write_32_bits(reg_addr, read_32_bits(reg_addr) | hwiid_mask);
     else
