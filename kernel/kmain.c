@@ -30,7 +30,7 @@ void kernel_main(void){
 
     kprintf("Start testing!\n");
 	// 测试库文件
-    test_all();
+    // test_all();
 
     kprintf("Kernel Hanging Here!\n");
 
