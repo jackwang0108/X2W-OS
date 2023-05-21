@@ -27,11 +27,21 @@
  *      - 写入BASE + 0x00寄存器时候表示向对方发送数据
  */
 
+/**
+ * @brief `CLINT`中断控制器的寄存器`MMIO`后的占用内存字节数
+ * 
+ * @note 该值参考`SiFive FU740`手册`P80`的`Memory Map`
+ */
+#define UART_MMIO_SIZE                  4096
+
 /// `UART`设备在内存中映射的起始单元
-#define UART_MMAP_BASE                  0x10000000
+#define UART_BASE_ADDR                  0x10000000
+
+/// `UART`设备在内存中映射的起始单元
+#define UART_END_ADDR                   (UART_BASE_ADDR + UART_MMIO_SIZE)
 
 /// 根据UART寄存器的偏移量计算在内存中的地址
-#define _UART_REG(offset)                (UART_MMAP_BASE + offset)
+#define _UART_REG(offset)                (UART_BASE_ADDR + offset)
 
 /// `UART`的数据寄存器(`Data Register`), 在发送模式和接受模式下有不同的作用
 #define UART_DAT                        _UART_REG(0x00)

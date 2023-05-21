@@ -11,13 +11,26 @@
 #ifndef __INCLUDE_ASM_CLINT_H
 #define __INCLUDE_ASM_CLINT_H
 
+/**
+ * @brief `CLINT`中断控制器的寄存器`MMIO`后的占用内存字节数
+ * 
+ * @note 该值参考`SiFive FU740`手册`P80`的`Memory Map`
+ */
+#define CLINT_MMIO_SIZE                 0x10000
 
 /**
- * @brief `CLINT`中断控制器的寄存器`MMIO`后的地址
+ * @brief `CLINT`中断控制器的寄存器`MMIO`后的起始地址
  * 
  * @note 该值参考`SiFive FU740`手册`P80`的`Memory Map`
  */
 #define CLINT_BASE_ADDR                 0x2000000
+
+/**
+ * @brief `CLINT`中断控制器的寄存器`MMIO`后的结束地址
+ * 
+ * @note 该值参考`SiFive FU740`手册`P80`的`Memory Map`
+ */
+#define CLINT_END_ADDR                  (CLINT_BASE_ADDR + CLINT_MMIO_SIZE)
 
 /**
  * @brief `CLINT`中断控制器的`mtime`寄存器的地址, 所有的`HART`共享这个寄存器
