@@ -26,6 +26,8 @@ void paging_init(void){
     create_identical_mapping();
     // 在内核页目录表中创建设备寄存器`MMIO`的恒等映射
     create_mmio_mapping();
+    // 注册Load Page Fault函数
+    register_ktrap_handler(CAUSE_EXCEPTION_LOAD_PAGE_FAULT, False, "Load Page Fault Exception", paging_load_page_fault_exception_handler);
     // 开启虚拟地址翻译机制, 即开启内存分页机制
     enable_vm_translation();
 }
@@ -41,7 +43,7 @@ void paging_init(void){
 extern char _s_text_boot[], _e_text[], _s_rodata[], _e_bss[];
 
 void create_identical_mapping(void){
-    kprintf("Start %s\n", __func__);
+    kprintf("start %s\n", __func__);
 
     addr_t start_addr, end_addr; size_t size;
 
@@ -61,14 +63,14 @@ void create_identical_mapping(void){
 
 
 void create_mmio_mapping(void){
-    kprintf("Start %s\n", __func__);
+    kprintf("start %s\n", __func__);
 
     addr_t start_addr, end_addr; size_t size;
     page_property_t mmioreg_prot = {(uint64_t) KERNEL_PAGE};
 
     // PLIC寄存器MMIO内存的恒等映射
     start_addr = (addr_t) PLIC_BASE_ADDR, end_addr = (addr_t) PLIC_END_ADDR, size = (size_t) (end_addr - start_addr);
-    kprintf("\tmapping PLIC MMIO registers, %#16X  :  %#16X, %7d Bytes\n", start_addr, end_addr, size);
+    kprintf("\tmapping PLIC  MMIO registers, %#16X  :  %#16X, %7d Bytes\n", start_addr, end_addr, size);
     create_mapping((pgd_t *)kernel_pgd, start_addr, start_addr, size, mmioreg_prot, 0);
 
     // CLINT寄存器MMIO内存的恒等映射
@@ -78,8 +80,40 @@ void create_mmio_mapping(void){
 
     // UART寄存器MMIO内存的恒等映射
     start_addr = (addr_t) UART_BASE_ADDR, end_addr = (addr_t) UART_END_ADDR, size = (size_t) UART_MMIO_SIZE;
-    kprintf("\tmapping UART MMIO registers, %#16X  :  %#16X, %7d Bytes\n", start_addr, end_addr, size);
+    kprintf("\tmapping UART  MMIO registers, %#16X  :  %#16X, %7d Bytes\n", start_addr, end_addr, size);
     create_mapping((pgd_t *)kernel_pgd, start_addr, start_addr, size, mmioreg_prot, 0);
+}
+
+
+// TODO: 未来实现换页机制需要修改该函数
+NO_RETURN int64_t paging_load_page_fault_exception_handler(ktrapframe_t *ktf_ptr){
+    // 读取S模式下Load Page Fault异常发生的地址 
+    addr_t bad_addr = read_csr(stval);
+    offset_t \
+        vpn2 = get_vpn(bad_addr, 2),
+        vpn1 = get_vpn(bad_addr, 1),
+        vpn0 = get_vpn(bad_addr, 0),
+        offs = get_vpn(bad_addr, -1);
+    kprintf("==============================================================================\n");
+    kprintf("Supervisor Load Page Fault Exception Happend, stvec = %#X\n", bad_addr);
+    kprintf("This means you're trying to access an invalid virtual address %#X\n", bad_addr);
+    kprintf("Load Page Fault exception happened may due to PGDE/PMDE/PTE is invalid\n");
+    kprintf("This may because you didn't add memory mapping of that virtual address\n");
+    kprintf("Please check correspoding PGDE/PMDE/PTE and use create_mapping() to fix it\n");
+    kprintf("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+    kprintf("Here are some helpful infomation\n");
+    kprintf("Detailed infomation of vaddr:\n");
+    kprintf(
+        "\tVPN[2] = %#3X\n"
+        "\tVPN[1] = %#3X\n"
+        "\tVPN[0] = %#3X\n"
+        "\tOFFSET = %#3X\n",
+        vpn2, vpn1, vpn0, offs
+    );
+    kprintf("Detailed infomation of PGD/PMD/PT:\n");
+    kprintf("\tkernel PGD is at %#X, PGDE = %#X\n", (addr_t) kernel_pgd, ((pgd_entry_t *) kernel_pgd + vpn2)->val);
+    while (1);
+    UNREACHABLE;
 }
 
 

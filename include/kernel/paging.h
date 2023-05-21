@@ -18,6 +18,7 @@
 #include "constrains.h"
 #include "asm/svxx.h"
 #include "kernel/mm.h"
+#include "kernel/ktrap.h"
 #include "kernel/kdebug.h"
 
 #ifndef PAGE_SHIFT
@@ -105,7 +106,7 @@ static inline offset_t get_offset(addr_t vaddr){
  * @brief `get_vpn`用于获得虚拟地址`vaddr`的第`ppn`级虚拟页号
  * 
  * @param vaddr 虚拟地址
- * @param vpn 虚拟页号级别
+ * @param vpn 虚拟页号级别, -1 表示获取页内便宜
  * @return offset_t 虚拟页号
  */
 static inline offset_t get_vpn(addr_t vaddr, int vpn){
@@ -115,8 +116,10 @@ static inline offset_t get_vpn(addr_t vaddr, int vpn){
         return (offset_t) ((vaddr & PAGE_VPN1_MASK) >> 21);
     else if (vpn == 0)
         return (offset_t) ((vaddr & PAGE_VPN0_MASK) >> 12);
+    else if (vpn == -1)
+        return (offset_t) ((vaddr & (PAGE_SIZE - 1)));
     else
-        ASSERT(False, "vpn = %d, should be in [2, 1, 0]!", vpn);
+        ASSERT(False, "vpn = %d, should be in [2, 1, 0, -1]!", vpn);
     UNREACHABLE;
 }
 
@@ -361,5 +364,17 @@ void create_mmio_mapping(void);
  *      4. 打开虚拟地址翻译机制, 即开启内存分页机制
  */
 void paging_init(void);
+
+
+/**
+ * @brief `paging_load_page_fault_exception_handler`是S模式下的Load Page Fault异常处理函数
+ * 
+ * @param ktf_ptr 陷入帧, S模式下中断触发后在`ktrap_enter`中构建
+ * @return int64_t 处理结果, 若为0则表示处理正常, -1表示处理失败
+ * 
+ * @note 当前的函数仅读取错误地址, 而后打印. 未来实现换页技术时候需要修改该函数
+ */
+NO_RETURN int64_t paging_load_page_fault_exception_handler(ktrapframe_t *ktf_ptr);
+
 
 #endif
