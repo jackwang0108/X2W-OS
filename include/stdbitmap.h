@@ -30,7 +30,7 @@ typedef struct __bitmap_t {
     /// @brief 位图的字节数
     size_t size;
     /// @brief 位图的字节数组
-    byte bits[];
+    byte *bits;
 } bitmap_t;
 
 
