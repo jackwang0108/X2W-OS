@@ -39,7 +39,25 @@
 #define RDTIME_SUPPORT 0
 
 /// 内核的跳转地址, 在`kernel.ld`中定义
-#define KERNEL_JUMP_ADDR 0x80200000
+#define KERNEL_JUMP_ADDR    0x80200000
+
+/// 系统可用内存, 目前是`16MB`
+#define MEMORY_TOTAL        (16 * 0x100000UL)
+
+/// 用户进程可用物理内存和系统可用物理内存比例, 用户:系统 = 1:3
+#define MEMORY_US_RATIO     4
+
+/// 虚拟地址页内偏移占用位数
+#define PAGE_SHIFT  12
+
+/// 内核一个页的字节数
+#define PAGE_SIZE   (1 << PAGE_SHIFT)
+
+/// 系统可用的总物理页数
+#define PAGE_NUMS   (MEMORY_TOTAL / PAGE_SIZE)
+
+/// 内核虚拟地址转换模型
+#define MEMORY_SVxx 39
 
 /// `kprintf`和`uprintf`可以输出的字符串最大长度
 #define PRINTF_STRING_SIZE          1024
