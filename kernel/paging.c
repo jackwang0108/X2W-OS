@@ -21,7 +21,7 @@
 void paging_init(void){
     // 初始化内核页目录表
     memset(kernel_pgd, 0, PAGE_SIZE);
-    kprintf("kernel Page Global Directory is at: %#X", (addr_t) kernel_pgd);
+    kprintf("kernel PGD is at: %#X\n", (addr_t) kernel_pgd);
     // 在内核页目录标中构建内核代码段和数据段的恒等映射
     create_identical_mapping();
     // 在内核页目录表中创建设备寄存器`MMIO`的恒等映射
@@ -41,20 +41,20 @@ void paging_init(void){
 extern char _s_text_boot[], _e_text[], _s_rodata[], _e_bss[];
 
 void create_identical_mapping(void){
-    kprintf("\tStart %s\n", __func__);
+    kprintf("Start %s\n", __func__);
 
     addr_t start_addr, end_addr; size_t size;
 
     // 为内存中的内核代码段创建恒等映射, 内核代码段的属性是可读可执行
     start_addr = (addr_t) _s_text_boot, end_addr = (addr_t) _e_text, size = (size_t) (end_addr - start_addr);
-    kprintf("\t\tmapping kernel text, %#X~%#X, %7d Bytes\n", start_addr, end_addr, size);
+    kprintf("\tmapping kernel text, %#X~%#X, %7d Bytes\n", start_addr, end_addr, size);
     page_property_t ktext_prot = {(uint64_t) KERNEL_PAGE_READ_EXEC};
     create_mapping((pgd_t *)kernel_pgd, start_addr, start_addr, size, ktext_prot, 0);
 
     // 为内存中的内核数据段创建恒等映射, 这里额外分配32个页, 用于未来的动态内存分配用
     // 内核数据段的属性是可读可写
     start_addr = (addr_t) _s_rodata, end_addr = (addr_t) _e_bss, size = (size_t) (end_addr - start_addr);
-    kprintf("\t\tmapping kernel data, %#X~%#X, %7d Bytes\n", start_addr, end_addr, size);
+    kprintf("\tmapping kernel data, %#X~%#X, %7d Bytes\n", start_addr, end_addr, size);
     page_property_t kdata_prot = {(uint64_t) KERNEL_PAGE};
     create_mapping((pgd_t *)kernel_pgd, start_addr, start_addr, size, kdata_prot, 0);
 }
@@ -105,7 +105,7 @@ void make_pmd_entry(pmd_entry_t *pmd_ent, addr_t s_vaddr, addr_t e_vaddr, addr_t
         set_pmd_entry(pmd_ent, pt_ppage, pt_prot);
 
         // Debug
-        kprintf("Alloc A PT at %#X, coressponding PMD_Ent.val = %#X\n", pt_ppage);
+        // kprintf("Alloc A PT at %#X, coressponding PMD_Ent.val = %#X\n", pt_ppage);
     }
 
     // 逐页映射
@@ -134,7 +134,7 @@ void make_pgd_entry(pgd_entry_t *pgd_ent, addr_t s_vaddr, addr_t e_vaddr, addr_t
         set_pgd_entry(pgd_ent, pmd_ppage, pmd_prot);
 
         // Debug
-        kprintf("Alloc A PMD at %#X, corresponding PGD_Ent.val = %#X\n", pmd_ppage, pgd_ent->val);
+        // kprintf("Alloc A PMD at %#X, corresponding PGD_Ent.val = %#X\n", pmd_ppage, pgd_ent->val);
     }
 
     // 获得起始PMD表项
