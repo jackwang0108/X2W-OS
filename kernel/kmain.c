@@ -22,15 +22,16 @@ void kernel_main(void){
     kprintf("In kernel!\n");
     kprintf("Kernel init!\n");
 
+	// 输出内核内存映像信息
+	print_kmem();
+
 	// 初始化内核
     kinit_all();
 
     kprintf("Start testing!\n");
 	// 测试库文件
-    // test_all();
+    test_all();
 
-	// 输出内核内存映像信息
-	print_kmem();
     kprintf("Kernel Hanging Here!\n");
 
     kprintf("local_interrupt_enable\n");
