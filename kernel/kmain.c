@@ -10,6 +10,7 @@
 
 #include "types.h"
 #include "test/test.h"
+#include "device/ddr.h"
 #include "device/uart.h"
 #include "kernel/ktrap.h"
 #include "kernel/kmain.h"
@@ -37,6 +38,10 @@ void kernel_main(void){
     kprintf("local_interrupt_enable\n");
 	// 打开S模式下所有中断
     supervisor_interrupt_enable();
+
+	addr_t unmapped_addr = DDR_END_ADDR + 4096;
+	*(uint64_t *) unmapped_addr = 0x55;
+	kprintf("Done");
     while (1);
 }
 
