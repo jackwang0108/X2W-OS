@@ -163,13 +163,6 @@ void free_vpage(vpool_t *vpool, addr_t vpage){
     spinlock_release(&vpool->lock);
 }
 
-// `kernel_pgd`是内核页目录表, 定义在`kernel.ld`中, 在连接阶段由编译器负责填充和重定位
-extern char kernel_pgd[];
-
-pgd_t *get_pgd(void){
-    // TODO: 目前仅返回内核全局页目录表, 返回用户页目录表需要在用户进程实现了之后实现
-    return (pgd_t *)kernel_pgd;
-}
 
 ppool_t *get_ppool(void){
     // TODO: 目前仅返回内核物理内存池, 返回用户虚拟内存池需要在用户进程实现了之后实现
@@ -183,7 +176,9 @@ vpool_t *get_vpool(void){
 }
 
 
-// 操作页目录表的函数, 定义在`paging.c`中, 这里声明为extern是为了避免交叉引用
+
+// 操作页目录表的函数, 定义在`paging.h`中, 这里声明为extern是为了避免交叉引用
+extern inline pgd_t *get_pgd(void);
 extern void create_mapping(pgd_t *pgd, addr_t vaddr, addr_t paddr, uint64_t size, page_property_t property, uint64_t flags);
 
 void *malloc_page(size_t cnt, Bool kpage){

@@ -51,12 +51,6 @@ typedef struct __vpool_t {
 } vpool_t;
 
 
-/**
- * @brief `get_pgd`用于获得当前正在运行的进程的全局页目录表
- * 
- * @return pgd_t* 当前正在运行进程的全局页目录表
- */
-pgd_t *get_pgd(void);
 
 /**
  * @brief `get_ppool`用于获得当前正在运行的进程的物理内存池
