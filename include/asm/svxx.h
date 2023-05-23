@@ -44,47 +44,150 @@ typedef struct __page_property_t {
  *  - 1: 页表项无效, 即所表示的页表不在内存中
  */
 #define PAGE_ATTR_VALID             (1 << 0)
+
+/**
+ * @brief `is_valid_page`用于判断给定的全局/中间页目录表项或页表项是否有效
+ * 
+ * @param val 全局页目录表项/中间页目录表项/页表项的值
+ * @return Bool `True`有效, `False`无效
+ */
+static inline Bool is_valid_page(uint64_t val){
+    return ((val & PAGE_ATTR_VALID) == 0) ? False : True;
+}
+
 /**
  * @brief `PAGE_ATTR_READ`位用于表示页表项表示的页表是否可读. `PAGE_ATTR_READ`位值为:
  *  - 0: 页表项所表示的页表不可读
  *  - 1: 页表项所表示的页表可读
  */
 #define PAGE_ATTR_READ              (1 << 1)
+
+/**
+ * @brief `is_readable_page`用于判断给定的全局/中间页目录表项或页表项是否可读
+ * 
+ * @param val 全局页目录表项/中间页目录表项/页表项的值
+ * @return Bool `True`可读, `False`不可读
+ */
+static inline Bool is_readable_page(uint64_t val){
+    return ((val & PAGE_ATTR_READ) == 0) ? False : True;
+}
+
 /**
  * @brief `PAGE_ATTR_WRITE`位用于表示页表项表示的页表是否可写. `PAGE_ATTR_WRITE`位值为:
  *  - 0: 页表项所表示的页表不可写
  *  - 1: 页表项所表示的页表可写
  */
 #define PAGE_ATTR_WRITE             (1 << 2)
+
+/**
+ * @brief `is_writable_page`用于判断给定的全局/中间页目录表项或页表项是否可写
+ * 
+ * @param val 全局页目录表项/中间页目录表项/页表项的值
+ * @return Bool `True`可写, `False`不可写
+ */
+static inline Bool is_writable_page(uint64_t val){
+    return ((val & PAGE_ATTR_WRITE) == 0) ? False : True;
+}
+
 /**
  * @brief `PAGE_ATTR_EXEC`位用于表示页表项表示的页表是否可执行. `PAGE_ATTR_EXEC`位值为:
  *  - 0: 页表项所表示的页表不可执行
  *  - 1: 页表项所表示的页表可执行
  */
 #define PAGE_ATTR_EXEC              (1 << 3)
+
+/**
+ * @brief `is_executable_page`用于判断给定的全局/中间页目录表项或页表项是否可执行
+ * 
+ * @param val 全局页目录表项/中间页目录表项/页表项的值
+ * @return Bool `True`可执行, `False`不可执行
+ */
+static inline Bool is_executable_page(uint64_t val){
+    return ((val & PAGE_ATTR_EXEC) == 0) ? False : True;
+}
+
 /**
  * @brief `PAGE_ATTR_USER`位用于表示页表项表示的页表是否是用户可访问. `PAGE_ATTR_USER`位值为:
  *  - 0: 页表项所表示的页表用户不可访问
  *  - 1: 页表项所表示的页表用户可以访问
  */
 #define PAGE_ATTR_USER              (1 << 4)
+
+/**
+ * @brief `is_user_page`用于判断给定的全局/中间页目录表项或页表项用户是否可访问
+ * 
+ * @param val 全局页目录表项/中间页目录表项/页表项的值
+ * @return Bool `True`用户可访问, `False`用户不可访问
+ */
+static inline Bool is_user_page(uint64_t val){
+    return ((val & PAGE_ATTR_USER) == 0) ? False : True;
+}
+
 #define PAGE_ATTR_GLOBAL            (1 << 5)
+
+/**
+ * @brief `is_global_page`用于判断给定的全局/中间页目录表项或页表项用户是否是全局页
+ * 
+ * @param val 全局页目录表项/中间页目录表项/页表项的值
+ * @return Bool `True`是全局页, `False`用户不是全局页
+ */
+static inline Bool is_global_page(uint64_t val){
+    return ((val & PAGE_ATTR_GLOBAL) == 0) ? False : True;
+}
+
 /**
  * @brief `PAGE_ATTR_ACCESS`位用于表示页表项表示的页表`CPU`是否访问过, 用于缺页中断的页面置换算法. `PAGE_ATTR_ACCESS`位值为:
  *  - 0: 页表项所表示的页表`CPU`先前未访问过
  *  - 1: 页表项所表示的页表`CPU`先前访问过
  */
 #define PAGE_ATTR_ACCESS            (1 << 6)
+
+/**
+ * @brief `is_accessed_page`用于判断给定的全局/中间页目录表项或页表项是否倍访问过
+ * 
+ * @param val 全局页目录表项/中间页目录表项/页表项的值
+ * @return Bool `True`被访问过, `False`未被访问过
+ */
+static inline Bool is_accessed_page(uint64_t val){
+    return ((val & PAGE_ATTR_ACCESS) == 0) ? False : True;
+}
+
 /**
  * @brief `PAGE_ATTR_DIRTY`位用于表示页表项表示的页表是否被修改过, 用于缺页中断的页面置换算法. `PAGE_ATTR_DIRTY`位值为:
  *  - 0: 页表项所表示的页表`CPU`未被修改过
  *  - 1: 页表项所表示的页表`CPU`被修改过
  */
 #define PAGE_ATTR_DIRTY             (1 << 7)
+
+/**
+ * @brief `is_dirty_page`用于判断给定的全局/中间页目录表项或页表项是否被修改过
+ * 
+ * @param val 全局页目录表项/中间页目录表项/页表项的值
+ * @return Bool `True`被访问过, `False`未被访问过
+ */
+static inline Bool is_dirty_page(uint64_t val){
+    return ((val & PAGE_ATTR_DIRTY) == 0) ? False : True;
+}
+
 /**
  * @brief `PAGE_ATTR_SOFTWARE`位预留给操作系统使用. 
  */
 #define PAGE_ATTR_SOFTWARE          (3 << 8)
+
+/**
+ * @brief `PAGE_ATTR_LEAF`表示一个页是否为子页
+ */
+#define PAGE_ATTR_LEAF              (PAGE_ATTR_READ | PAGE_ATTR_WRITE | PAGE_ATTR_EXEC)
+
+/**
+ * @brief `is_leaf_page`用于判断给定的全局/中间页目录表项或页表项是否为子页
+ * 
+ * @param val 全局页目录表项/中间页目录表项/页表项的值
+ * @return Bool `True`是子页, `False`不是子页
+ */
+static inline Bool is_leaf_page(uint64_t val){
+    return ((is_valid_page(val) && (val & PAGE_ATTR_LEAF)) == 0) ? False : True;
+}
 
 
 #if MEMORY_SVxx == 39
