@@ -67,8 +67,122 @@
 #define KERNEL_PAGE_RESERVED            (PAGE_ATTR_SOFTWARE)
 
 
+// `_s_kernel_pgd`是内核页目录表的起始地址, 定义在`kernel.ld`中, 在连接阶段由编译器负责填充和重定位
+extern char _s_kernel_pgd[];
+// `kernel_pgd`是内核页目录表, 定义在`kernel.ld`中, 即该变量的内存在编译/链接/加载阶段创建
+extern pgd_t *kernel_pgd;
+
+// **********************************************************************************************************
+// * 页表转储函数
+// **********************************************************************************************************
+
+/// @brief `addr_marker_t`是地址标识符, 用于给一个地址标识其名称
+typedef struct __addr_marker_t {
+	addr_t start_address;
+	char *name;
+} addr_marker_t;
+
+static const addr_marker_t address_markers[] = {
+    {.start_address = 0,    .name = "Identical Mapping"},
+};
+
+/**
+ * @brief `property_bits_t`是全局页目录表项/中间页目录表项/页表项属性中每一位的结构体
+ * 
+ * @note 全局页目录表项/中间页目录表项/页表项的属性都有10个`Bit`, 每个`Bit`表示不同的含义. 
+ *      因此该结构体就是为每一位定义的数据类型, 详情请参考`prot_bits`数组
+ */
+typedef struct __property_bit_t {
+	/// 属性对应的`mask`
+	uint64_t mask;
+	/// 属性对应的值
+	uint64_t val;
+	/// 属性设置时候打印的字符
+	const char *set;
+	/// 属性未设置时候打印的字符
+	const char *clear;
+} property_bit_t;
+
+static const property_bit_t prot_bits[] = {
+    /// `RS_----_----` 留给软件使用
+	{ .mask = PAGE_ATTR_SOFTWARE,   .val = PAGE_ATTR_SOFTWARE,      .set = "RSW",   .clear = ".." },
+    /// `--_D---_----` 表示页面是否被写过
+    { .mask = PAGE_ATTR_DIRTY,      .val = PAGE_ATTR_DIRTY,         .set = "D",     .clear = "."  },
+    /// `--_-A--_----` 表示页面是否被访问过
+    { .mask = PAGE_ATTR_ACCESS,     .val = PAGE_ATTR_ACCESS,        .set = "A",     .clear = "."  },
+    /// `--_--G-_----` 表示页面全局属性, TLB会用到
+    { .mask = PAGE_ATTR_GLOBAL,     .val = PAGE_ATTR_GLOBAL,        .set = "G",     .clear = "."  },
+    /// `--_---U_----` 表示页面用户是否可访问
+    { .mask = PAGE_ATTR_USER,       .val = PAGE_ATTR_USER,          .set = "U",     .clear = "."  },
+    /// `--_----_E---` 表示页面是否可执行
+    { .mask = PAGE_ATTR_EXEC,       .val = PAGE_ATTR_EXEC,          .set = "X",     .clear = "."  },
+    /// `--_----_-W--` 表示页面是否可写
+    { .mask = PAGE_ATTR_WRITE,      .val = PAGE_ATTR_WRITE,         .set = "W",     .clear = "."  },
+    /// `--_----_--R-` 表示页面是否可读
+    { .mask = PAGE_ATTR_READ,       .val = PAGE_ATTR_READ,          .set = "R",     .clear = "."  },
+    /// `--_----_---V` 表示页面是否有效
+    { .mask = PAGE_ATTR_VALID,      .val = PAGE_ATTR_VALID,         .set = "V",     .clear = "."  },
+};
 
 
+/**
+ * @brief `dump_property`用于循环检测页目录表项/页表项属性, 并输出对应的值
+ * 
+ * @param property 页目录表/页表项属性
+ * @param prot_bits 属性位数组
+ * @param num 循环次数
+ */
+void dump_property(uint64_t property, const property_bit_t *bits, size_t num);
+
+
+/**
+ * @brief `print_page_table`用于根据页目录表项/页表项`entry`打印页目录/页表内容. 注意, 未初始化的页目录表项/页表项会被跳过
+ * 
+ * @param s_vaddr 起始地址
+ * @param e_vaddr 结束地址
+ * @param level 页表等级
+ * @param entry 页目录表项/页表项
+ */
+void print_page_table(addr_t s_vaddr, addr_t e_vaddr, int level, uint64_t entry);
+
+
+/**
+ * @brief `parse_pt`用于遍历页表`pt`从`s_vaddr`开始的每一个表项, 并进行解析
+ * 
+ * @param pt 要遍历的页表
+ * @param s_vaddr 起始地址
+ * @param e_vaddr 结束地址
+ */
+void parse_pt(pt_t *pt, addr_t s_vaddr, addr_t e_vaddr);
+
+/**
+ * @brief `parse_pmd`用于遍历中间页目录表`pmd`从`s_vaddr`开始的每一个表项, 并进行解析
+ * 
+ * @param pmd 要遍历的中间页目录表
+ * @param s_vaddr 起始地址
+ * @param e_vaddr 结束地址
+ */
+void parse_pmd(pmd_t *pmd, addr_t s_vaddr, addr_t e_vaddr);
+
+/**
+ * @brief `parse_pgd`用于遍历全局页目录表`pgd`从`s_vaddr`开始的每一个表项, 并进行解析
+ * 
+ * @param pgd 要遍历的全局页目录表
+ * @param s_vaddr 起始地址
+ * @param size 解释的内存单元长度
+ */
+void parse_pgd(pgd_t *pgd, addr_t s_vaddr, size_t size);
+
+/**
+ * @brief `dump_pgd`用于在发生页错误的时候转储指定的全局页目录表`pgd`中指定的内存区域
+ * 
+ * @param pgd 要转储的全局页目录表
+ * @param s_vaddr 要转储的内存区域开始处
+ * @param e_vaddr 要转储的内存区域结束处
+ * 
+ * @note 目前该函数会将`PGD`打印到屏幕上
+ */
+void dump_pgd(pgd_t *pgd, addr_t s_vaddr, addr_t e_vaddr);
 
 
 // **********************************************************************************************************
@@ -88,8 +202,8 @@
  */
 static inline addr_t page_align(addr_t addr, Bool next){
     if (next == False)
-        return (addr & ~PAGE_OFFSET_MASK);
-    return (addr + PAGE_SIZE - 1) & ~PAGE_OFFSET_MASK;
+        return (addr & ~(PAGE_SIZE - 1));
+    return (addr + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1);
 }
 
 /**
@@ -106,20 +220,21 @@ static inline offset_t get_offset(addr_t vaddr){
  * @brief `get_vpn`用于获得虚拟地址`vaddr`的第`ppn`级虚拟页号
  * 
  * @param vaddr 虚拟地址
- * @param vpn 虚拟页号级别, -1 表示获取页内便宜
+ * @param vpn 虚拟页号级别, -1 表示获取页内偏移
  * @return offset_t 虚拟页号
  */
 static inline offset_t get_vpn(addr_t vaddr, int vpn){
+    offset_t result = -1;
     if (vpn == 2)
-        return (offset_t) (vaddr >> 30) & (PGDE_PER_PGD - 1);
+        result = (offset_t) (vaddr >> 30) & (PGDE_PER_PGD - 1);
     else if (vpn == 1)
-        return (offset_t) ((vaddr & PAGE_VPN1_MASK) >> 21);
+        result = (offset_t) (vaddr >> 21) & (PMDE_PER_PMD - 1);
     else if (vpn == 0)
-        return (offset_t) ((vaddr & PAGE_VPN0_MASK) >> 12);
+        result = (offset_t) (vaddr >> 12) & (PTE_PER_PT - 1);
     else if (vpn == -1)
-        return (offset_t) ((vaddr & (PAGE_SIZE - 1)));
-    else
-        ASSERT(False, "vpn = %d, should be in [2, 1, 0, -1]!", vpn);
+        result = (offset_t) (vaddr & (PAGE_SIZE - 1));
+    ASSERT(result != -1, "vpn = %d, should be in [2, 1, 0, -1]!", vpn);
+    return result;
     UNREACHABLE;
 }
 
@@ -143,13 +258,43 @@ static inline addr_t get_ppn(addr_t paddr, int ppn){
 }
 
 /**
+ * @brief `get_pgd`用于获得当前正在运行线程的全局页目录表
+ * 
+ * @return pgd_t* 当前正在运行线程的全局页目录表
+ * 
+ * @note 目前仅返回内核的PGD, 未来实现用户线程之后需要进行修改
+ */
+static inline pgd_t *get_pgd(void){
+    // TODO: 目前仅返回内核的PGD, 未来实现用户线程之后需要进行修改
+    return (pgd_t *)_s_kernel_pgd;
+}
+
+/**
+ * @brief `get_pgd`用于从指定的`PGD`表项中获得`PMD`
+ * 
+ * @return pmd_t* `PGD`表项表示的中间页目录表的地址
+ */
+static inline pmd_t *get_pmd(pgd_entry_t *pgd_ent){
+    return (pmd_t *) ((pgd_ent->val >> PAGE_PFN_SHIFT) << PAGE_SHIFT);
+}
+
+/**
+ * @brief `get_pt`用于从指定的`PMD`表项中获得`PT`
+ * 
+ * @return pt_t* `PMD`表项表示的页表的地址
+ */
+static inline pt_t *get_pt(pmd_entry_t *pmd_ent){
+    return (pt_t *) ((pmd_ent->val >> PAGE_PFN_SHIFT) << PAGE_SHIFT);
+}
+
+/**
  * @brief `get_pgd_entry`用于获取`pgd`指向的全局页目录表中第`pgde_idx`个表项
  * 
  * @param pgd 指向全局页目录的指针
  * @param pgde_idx `PGD`表项索引
  * @return pgd_entry_t* `PGD`表项
  */
-static inline pgd_entry_t* get_pgd_entry(pgd_t *pgd, offset_t pgde_idx){
+DEPRECATED static inline pgd_entry_t* get_pgd_entry(pgd_t *pgd, offset_t pgde_idx){
     // 将PGD指针转为指向PGD Entry的指针后像后移动pgde_idx位
     return ((pgd_entry_t *) pgd) + pgde_idx;
 }
@@ -172,8 +317,8 @@ static inline void set_pgd_entry(pgd_entry_t *pgd_ent, addr_t pmd_paddr, page_pr
  * @param pmde_idx `PMD`表项索引
  * @return pmd_entry_t* `PMD`表项
  */
-static inline pmd_entry_t* get_pmd_entry(pgd_entry_t *pgd_ent, offset_t pmde_idx){
-    pmd_t *pmd = (pmd_t *) ((pgd_ent->val >> PAGE_PFN_SHIFT) << PTE_SHIFT);
+DEPRECATED static inline pmd_entry_t* get_pmd_entry(pgd_entry_t *pgd_ent, offset_t pmde_idx){
+    pmd_t *pmd = get_pmd(pgd_ent);
     // 将PMD指针转为指向PMD Entry的指针后像后移动pmde_idx位
     return ((pmd_entry_t *) pmd) + pmde_idx;
 }
@@ -196,10 +341,10 @@ static inline void set_pmd_entry(pmd_entry_t *pmd_ent, addr_t pt_paddr, page_pro
  * @param pte_idx `PT`表项索引
  * @return pt_entry_t* `PT`表项
  */
-static inline pt_entry_t* get_pt_entry(pmd_entry_t *pmd_ent, offset_t pte_idx){
-    pmd_t *pmd = (pmd_t *) ((pmd_ent->val >> PAGE_PFN_SHIFT) << PTE_SHIFT);
+DEPRECATED static inline pt_entry_t* get_pt_entry(pmd_entry_t *pmd_ent, offset_t pte_idx){
+    pt_t *pt = get_pt(pmd_ent);
     // 将PMD指针转为指向PMD Entry的指针后像后移动pmde_idx位
-    return ((pt_entry_t *) pmd) + pte_idx;
+    return ((pt_entry_t *) pt) + pte_idx;
 }
 
 /**
@@ -322,8 +467,6 @@ void create_mapping(
 // **********************************************************************************************************
 
 
-// `kernel_pgd`是内核页目录表, 定义在`kernel.ld`中, 在连接阶段由编译器负责填充和重定位
-extern char kernel_pgd[];
 
 /**
  * @brief `enable_vm_translation`会开启CPU的虚拟地址转换功能, 定义在`kernel/kasm.S`中
