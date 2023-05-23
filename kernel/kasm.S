@@ -25,7 +25,7 @@
 .global enable_vm_translation
 enable_vm_translation:
     # 内核页目录表的物理地址
-    la a2, kernel_pgd
+    la a2, _s_kernel_pgd
     # 计算内核页目录表的物理页号
     srl a2, a2, PAGE_SHIFT
     # 使用Sv39虚拟地址转换机制

@@ -57,9 +57,9 @@ SECTIONS {
     }
     /* 物理页需要4096字节对齐, 这里4096字节对齐之后划分4096字节作为内核页目录表 */
     . = ALIGN(4096);
-    kernel_pgd = .;
+    _s_kernel_pgd = .;
     . += 2 * 4096;
-    kernel_pgd_end = .;
+    _e_kernel_pgd = .;
     _e_data = .;
 
     /* 内核静态数据段 */
