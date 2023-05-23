@@ -181,6 +181,8 @@ void parse_pgd(pgd_t *pgd, addr_t s_vaddr, size_t size);
  * @param e_vaddr 要转储的内存区域结束处
  * 
  * @note 目前该函数会将`PGD`打印到屏幕上
+ * 
+ * @note 运行该函数时, 需要关闭虚拟地址翻译
  */
 void dump_pgd(pgd_t *pgd, addr_t s_vaddr, addr_t e_vaddr);
 
@@ -466,8 +468,6 @@ void create_mapping(
 // * 分页机制函数定义
 // **********************************************************************************************************
 
-
-
 /**
  * @brief `enable_vm_translation`会开启CPU的虚拟地址转换功能, 定义在`kernel/kasm.S`中
  * 
@@ -476,6 +476,14 @@ void create_mapping(
  *  2. `enable_vm_translation`目前会开启Sv39虚拟地址转换
  */
 extern void enable_vm_translation(void);
+
+/**
+ * @brief `disable_vm_translation`会关闭CPU的虚拟地址转换功能, 定义在`kernel/kasm.S`中
+ * 
+ * @note 
+ *  1. 开启/关闭虚拟地址转换功能本质上就是通过读写`satp`寄存器实现的
+ */
+extern void disable_vm_translation(void);
 
 /**
  * @brief `create_identical_mapping`用于在内核页目录表中创建内核代码段和数据段的恒等映射

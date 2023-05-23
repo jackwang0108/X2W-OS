@@ -124,7 +124,12 @@ NO_RETURN int64_t paging_load_page_fault_exception_handler(ktrapframe_t *ktf_ptr
     kprintf("\tkernel PGD is at %#X\n", (addr_t) kernel_pgd);
     kprintf("\tcurrent running thread PGD is at %#X\n", (addr_t) get_pgd());
     kprintf("Kernel PGD/PMT/PT Info:\n");
-    // dump_pgd(get_pgd(), (addr_t) _s_text_boot, (addr_t) _e_bss);
+    kprintf("WARNING: printing PGD/PMT/PT may cause huge outputs on screen, please use tee to save outputs. Start printing in a few seconds...\n");
+    // for (int32_t max = (__INT32_MAX__ >> 1) + __INT16_MAX__ * 0xFFF ; max-- > 0;);
+    for (int32_t max = __INT32_MAX__; max-- > 0;);
+    // 关闭虚拟地址翻译
+    disable_vm_translation();
+    dump_pgd(get_pgd(), (addr_t) _s_text_boot, (addr_t) _e_bss);
     while (1);
     UNREACHABLE;
 }

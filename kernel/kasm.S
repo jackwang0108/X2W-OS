@@ -40,3 +40,17 @@ enable_vm_translation:
     sfence.vma
     csrw satp, a2
     ret
+
+
+/**
+ * @brief `disable_vm_translation`会关闭CPU的虚拟地址转换功能, C语言描述为`void disable_vm_translation(void)`
+ * 
+ * @note 
+ *  1. 开启/关闭虚拟地址转换功能本质上就是通过读写`satp`寄存器实现的
+ */
+.global disable_vm_translation
+disable_vm_translation:
+    li a2, 0
+    sfence.vma
+    csrw satp, a2
+    ret
